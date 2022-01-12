@@ -1,0 +1,19 @@
+{:paths ["src" "target/classes"]
+ :deps
+ {org.clojure/clojure                  {:mvn/version "1.11.0-alpha3"}
+  io.github.humbleui/jwm               {:mvn/version "0.3.0"  :exclusions [io.github.humbleui/types]}
+  io.github.humbleui/skija-windows     {:mvn/version "0.98.0" :exclusions [io.github.humbleui/types]}
+  io.github.humbleui/skija-linux       {:mvn/version "0.98.0" :exclusions [io.github.humbleui/types]}
+  io.github.humbleui/skija-macos-x64   {:mvn/version "0.98.0" :exclusions [io.github.humbleui/types]}
+  io.github.humbleui/skija-macos-arm64 {:mvn/version "0.98.0" :exclusions [io.github.humbleui/types]}}
+ :aliases
+ {:macos
+  {:jvm-opts  ["-XstartOnFirstThread"]}
+
+  :dev
+  {:extra-paths ["dev"]
+   :extra-deps  {nrepl/nrepl {:mvn/version "0.9.0"}}
+   :main-opts   ["-m" "user" "--interactive"]}
+
+  :test
+  {:extra-paths ["test"]}}}
