@@ -97,7 +97,7 @@
         app    app]
     (ui/-layout app ctx (IPoint. (:width bounds) (:height bounds)))
     (ui/-draw app ctx canvas)
-    (some-> @*window window/request-frame)))
+    (window/request-frame window)))
 
 (defn on-event [window event]
   (let [app      app
