@@ -1,4 +1,4 @@
 .PHONY: dev
 
 dev:
-	python3 checkouts/HumbleUI/script/run.py
+	lein with-profile +macos,+dev trampoline run

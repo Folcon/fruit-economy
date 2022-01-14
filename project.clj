@@ -20,7 +20,8 @@
   :plugins [[reifyhealth/lein-git-down "0.4.0"]]
   :repositories [["public-github" {:url "git://github.com"}]]
   :git-down {humbleui {:coordinates HumbleUI/HumbleUI}}
-  :jvm-opts  ["-XstartOnFirstThread"]
+  ;:jvm-opts  ["-XstartOnFirstThread"]
+  :main fruit-economy.core
   :profiles {:macos {:jvm-opts  ["-XstartOnFirstThread"]}
              :dev {:source-paths ["dev"]
                    :dependencies  [[nrepl/nrepl "0.9.0"]]
