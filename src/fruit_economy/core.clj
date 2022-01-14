@@ -29,26 +29,40 @@
           fill-button-normal  (doto (Paint.) (.setColor (unchecked-int 0xFFade8f4)))
           fill-button-hovered (doto (Paint.) (.setColor (unchecked-int 0xFFcaf0f8)))
           fill-button-active  (doto (Paint.) (.setColor (unchecked-int 0xFF48cae4)))]
-      (ui/valign 0.5
-        (ui/halign 0.5
-          (ui/column
-            (ui/label "Hello from Humble UI! 👋" font-default fill-text)
-            (ui/gap 0 leading)
-            (ui/dynamic _ [clicks @*clicks]
-              (ui/label (str "Clicked: " clicks) font-default fill-text))
-            (ui/gap 0 leading)
-            (ui/clickable
-              #(swap! *clicks inc)
-              (ui/clip-rrect (* scale 4)
-                (ui/dynamic ctx [active?  (:hui/active? ctx)
-                                 hovered? (:hui/hovered? ctx)]
-                  (let [[label fill] (cond
-                                       active?  ["Active"    fill-button-active]
-                                       hovered? ["Hovered"   fill-button-hovered]
-                                       :else    ["Unpressed" fill-button-normal])]
-                    (ui/fill fill
-                      (ui/padding (* scale 20) leading
-                        (ui/label label font-default fill-text)))))))))))))
+      (ui/column
+        (ui/row
+          (ui/label "Top Bar" font-default fill-text))
+        (ui/row
+          (ui/valign 0.1
+            (ui/column
+              (ui/label "Left Sidebar" font-default fill-text)))
+          (ui/valign 0.5
+            (ui/halign 0.4
+              (ui/column
+                (ui/label "Hello from Humble UI! 👋" font-default fill-text)
+                (ui/gap 0 leading)
+                (ui/dynamic _ [clicks @*clicks]
+                  (ui/label (str "Clicked: " clicks) font-default fill-text))
+                (ui/gap 0 leading)
+                (ui/clickable
+                  #(swap! *clicks inc)
+                  (ui/clip-rrect (* scale 4)
+                    (ui/dynamic ctx [active?  (:hui/active? ctx)
+                                     hovered? (:hui/hovered? ctx)]
+                      (let [[label fill] (cond
+                                           active?  ["Active"    fill-button-active]
+                                           hovered? ["Hovered"   fill-button-hovered]
+                                           :else    ["Unpressed" fill-button-normal])]
+                        (ui/fill fill
+                          (ui/padding (* scale 20) leading
+                            (ui/label label font-default fill-text))))))))))
+          (ui/valign 0.1
+            (ui/halign 1.2
+              (ui/column
+                (ui/label "Right Sidebar" font-default fill-text))))
+          ;; Not currently visible, should work out what the layout system is
+          (ui/row
+            (ui/label "Bottom Bar" font-default fill-text)))))))
 
 (defn random-green []
   (let [r (+ 32  (rand-int 32))
