@@ -8,6 +8,7 @@
                  [org.clojure/spec.alpha "0.2.194"]
                  ;[org.projectlombok/lombok "1.18.22" :scope "provided"]
                  ;[org.jetbrains/annotations "20.1.0"]
+                 [io.github.humbleui/types "0.1.2"]
                  [io.github.humbleui/jwm "0.3.1" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-shared "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-windows "0.98.0" :exclusions [io.github.humbleui/types]]
