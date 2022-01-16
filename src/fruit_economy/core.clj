@@ -1,18 +1,30 @@
 (ns fruit-economy.core
   (:require
+   [clojure.string :as str]
+   [clojure.stacktrace :as stacktrace]
    [io.github.humbleui.core :as hui]
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [nrepl.cmdline :as nrepl])
   (:import
-   [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove Window]
-   [io.github.humbleui.skija Canvas FontMgr FontStyle Typeface Font Paint]
-   [io.github.humbleui.types IPoint]))
+   [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove EventKey KeyModifier Window]
+   [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint ClipMode]
+   [io.github.humbleui.types IPoint Rect]))
 
 
 (set! *warn-on-reflection* true)
 
 (defonce font-mgr (FontMgr/getDefault))
+
+(def *broken (atom false))
+
+;; GAME STATE
+(defn new-state []
+  (let []
+    {:peep [10 10]}))
+
+(defonce *state (atom (new-state)))
+;; END GAME STATE
 
 (defonce *window (atom nil))
 
@@ -20,7 +32,7 @@
   (.matchFamiliesStyle ^FontMgr font-mgr (into-array String [".SF NS", "Helvetica Neue", "Arial"]) FontStyle/NORMAL))
 
 (defonce *clicks (atom 0))
-
+#_
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
     (let [font-default        (Font. face-default (float (* 13 scale)))
@@ -63,6 +75,77 @@
           ;; Not currently visible, should work out what the layout system is
           (ui/row
             (ui/label "Bottom Bar" font-default fill-text)))))))
+
+(defn draw-impl [^Canvas canvas window-width window-height]
+  (let [{:keys [peep] :as state} @*state]
+    (.clear canvas (unchecked-int 0xFFFFFBBB))
+    (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
+      (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
+
+(defn on-key-pressed-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+  (let [state @*state
+        move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
+    (when (and (= event-type :hui/key) pressed?)
+      (println key)
+      (println (:peep @*state))
+      (condp = key
+        :d ;; right
+        (swap! *state update :peep (move [1 0]))
+
+        :a ;; left
+        (swap! *state update :peep (move [-1 0]))
+
+        :s ;; bottom
+        (swap! *state update :peep (move [0 1]))
+
+        :w ;; up
+        (swap! *state update :peep (move [0 -1]))
+
+        :r ;; R
+        (reset! *state (new-state))
+
+        ;; (println key)
+        nil))))
+
+(defrecord UICanvas [width height]
+  ui/IComponent
+  (-layout [_ ctx cs]
+    (IPoint. width height))
+  (-draw [_ ctx canvas]
+    (let [canvas ^Canvas canvas
+          layer  (.save canvas)
+          rect  (Rect/makeXYWH 0 0 width height)]
+      (try
+        (.clipRect canvas rect ClipMode/INTERSECT true)
+        (try
+          (when-not @*broken
+            (draw-impl canvas width height))
+          (catch Exception e
+            (reset! *broken true)
+            (stacktrace/print-stack-trace (stacktrace/root-cause e))))
+        (finally
+          (.restoreToCount canvas layer)))))
+  (-event [_ event]
+    (try
+      (when-not @*broken
+        (on-key-pressed-impl event))
+      (catch Exception e
+        (reset! *broken true)
+        (stacktrace/print-stack-trace (stacktrace/root-cause e))))))
+
+(defn ui-canvas [width height]
+  (UICanvas. width height))
+
+(def app
+  (ui/dynamic ctx [scale (:scale ctx)]
+    (let [font-default        (Font. face-default (float (* 24 scale)))
+          fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
+      (ui/valign 0.5
+        (ui/halign 0.5
+          (ui/column
+            (ui-canvas 400 300)
+            (ui/label "Hello from Humble UI! 👋🌲🌳" font-default fill-text)))))))
+
 
 (defn random-green []
   (let [r (+ 32  (rand-int 32))
@@ -124,7 +207,17 @@
 
                    EventMouseButton
                    (let [event {:hui/event :hui/mouse-button
-                                :hui.event.mouse-button/is-pressed (.isPressed ^EventMouseButton event)}]
+                                :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)}]
+                     (ui/-event app event))
+
+                   EventKey
+                   (let [raw-key (.getKey ^EventKey event)
+                         event {:hui/event :hui/key
+                                :hui.event.key/modifiers {:alt (.isModifierDown ^EventKey event KeyModifier/ALT)
+                                                          :ctrl (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
+                                :hui.event.key/key-raw raw-key
+                                :hui.event.key/key (keyword (str/replace (str/lower-case (.getName raw-key)) #" " "-"))
+                                :hui.event.key/pressed? (.isPressed ^EventKey event)}]
                      (ui/-event app event))
 
                    nil)]
