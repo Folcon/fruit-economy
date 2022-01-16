@@ -43,7 +43,10 @@
           (reset! *broken true)
           (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
 
-(defn ui-canvas [width height {:keys [on-paint on-event]}]
+(defn ui-canvas
+  "(ui-canvas 400 300 {:on-paint #'on-paint-impl
+                       :on-event #'on-event-impl})"
+  [width height {:keys [on-paint on-event]}]
   (UICanvas. width height on-paint on-event))
 ;; END Should be in io.github.humbleui.ui
 
