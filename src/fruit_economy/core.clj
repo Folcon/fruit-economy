@@ -107,34 +107,36 @@
         ;; (println key)
         nil))))
 
-(defrecord UICanvas [width height]
+(defrecord UICanvas [width height on-paint on-event]
   ui/IComponent
   (-layout [_ ctx cs]
     (IPoint. width height))
   (-draw [_ ctx canvas]
-    (let [canvas ^Canvas canvas
-          layer  (.save canvas)
-          rect  (Rect/makeXYWH 0 0 width height)]
-      (try
-        (.clipRect canvas rect ClipMode/INTERSECT true)
+    (when on-paint
+      (let [canvas ^Canvas canvas
+            layer  (.save canvas)
+            rect  (Rect/makeXYWH 0 0 width height)]
         (try
-          (when-not @*broken
-            (draw-impl canvas width height))
-          (catch Exception e
-            (reset! *broken true)
-            (stacktrace/print-stack-trace (stacktrace/root-cause e))))
-        (finally
-          (.restoreToCount canvas layer)))))
+          (.clipRect canvas rect ClipMode/INTERSECT true)
+          (try
+            (when-not @*broken
+              (on-paint canvas width height))
+            (catch Exception e
+              (reset! *broken true)
+              (stacktrace/print-stack-trace (stacktrace/root-cause e))))
+          (finally
+            (.restoreToCount canvas layer))))))
   (-event [_ event]
-    (try
-      (when-not @*broken
-        (on-key-pressed-impl event))
-      (catch Exception e
-        (reset! *broken true)
-        (stacktrace/print-stack-trace (stacktrace/root-cause e))))))
+    (when on-event
+      (try
+        (when-not @*broken
+          (on-event event))
+        (catch Exception e
+          (reset! *broken true)
+          (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
 
-(defn ui-canvas [width height]
-  (UICanvas. width height))
+(defn ui-canvas [width height {:keys [on-paint on-event]}]
+  (UICanvas. width height on-paint on-event))
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
@@ -143,7 +145,8 @@
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
-            (ui-canvas 400 300)
+            (ui-canvas 400 300 {:on-paint #'draw-impl
+                                :on-event #'on-key-pressed-impl})
             (ui/label "Hello from Humble UI! 👋🌲🌳" font-default fill-text)))))))
 
 
