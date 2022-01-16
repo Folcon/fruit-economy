@@ -12,6 +12,39 @@
    [io.github.humbleui.types IPoint Rect]))
 
 
+;; Should be in io.github.humbleui.ui
+(defrecord UICanvas [width height on-paint on-event]
+  ui/IComponent
+  (-layout [_ ctx cs]
+    (IPoint. width height))
+  (-draw [_ ctx canvas]
+    (when on-paint
+      (let [canvas ^Canvas canvas
+            layer  (.save canvas)
+            rect  (Rect/makeXYWH 0 0 width height)]
+        (try
+          (.clipRect canvas rect ClipMode/INTERSECT true)
+          (try
+            (when-not @*broken
+              (on-paint canvas width height))
+            (catch Exception e
+              (reset! *broken true)
+              (stacktrace/print-stack-trace (stacktrace/root-cause e))))
+          (finally
+            (.restoreToCount canvas layer))))))
+  (-event [_ event]
+    (when on-event
+      (try
+        (when-not @*broken
+          (on-event event))
+        (catch Exception e
+          (reset! *broken true)
+          (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
+
+(defn ui-canvas [width height {:keys [on-paint on-event]}]
+  (UICanvas. width height on-paint on-event))
+;; END Should be in io.github.humbleui.ui
+
 (set! *warn-on-reflection* true)
 
 (defonce font-mgr (FontMgr/getDefault))
@@ -106,37 +139,6 @@
 
         ;; (println key)
         nil))))
-
-(defrecord UICanvas [width height on-paint on-event]
-  ui/IComponent
-  (-layout [_ ctx cs]
-    (IPoint. width height))
-  (-draw [_ ctx canvas]
-    (when on-paint
-      (let [canvas ^Canvas canvas
-            layer  (.save canvas)
-            rect  (Rect/makeXYWH 0 0 width height)]
-        (try
-          (.clipRect canvas rect ClipMode/INTERSECT true)
-          (try
-            (when-not @*broken
-              (on-paint canvas width height))
-            (catch Exception e
-              (reset! *broken true)
-              (stacktrace/print-stack-trace (stacktrace/root-cause e))))
-          (finally
-            (.restoreToCount canvas layer))))))
-  (-event [_ event]
-    (when on-event
-      (try
-        (when-not @*broken
-          (on-event event))
-        (catch Exception e
-          (reset! *broken true)
-          (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
-
-(defn ui-canvas [width height {:keys [on-paint on-event]}]
-  (UICanvas. width height on-paint on-event))
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
