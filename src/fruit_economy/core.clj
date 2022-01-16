@@ -13,6 +13,8 @@
 
 
 ;; Should be in io.github.humbleui.ui
+(def *broken (atom false))
+
 (defrecord UICanvas [width height on-paint on-event]
   ui/IComponent
   (-layout [_ ctx cs]
@@ -48,8 +50,6 @@
 (set! *warn-on-reflection* true)
 
 (defonce font-mgr (FontMgr/getDefault))
-
-(def *broken (atom false))
 
 ;; GAME STATE
 (defn new-state []
