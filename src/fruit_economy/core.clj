@@ -247,11 +247,10 @@
                      (ui/-event app event))
 
                    EventMouseButton
-                   (let [raw-button ^EventMouseButton event
-                         event {:hui/event :hui/mouse-button
+                   (let [event {:hui/event :hui/mouse-button
                                 :hui.event.mouse-button/raw-event event
-                                :hui.event.mouse-button/modifiers {:alt (.isModifierDown ^EventMouseButton event KeyModifier/ALT)
-                                                                   :ctrl (.isModifierDown ^EventMouseButton event KeyModifier/CONTROL)}
+                                :hui.event.mouse-button/modifiers {:key/alt (.isModifierDown ^EventMouseButton event KeyModifier/ALT)
+                                                                   :key/control (.isModifierDown ^EventMouseButton event KeyModifier/CONTROL)}
                                 :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)
                                 :hui.event.mouse-button/button (mouse-button->kw (.getButton ^EventMouseButton event))}]
                      (ui/-event app event))
@@ -260,8 +259,8 @@
                    (let [raw-key (.getKey ^EventKey event)
                          event {:hui/event :hui/key
                                 :hui.event.key/raw-event event
-                                :hui.event.key/modifiers {:alt (.isModifierDown ^EventKey event KeyModifier/ALT)
-                                                          :ctrl (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
+                                :hui.event.key/modifiers {:key/alt (.isModifierDown ^EventKey event KeyModifier/ALT)
+                                                          :key/control (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
                                 :hui.event.key/key-mask (._mask raw-key)
                                 :hui.event.key/key (key->kw raw-key)
                                 :hui.event.key/pressed? (.isPressed ^EventKey event)}]
