@@ -157,19 +157,19 @@
       (println key)
       (println (:peep @*state))
       (condp = key
-        :d ;; right
+        :key/d ;; right
         (swap! *state update :peep (move [1 0]))
 
-        :a ;; left
+        :key/a ;; left
         (swap! *state update :peep (move [-1 0]))
 
-        :s ;; bottom
+        :key/s ;; bottom
         (swap! *state update :peep (move [0 1]))
 
-        :w ;; up
+        :key/w ;; up
         (swap! *state update :peep (move [0 -1]))
 
-        :r ;; R
+        :key/r ;; R
         (reset! *state (new-state))
 
         ;; (println key)
