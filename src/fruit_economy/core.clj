@@ -7,6 +7,7 @@
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [nrepl.cmdline :as nrepl]
+   [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.utils :refer [resource-file->byte-array]])
   (:import
    [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove EventKey KeyModifier Window]
@@ -246,17 +247,23 @@
                      (ui/-event app event))
 
                    EventMouseButton
-                   (let [event {:hui/event :hui/mouse-button
-                                :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)}]
+                   (let [raw-button ^EventMouseButton event
+                         event {:hui/event :hui/mouse-button
+                                :hui.event.mouse-button/raw-event event
+                                :hui.event.mouse-button/modifiers {:alt (.isModifierDown ^EventMouseButton event KeyModifier/ALT)
+                                                                   :ctrl (.isModifierDown ^EventMouseButton event KeyModifier/CONTROL)}
+                                :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)
+                                :hui.event.mouse-button/button (mouse-button->kw (.getButton ^EventMouseButton event))}]
                      (ui/-event app event))
 
                    EventKey
                    (let [raw-key (.getKey ^EventKey event)
                          event {:hui/event :hui/key
+                                :hui.event.key/raw-event event
                                 :hui.event.key/modifiers {:alt (.isModifierDown ^EventKey event KeyModifier/ALT)
                                                           :ctrl (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
-                                :hui.event.key/key-raw raw-key
-                                :hui.event.key/key (keyword (str/replace (str/lower-case (.getName raw-key)) #" " "-"))
+                                :hui.event.key/key-mask (._mask raw-key)
+                                :hui.event.key/key (key->kw raw-key)
                                 :hui.event.key/pressed? (.isPressed ^EventKey event)}]
                      (ui/-event app event))
 
