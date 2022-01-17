@@ -15,7 +15,9 @@
                  [io.github.humbleui/skija-linux "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-macos-x64 "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-macos-arm64 "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [humbleui "7db69df04963a6112837c2f5f8731e58f00bfac3"]]
+                 [humbleui "7db69df04963a6112837c2f5f8731e58f00bfac3"]
+
+                 [net.mikera/clisk "0.11.0"]]
   ;:java-source-paths ["src/java" "test/java"]
   :plugins [[reifyhealth/lein-git-down "0.4.0"]]
   :repositories [["public-github" {:url "git://github.com"}]]
