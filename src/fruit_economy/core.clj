@@ -94,7 +94,12 @@
      :height height
      :camera [0 0]
      :peep [5 5]
-     :cell 20}))
+     :cell 20
+
+     :paused?   false
+     :tick      0
+     :tick-ms   5000
+     :last-tick (System/currentTimeMillis)}))
 
 (defonce *state (atom (new-state)))
 ;; END GAME STATE
@@ -149,17 +154,26 @@
           (ui/row
             (ui/label "Bottom Bar" font-default fill-text)))))))
 
-(def symbol-map
-  {:blank "⠀"
-   :ocean "🌊"})
-
+(defn on-tick [state now]
+  (let [{:keys [tick]} state
+        tick' (inc tick)]
+    (assoc state
+      :tick tick'
+      :last-tick now)))
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [width height camera peep world cell] :as state} @*state
+  (let [{:keys [camera peep world cell tick paused? tick-ms last-tick] :as state} @*state
         font-default (Font. face-default (float (* 24 1.0)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
         terrain (:terrain world)
-        [camera-x camera-y] camera]
+        [camera-x camera-y] camera
+        now (System/currentTimeMillis)]
+    ;; tick handling
+    (when (and
+            (not paused?)
+            (> (- now last-tick) tick-ms))
+      (swap! *state on-tick now))
+
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
     ;; walk cells eq to window size
@@ -220,7 +234,7 @@
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
-                   camera (:camera @*state)]
+                   {:keys [camera tick]} @*state]
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
       (ui/valign 0.5
@@ -229,7 +243,7 @@
             (svg-canvas 200 100 {:svg-path "data.svg"})
             (ui-canvas 1200 800 {:on-paint #'draw-impl
                                  :on-event #'on-key-pressed-impl})
-            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera)) font-default fill-text)))))))
+            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick) font-default fill-text)))))))
 
 
 (defn random-green []
