@@ -88,8 +88,13 @@
 
 ;; GAME STATE
 (defn new-state []
-  (let []
-    {:peep [10 10]}))
+  (let [width  120
+        height 80]
+    {:width width
+     :height height
+     :camera [0 0]
+     :peep [5 5]
+     :cell 20}))
 
 (defonce *state (atom (new-state)))
 ;; END GAME STATE
@@ -144,30 +149,66 @@
           (ui/row
             (ui/label "Bottom Bar" font-default fill-text)))))))
 
+(def symbol-map
+  {:blank "⠀"
+   :ocean "🌊"})
+
+
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [peep] :as state} @*state]
+  (let [{:keys [width height camera peep world cell] :as state} @*state
+        font-default (Font. face-default (float (* 24 1.0)))
+        fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+        terrain (:terrain world)
+        [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
+
+    (doseq [x (range (quot window-width cell))
+            y (range (quot window-height cell))
+            :let [tile (get-in terrain [(+ camera-y y) (+ camera-x x)])
+                  fill (doto (Paint.) (.setColor (render-tile-colour tile)))]]
+      (.drawRect canvas (Rect/makeXYWH (* x cell) (- (* y cell) cell) cell cell) fill)
+      (.drawString canvas (render-tile-str tile) (* x cell) (* y cell) font-default fill-default))
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
-      (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
+      (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
+
+    #_(doseq [x (range 65) y (range 50)
+              :let [cell 5
+                    grey (int (* 256 (fruit-economy.noise/coord->noise fruit-economy.noise/simplex-noise-fn [x y] {:seed 1 :octaves 2 :lacunarity 1 :persistence 0.5 :scale [0.007 0.007] :normalise? true :low 0 :high 1})))]]
+        (with-open [fill (doto (Paint.) (.setColor (colour grey grey grey)))]
+          (.drawRect canvas (Rect/makeXYWH (+ (* x cell) 20) (+ (* y cell) 0) cell cell) fill)))))
 
 (defn on-key-pressed-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
   (let [state @*state
         move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
+
+    ;; mouse
+    (when (= event-type :hui/mouse-button)
+      (println event))
+
+    ;; keyboard
     (when (and (= event-type :hui/key) pressed?)
       (println key)
       (println (:peep @*state))
       (condp = key
         :key/d ;; right
-        (swap! *state update :peep (move [1 0]))
+        (doto *state
+          (swap! update :peep (move [1 0]))
+          (swap! update :camera (move [1 0])))
 
         :key/a ;; left
-        (swap! *state update :peep (move [-1 0]))
+        (doto *state
+          (swap! update :peep (move [-1 0]))
+          (swap! update :camera (move [-1 0])))
 
         :key/s ;; bottom
-        (swap! *state update :peep (move [0 1]))
+        (doto *state
+          (swap! update :peep (move [0 1]))
+          (swap! update :camera (move [0 1])))
 
         :key/w ;; up
-        (swap! *state update :peep (move [0 -1]))
+        (doto *state
+          (swap! update :peep (move [0 -1]))
+          (swap! update :camera (move [0 -1])))
 
         :key/r ;; R
         (reset! *state (new-state))
@@ -176,16 +217,17 @@
         nil))))
 
 (def app
-  (ui/dynamic ctx [scale (:scale ctx)]
+  (ui/dynamic ctx [scale (:scale ctx)
+                   camera (:camera @*state)]
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
             (svg-canvas 200 100 {:svg-path "data.svg"})
-            (ui-canvas 400 300 {:on-paint #'draw-impl
-                                :on-event #'on-key-pressed-impl})
-            (ui/label "Hello from Humble UI! 👋🌲🌳" font-default fill-text)))))))
+            (ui-canvas 1200 800 {:on-paint #'draw-impl
+                                 :on-event #'on-key-pressed-impl})
+            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera)) font-default fill-text)))))))
 
 
 (defn random-green []
@@ -276,8 +318,8 @@
       {:on-close (fn [window] (window/close window) (reset! *window nil))
        :on-paint #'on-paint
        :on-event #'on-event})
-    (window/set-title "Humble UI 👋")
-    (window/set-content-size 810 650)
+    (window/set-title "Fruit Economy 👋")
+    (window/set-content-size 1536 960 #_#_810 650)
     (window/set-window-position 2994 630)
     (window/set-visible true)
     (window/set-z-order :floating)
