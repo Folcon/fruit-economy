@@ -191,28 +191,28 @@
     (when (and (= event-type :hui/key) pressed?)
       (println key)
       (println (:peep @*state))
-      (condp = key
-        :key/d ;; right
+      (condp contains? key
+        #{:key/d :key/right}
         (doto *state
           (swap! update :peep (move [1 0]))
           (swap! update :camera (move [1 0])))
 
-        :key/a ;; left
+        #{:key/a :key/left}
         (doto *state
           (swap! update :peep (move [-1 0]))
           (swap! update :camera (move [-1 0])))
 
-        :key/s ;; bottom
+        #{:key/s :key/down}
         (doto *state
           (swap! update :peep (move [0 1]))
           (swap! update :camera (move [0 1])))
 
-        :key/w ;; up
+        #{:key/w :key/up}
         (doto *state
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
-        :key/r ;; R
+        #{:key/r}
         (reset! *state (new-state))
 
         ;; (println key)
