@@ -162,9 +162,11 @@
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
+    ;; walk cells eq to window size
     (doseq [x (range (quot window-width cell))
             y (range (quot window-height cell))
-            :let [tile (get-in terrain [(+ camera-y y) (+ camera-x x)])
+            :let [;; offset by camera position
+                  tile (get-in terrain [(+ camera-y y) (+ camera-x x)])
                   fill (doto (Paint.) (.setColor (render-tile-colour tile)))]]
       (.drawRect canvas (Rect/makeXYWH (* x cell) (- (* y cell) cell) cell cell) fill)
       (.drawString canvas (render-tile-str tile) (* x cell) (* y cell) font-default fill-default))
