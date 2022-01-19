@@ -324,4 +324,7 @@
   (use 'clojure.reflect 'clojure.pprint)
   (clojure.pprint/pprint (clojure.reflect/reflect fruit-economy.core/app))
 
-  (swap! *clicks inc))
+  (swap! *clicks inc)
+
+  (require '[clj-async-profiler.core :as prof])
+  (prof/profile-for 60))

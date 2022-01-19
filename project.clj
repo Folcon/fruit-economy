@@ -17,7 +17,8 @@
                  [io.github.humbleui/skija-macos-arm64 "0.98.0" :exclusions [io.github.humbleui/types]]
                  [humbleui "7db69df04963a6112837c2f5f8731e58f00bfac3"]
 
-                 [net.mikera/clisk "0.11.0"]]
+                 [net.mikera/clisk "0.11.0"]
+                 [com.clojure-goes-fast/clj-async-profiler "1.0.0-alpha1"]]
   :java-source-paths ["src/java" "test/java"]
   :plugins [[reifyhealth/lein-git-down "0.4.0"]]
   :repositories [["public-github" {:url "git://github.com"}]]
@@ -25,7 +26,8 @@
   ;:jvm-opts  ["-XstartOnFirstThread"]
   :main fruit-economy.core
   :profiles {:macos {:jvm-opts  ["-XstartOnFirstThread"]}
-             :dev {:source-paths ["dev"]
+             :dev {:jvm-opts  ["-Djdk.attach.allowAttachSelf" "-XX:+UnlockDiagnosticVMOptions" "-XX:+DebugNonSafepoints"]
+                   :source-paths ["dev"]
                    :dependencies  [[nrepl/nrepl "0.9.0"]]
                    :main-opts   ["-m" "user" "--interactive"]}}
   :repl-options {:init-ns fruit-economy.core})
