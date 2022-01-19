@@ -327,4 +327,12 @@
   (swap! *clicks inc)
 
   (require '[clj-async-profiler.core :as prof])
-  (prof/profile-for 60))
+  (prof/profile-for 60)
+  (prof/serve-files 8080)
+
+  (let [interesting-flamegraph "/tmp/clj-async-profiler/results/01-cpu-flamegraph-2022-01-19-16-09-18.html"
+        profiling-path (str/replace interesting-flamegraph "/tmp/" "resources/profiling/")]
+    (io/make-parents profiling-path)
+    (io/copy (io/file interesting-flamegraph) (io/file profiling-path)))
+
+  ,)
