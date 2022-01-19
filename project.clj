@@ -5,7 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.0-alpha3"]
                  [org.clojure/core.specs.alpha "0.2.62"]
-                 [org.clojure/spec.alpha "0.2.194"]
+                 [org.clojure/spec.alpha "0.3.218"]
                  ;[org.projectlombok/lombok "1.18.22" :scope "provided"]
                  ;[org.jetbrains/annotations "20.1.0"]
                  [io.github.humbleui/types "0.1.2" :classifier "clojure"]
