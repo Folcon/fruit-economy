@@ -11,7 +11,8 @@
    [fruit-economy.colour :refer [colour]]
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.land :as land]
-   [fruit-economy.civ :as civ])
+   [fruit-economy.civ :as civ]
+   [fruit-economy.game :as game])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
@@ -94,9 +95,11 @@
             (ui/label "Bottom Bar" font-default fill-text)))))))
 
 (defn on-tick [state now]
-  (let [{:keys [tick]} state
+  (let [{:keys [tick world]} state
+        world' (game/on-tick world)
         tick' (inc tick)]
     (assoc state
+      :world world'
       :tick tick'
       :last-tick now)))
 
