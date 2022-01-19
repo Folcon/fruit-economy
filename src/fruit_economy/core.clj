@@ -7,6 +7,7 @@
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [nrepl.cmdline :as nrepl]
+   [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.input :refer [mouse-button->kw key->kw]])
   (:import
    [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove EventKey KeyModifier Window]
