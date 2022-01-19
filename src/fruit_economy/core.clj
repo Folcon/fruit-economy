@@ -12,7 +12,8 @@
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.land :as land]
    [fruit-economy.civ :as civ]
-   [fruit-economy.game :as game])
+   [fruit-economy.game :as game]
+   [fruit-economy.civ-actions :as civ-actions])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
@@ -36,6 +37,7 @@
      :world (-> (land/gen-land (land/make-land "World" width height))
               (civ/try-spawn-new-civs 10))
      :history-index 0
+     :civ-index 0
 
      :paused?   false
      :tick      0
@@ -190,6 +192,19 @@
         #{:key/p}
         (swap! *state update :paused? not)
 
+        #{:key/n}
+        (let [civ-index (get state :civ-index)
+              area->civ-name (get-in state [:world ::land/area->civ-name])
+              size (count area->civ-name)]
+          (swap! *state assoc :civ-index (rem (inc civ-index) size)))
+
+        #{:key/digit6}
+        (let [civ-index (get state :civ-index)
+              area->civ-name (get-in state [:world ::land/area->civ-name])
+              civ-name->civ (get-in state [:world ::land/civ-name->civ])
+              [at controlling] (first (drop civ-index area->civ-name))]
+          (swap! *state update :world civ-actions/expand-territory (civ-name->civ controlling)))
+
         #{:key/r}
         (reset! *state (new-state))
 
@@ -198,11 +213,13 @@
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
-                   {:keys [camera tick history-index]} @*state
+                   {:keys [camera tick history-index civ-index]} @*state
                    history (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
-          history-size (count history)]
+          history-size (count history)
+          area->civ-name (get-in @*state [:world ::land/area->civ-name])
+          [at controlling] (first (drop civ-index area->civ-name))]
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
@@ -210,7 +227,7 @@
             #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
             (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                            :on-event #'on-key-pressed-impl})
-            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick) font-default fill-text)))))))
+            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling " @ " at) font-default fill-text)))))))
 
 
 (defn random-green []
