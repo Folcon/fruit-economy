@@ -7,80 +7,12 @@
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [nrepl.cmdline :as nrepl]
-   [fruit-economy.input :refer [mouse-button->kw key->kw]]
-   [fruit-economy.utils :refer [resource-file->byte-array]])
+   [fruit-economy.input :refer [mouse-button->kw key->kw]])
   (:import
    [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove EventKey KeyModifier Window]
-   [io.github.humbleui.skija Canvas Color4f Data FontMgr FontStyle Typeface Font Paint ClipMode]
-   [io.github.humbleui.types IPoint Rect]
-   [io.github.humbleui.skija.svg SVGDOM]))
+   [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
+   [io.github.humbleui.types IPoint Rect]))
 
-
-;; Should be in io.github.humbleui.ui
-(def *broken (atom false))
-
-(defrecord UICanvas [width height on-paint on-event]
-  ui/IComponent
-  (-layout [_ ctx cs]
-    (IPoint. width height))
-  (-draw [_ ctx canvas]
-    (when on-paint
-      (let [canvas ^Canvas canvas
-            layer  (.save canvas)
-            rect  (Rect/makeXYWH 0 0 width height)]
-        (try
-          (.clipRect canvas rect ClipMode/INTERSECT true)
-          (try
-            (when-not @*broken
-              (on-paint canvas width height))
-            (catch Exception e
-              (reset! *broken true)
-              (stacktrace/print-stack-trace (stacktrace/root-cause e))))
-          (finally
-            (.restoreToCount canvas layer))))))
-  (-event [_ event]
-    (when on-event
-      (try
-        (when-not @*broken
-          (on-event event))
-        (catch Exception e
-          (reset! *broken true)
-          (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
-
-(defn ui-canvas
-  "(ui-canvas 400 300 {:on-paint #'on-paint-impl
-                       :on-event #'on-event-impl})"
-  [width height {:keys [on-paint on-event]}]
-  (UICanvas. width height on-paint on-event))
-
-(defrecord SVGCanvas [width height svg-path]
-  ui/IComponent
-  (-layout [_ ctx cs]
-    (IPoint. width height))
-  (-draw [_ ctx canvas]
-    (when svg-path
-      (let [canvas ^Canvas canvas
-            layer  (.save canvas)
-            rect  (Rect/makeXYWH 0 0 width height)]
-        (try
-          (.clipRect canvas rect ClipMode/INTERSECT true)
-          (try
-            (when-not @*broken
-              (let [data (Data/makeFromBytes (resource-file->byte-array svg-path))
-                    svg-dom (SVGDOM. data)]
-                (.render svg-dom canvas)))
-            (catch Exception e
-              (reset! *broken true)
-              (stacktrace/print-stack-trace (stacktrace/root-cause e))))
-          (finally
-            (.restoreToCount canvas layer))))))
-  (-event [_ event]))
-
-(defn svg-canvas
-  "(svg-canvas 400 300 {:svg-path \"<path in resource>\"})"
-  [width height {:keys [svg-path]}]
-  (SVGCanvas. width height svg-path))
-;; END Should be in io.github.humbleui.ui
 
 (set! *warn-on-reflection* true)
 
@@ -240,9 +172,9 @@
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
-            (svg-canvas 200 100 {:svg-path "data.svg"})
-            (ui-canvas 1200 800 {:on-paint #'draw-impl
-                                 :on-event #'on-key-pressed-impl})
+            (custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
+            (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
+                                           :on-event #'on-key-pressed-impl})
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick) font-default fill-text)))))))
 
 
