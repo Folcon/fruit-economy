@@ -8,3 +8,6 @@
               out (ByteArrayOutputStream.)]
     (io/copy in out)
     (.toByteArray out)))
+
+(defn clamp [val {:keys [mn mx] :or {mn 0 mx 1}}]
+  (max mn (min val mx)))
