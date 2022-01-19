@@ -10,7 +10,7 @@
    [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.input :refer [mouse-button->kw key->kw]])
   (:import
-   [io.github.humbleui.jwm App EventFrame EventMouseButton EventMouseMove EventKey KeyModifier Window]
+   [io.github.humbleui.jwm EventMouseButton EventMouseMove EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
    [io.github.humbleui.types IPoint Rect]))
 
