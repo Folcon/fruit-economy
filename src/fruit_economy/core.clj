@@ -8,7 +8,10 @@
    [io.github.humbleui.ui :as ui]
    [nrepl.cmdline :as nrepl]
    [fruit-economy.humble-ui :as custom-ui]
-   [fruit-economy.input :refer [mouse-button->kw key->kw]])
+   [fruit-economy.colour :refer [colour]]
+   [fruit-economy.input :refer [mouse-button->kw key->kw]]
+   [fruit-economy.land :as land]
+   [fruit-economy.civ :as civ])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
@@ -28,6 +31,9 @@
      :camera [0 0]
      :peep [5 5]
      :cell 20
+
+     :world (-> (land/gen-land (land/make-land "World" width height))
+              (civ/try-spawn-new-civs 10))
 
      :paused?   false
      :tick      0
@@ -98,7 +104,8 @@
   (let [{:keys [camera peep world cell tick paused? tick-ms last-tick] :as state} @*state
         font-default (Font. face-default (float (* 24 1.0)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
-        terrain (:terrain world)
+        {::land/keys [terrain area->civ-name civ-name->civ area->manor]} world
+        territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera
         now (System/currentTimeMillis)]
     ;; tick handling
@@ -113,10 +120,17 @@
     (doseq [x (range (quot window-width cell))
             y (range (quot window-height cell))
             :let [;; offset by camera position
-                  tile (get-in terrain [(+ camera-y y) (+ camera-x x)])
-                  fill (doto (Paint.) (.setColor (render-tile-colour tile)))]]
+                  loc [(+ camera-x x) (+ camera-y y)]
+                  path [(+ camera-y y) (+ camera-x x)]
+                  tile (get-in terrain path)
+                  {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
+                  [glyph tile-colour] (cond
+                                        civ [(str symbol) tint]
+                                        (contains? territory loc) [(land/render-tile-str tile) tint]
+                                        :else [(land/render-tile-str tile) (land/render-tile-colour tile)])
+                  fill (doto (Paint.) (.setColor tile-colour))]]
       (.drawRect canvas (Rect/makeXYWH (* x cell) (- (* y cell) cell) cell cell) fill)
-      (.drawString canvas (render-tile-str tile) (* x cell) (* y cell) font-default fill-default))
+      (.drawString canvas glyph (* x cell) (* y cell) font-default fill-default))
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
 
