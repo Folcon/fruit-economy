@@ -159,6 +159,9 @@
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
+        #{:key/p}
+        (swap! *state update :paused? not)
+
         #{:key/r}
         (reset! *state (new-state))
 
