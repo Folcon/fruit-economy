@@ -193,7 +193,7 @@
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
-            (custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
+            #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
             (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                            :on-event #'on-key-pressed-impl})
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick) font-default fill-text)))))))
