@@ -35,6 +35,7 @@
 
      :world (-> (land/gen-land (land/make-land "World" width height))
               (civ/try-spawn-new-civs 10))
+     :history-index 0
 
      :paused?   false
      :tick      0
@@ -176,6 +177,16 @@
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
+        #{:key/q}
+        (let [history-index (get state :history-index)
+              history (get-in state [:world ::land/history])
+              history-size (count history)]
+          (swap! *state assoc :history-index (min (dec history-size) (inc history-index))))
+
+        #{:key/e}
+        (let [history-index (get state :history-index)]
+          (swap! *state assoc :history-index (max 0 (dec history-index))))
+
         #{:key/p}
         (swap! *state update :paused? not)
 
@@ -187,12 +198,15 @@
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
-                   {:keys [camera tick]} @*state]
+                   {:keys [camera tick history-index]} @*state
+                   history (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 24 scale)))
-          fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
+          fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+          history-size (count history)]
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
+            (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)
             #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
             (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                            :on-event #'on-key-pressed-impl})
