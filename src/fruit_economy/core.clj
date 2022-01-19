@@ -310,4 +310,18 @@
 
 (comment
   (-main)
-  (identity @*clicks))
+  (identity @*clicks)
+  (identity @*window)
+  (get-in @*state [:world ::land/civ-name->civ])
+
+  (let [civs (get-in @*state [:world #_::land/civ-name->civ ::land/area->manor])]
+    #_(into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civs))
+
+  (identity @fruit-economy.core/*clicks)
+
+  (identity fruit-economy.core/app)
+
+  (use 'clojure.reflect 'clojure.pprint)
+  (clojure.pprint/pprint (clojure.reflect/reflect fruit-economy.core/app))
+
+  (swap! *clicks inc))
