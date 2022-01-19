@@ -1,4 +1,4 @@
-(ns fruit-economy.world
+(ns fruit-economy.gen-land
   (:require [fruit-economy.noise :refer [make-terrain make-perlin-noise messy-noise image->number scale v* compose gradient render]]))
 
 
