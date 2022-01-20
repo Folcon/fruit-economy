@@ -131,7 +131,7 @@
                   tile (get-in terrain path)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour] (cond
-                                        civ [(str symbol) tint]
+                                        civ [symbol tint]
                                         (contains? territory loc) [(land/render-tile-str tile) tint]
                                         :else [(land/render-tile-str tile) (land/render-tile-colour tile)])
                   fill (doto (Paint.) (.setColor tile-colour))]]

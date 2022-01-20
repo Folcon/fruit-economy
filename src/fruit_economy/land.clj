@@ -3,6 +3,8 @@
             [fruit-economy.colour :refer [colour]]))
 
 
+(def allowed-civ-letters (into #{} (map str) "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"))
+
 ;; TODO: Spec land, civ, manor and validate
 (defn make-land
   ([name width height] (make-land name width height {}))
@@ -22,7 +24,7 @@
       ::curr-civ-id 0
       ::civ-name->civ (sorted-map)
       ::civ-missives []
-      ::civ-letters "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"
+      ::civ-letters allowed-civ-letters
       ::history []})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
