@@ -15,7 +15,7 @@
    [fruit-economy.game :as game]
    [fruit-economy.civ-actions :as civ-actions])
   (:import
-   [io.github.humbleui.jwm EventMouseButton EventMouseMove EventKey KeyModifier]
+   [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
    [io.github.humbleui.types IPoint Rect]))
 
@@ -309,6 +309,12 @@
                                 :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)
                                 :hui.event.mouse-button/button (mouse-button->kw (.getButton ^EventMouseButton event))}]
                      (ui/-event app event))
+
+                   EventMouseScroll
+                   (ui/-event app
+                     {:hui/event :hui/mouse-scroll
+                      :hui.event.mouse-scroll/dx (.getDeltaX ^EventMouseScroll event)
+                      :hui.event.mouse-scroll/dy (.getDeltaY ^EventMouseScroll event)})
 
                    EventKey
                    (let [raw-key (.getKey ^EventKey event)
