@@ -22,7 +22,8 @@
       ::curr-civ-id 0
       ::civ-name->civ (sorted-map)
       ::civ-missives []
-      ::civ-letters "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"})))
+      ::civ-letters "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"
+      ::history []})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
   (reduce
@@ -103,3 +104,8 @@
     30 (colour 230 236 170)
     10 (colour 0 255 255)
     (colour 87 117 150)))
+
+(defn log-history [land-data message]
+  (do
+    (println message)
+    (update land-data ::history conj message)))
