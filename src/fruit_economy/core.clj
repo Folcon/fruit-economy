@@ -242,44 +242,6 @@
                                            :on-event #'on-key-pressed-impl})
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
 
-
-(defn random-green []
-  (let [r (+ 32  (rand-int 32))
-        g (+ 192 (rand-int 32))
-        b (+ 32  (rand-int 32))]
-    (unchecked-int
-      (bit-or
-        (unchecked-int 0xFF000000)
-        (bit-shift-left r 16)
-        (bit-shift-left g 8)
-        (bit-shift-left b 0)))))
-
-(def new-year-app
-  (ui/dynamic ctx [scale (:scale ctx)]
-    (let [font       (Font. face-default (float (* 13 scale)))
-          cap-height (.getCapHeight (.getMetrics font))
-          fill-text  (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF)))
-          labels     (cycle (map #(ui/label (str %) font fill-text) "HappyNew2022!"))]
-      (ui/halign 0.5
-        (ui/padding 0 (* 10 scale)
-          (ui/dynamic ctx [rows (quot (- (:height (:bounds ctx)) (* 10 scale)) (+ (* 11 scale) cap-height))
-                           time (quot (System/currentTimeMillis) 1000)]
-            (apply ui/column
-              (interpose (ui/gap 0 (* 1 scale))
-                (for [y (range rows)]
-                  (ui/halign 0.5
-                    (apply ui/row
-                      (interpose (ui/gap (* 1 scale) 0)
-                        (for [x (range (inc y))]
-                          (if (= x y 0)
-                            (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC3333)))
-                              (ui/padding (* 5 scale) (* 5 scale)
-                                (ui/label "★" font fill-text)))
-                            (ui/fill (doto (Paint.) (.setColor (random-green)))
-                              (ui/padding (* 5 scale) (* 5 scale)
-                                (let [idx (+ x (* y (+ y 1) 1/2) -1)]
-                                  (nth labels idx))))))))))))))))))
-
 (comment
   (window/request-frame @*window))
 
