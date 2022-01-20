@@ -234,7 +234,9 @@
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
-            (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)
+            (if (zero? history-size)
+              (ui/gap 0 0)
+              (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
             #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
             (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                            :on-event #'on-key-pressed-impl})
