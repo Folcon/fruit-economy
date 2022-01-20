@@ -126,8 +126,8 @@
     (doseq [x (range (quot window-width cell))
             y (range (quot window-height cell))
             :let [;; offset by camera position
-                  loc [(+ camera-x x) (+ camera-y y)]
-                  path [(+ camera-y y) (+ camera-x x)]
+                  loc [(+ camera-x x) (+ camera-y (dec y))]
+                  path [(+ camera-y (dec y)) (+ camera-x x)]
                   tile (get-in terrain path)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour] (cond
