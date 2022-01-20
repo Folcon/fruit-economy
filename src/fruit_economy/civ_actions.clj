@@ -66,4 +66,4 @@
               land)))
         $
         (range (rand/rand-int-between 2 5))))
-    (log-history land-data (str name " could not expand and needs 10 [" power "]"))))
+    (log-history land-data (str name " could not expand and needs 10 [" (int power) "]"))))
