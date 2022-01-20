@@ -67,3 +67,11 @@
         $
         (range (rand/rand-int-between 2 5))))
     (log-history land-data (str name " could not expand and needs 10 [" (int power) "]"))))
+
+(defn improve-tech-level [land-data {:fruit-economy.civ/keys [power tech-level name] :as _civ}]
+  (if (> power 20)
+    (let [tech-level' (+ tech-level (/ (rand/roll 10) 10))]
+      (-> (log-history land-data (str name " is improving their technology"))
+        (update-in [::land/civ-name->civ name :fruit-economy.civ/power] - 20)
+        (assoc-in [::land/civ-name->civ name :fruit-economy.civ/tech-level] tech-level')))
+    (log-history land-data (str name " could not improve their technology and needs 20 [" (int power) "]"))))

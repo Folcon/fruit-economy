@@ -212,6 +212,13 @@
               [at controlling] (first (drop civ-index area->civ-name))]
           (swap! *state update :world civ-actions/expand-territory (civ-name->civ controlling)))
 
+        #{:key/digit7}
+        (let [civ-index (get state :civ-index)
+              area->civ-name (get-in state [:world ::land/area->civ-name])
+              civ-name->civ (get-in state [:world ::land/civ-name->civ])
+              [at controlling] (first (drop civ-index area->civ-name))]
+          (swap! *state update :world civ-actions/improve-tech-level (civ-name->civ controlling)))
+
         #{:key/r}
         (reset! *state (new-state))
 
