@@ -107,7 +107,7 @@
       :last-tick now)))
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [camera peep world cell tick paused? tick-ms last-tick] :as state} @*state
+  (let [{:keys [camera peep world cell hovering tick paused? tick-ms last-tick] :as state} @*state
         font-default (Font. face-default (float (* 24 1.0)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
         {::land/keys [terrain area->civ-name civ-name->civ area->manor]} world
@@ -133,7 +133,7 @@
                   [glyph tile-colour] (cond
                                         civ [symbol tint]
                                         (contains? territory loc) [(land/render-tile-str tile) tint]
-                                        :else [(land/render-tile-str tile) (land/render-tile-colour tile)])
+                                        :else [(land/render-tile-str tile) (if (= (:world hovering) loc) (colour 255 255 255) (land/render-tile-colour tile))])
                   fill (doto (Paint.) (.setColor tile-colour))]]
       (.drawRect canvas (Rect/makeXYWH (* x cell) (- (* y cell) cell) cell cell) fill)
       (.drawString canvas glyph (* x cell) (* y cell) font-default fill-default))
@@ -151,6 +151,12 @@
         move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
 
     ;; mouse
+    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
+      (let [{:keys [camera cell]} state
+            [camera-x camera-y] camera
+            [x y] ((juxt :x :y) (:hui.event/pos event))]
+        (swap! *state assoc :hovering {:world [(+ (quot x cell) camera-x) (+ (quot y cell) camera-y)] :screen [x y]})))
+
     (when (= event-type :hui/mouse-button)
       (println event))
 
