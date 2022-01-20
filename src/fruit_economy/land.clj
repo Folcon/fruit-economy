@@ -20,7 +20,7 @@
       ::area->ruin {}
       ::width width ::height height ::sea-level (rand-nth (range 0.001 0.009 0.001))
       ::curr-civ-id 0
-      ::civ-name->civ {}
+      ::civ-name->civ (sorted-map)
       ::civ-missives []
       ::civ-letters "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"})))
 
