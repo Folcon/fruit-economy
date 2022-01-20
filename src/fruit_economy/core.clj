@@ -198,6 +198,13 @@
               size (count area->civ-name)]
           (swap! *state assoc :civ-index (rem (inc civ-index) size)))
 
+        #{:key/digit5}
+        (let [civ-index (get state :civ-index)
+              area->civ-name (get-in state [:world ::land/area->civ-name])
+              civ-name->civ (get-in state [:world ::land/civ-name->civ])
+              [at controlling] (first (drop civ-index area->civ-name))]
+          (swap! *state update :world civ-actions/grow-pop (civ-name->civ controlling)))
+
         #{:key/digit6}
         (let [civ-index (get state :civ-index)
               area->civ-name (get-in state [:world ::land/area->civ-name])

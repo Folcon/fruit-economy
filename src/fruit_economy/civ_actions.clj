@@ -4,6 +4,10 @@
             [fruit-economy.utils :refer [clamp]]))
 
 
+(defn grow-pop [land-data {:fruit-economy.civ/keys [power name] :as _civ}]
+  (-> (log-history land-data (str name " is growing"))
+    (update-in [::land/civ-name->civ name :fruit-economy.civ/power] + (* power (/ (rand/roll 4) 10)))))
+
 (defn expand-territory [{::land/keys [width height] :as land-data} {:fruit-economy.civ/keys [dead territory name] :as civ}]
   (println civ "\n  " dead (pr-str territory))
   (if (or (not dead) (seq territory))
