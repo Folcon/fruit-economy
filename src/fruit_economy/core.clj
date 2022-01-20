@@ -194,29 +194,26 @@
 
         #{:key/n}
         (let [civ-index (get state :civ-index)
-              area->civ-name (get-in state [:world ::land/area->civ-name])
-              size (count area->civ-name)]
+              civ-name->civ (get-in state [:world ::land/civ-name->civ])
+              size (count civ-name->civ)]
           (swap! *state assoc :civ-index (rem (inc civ-index) size)))
 
         #{:key/digit5}
         (let [civ-index (get state :civ-index)
-              area->civ-name (get-in state [:world ::land/area->civ-name])
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (first (drop civ-index area->civ-name))]
+              [at controlling] (nth (keys civ-name->civ) civ-index)]
           (swap! *state update :world civ-actions/grow-pop (civ-name->civ controlling)))
 
         #{:key/digit6}
         (let [civ-index (get state :civ-index)
-              area->civ-name (get-in state [:world ::land/area->civ-name])
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (first (drop civ-index area->civ-name))]
+              [at controlling] (nth (keys civ-name->civ) civ-index)]
           (swap! *state update :world civ-actions/expand-territory (civ-name->civ controlling)))
 
         #{:key/digit7}
         (let [civ-index (get state :civ-index)
-              area->civ-name (get-in state [:world ::land/area->civ-name])
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (first (drop civ-index area->civ-name))]
+              [at controlling] (nth (keys civ-name->civ) civ-index)]
           (swap! *state update :world civ-actions/improve-tech-level (civ-name->civ controlling)))
 
         #{:key/r}
@@ -232,8 +229,8 @@
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
-          area->civ-name (get-in @*state [:world ::land/area->civ-name])
-          [at controlling] (first (drop civ-index area->civ-name))]
+          civ-name->civ (get-in @*state [:world ::land/civ-name->civ])
+          controlling (nth (keys civ-name->civ) civ-index)]
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
@@ -241,7 +238,7 @@
             #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
             (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                            :on-event #'on-key-pressed-impl})
-            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling " @ " at) font-default fill-text)))))))
+            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
 
 
 (defn random-green []
