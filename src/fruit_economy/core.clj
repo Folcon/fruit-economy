@@ -233,20 +233,20 @@
         #{:key/digit5}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (nth (keys civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/grow-pop (civ-name->civ controlling)))
+              controlling-civ (nth (vals civ-name->civ) civ-index)]
+          (swap! *state update :world civ-actions/grow-pop controlling-civ))
 
         #{:key/digit6}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (nth (keys civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/expand-territory (civ-name->civ controlling)))
+              controlling-civ (nth (vals civ-name->civ) civ-index)]
+          (swap! *state update :world civ-actions/expand-territory controlling-civ))
 
         #{:key/digit7}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              [at controlling] (nth (keys civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/improve-tech-level (civ-name->civ controlling)))
+              controlling-civ (nth (vals civ-name->civ) civ-index)]
+          (swap! *state update :world civ-actions/improve-tech-level controlling-civ))
 
         #{:key/r}
         (reset! *state (new-state))
