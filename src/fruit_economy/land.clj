@@ -17,6 +17,7 @@
       ::elev (process-noise-map elev-noise elev-mod)
       ::base-biome base-biome
       ::terrain (vec (repeat height (vec (repeat width base-biome))))
+      ::area->units {}
       ::area->civ-name {}
       ::area->manor {}
       ::area->ruin {}
@@ -71,6 +72,38 @@
         (range width)))
     land-data
     (range height)))
+
+(defn populate [{::keys [width height sea-level] :as land-data}]
+  (into {} (repeatedly 100 (fn [] {:glyph (rand-nth ["🌳" "🌴" "🌲"])}))))
+
+(def kind->name {:growing-plant "🌱" :dying-plant "🥀"
+                 :bush "🌳" :tree-1 "🌴" :tree-2 "🌲" :tree-3 "🌵" :tree-4 "🌾" :tree-5 "🎋" :tree-6 "🎍" :magic-tree "🎄"
+                 :flower-1 "🌸" :flower-2 "💮" :flower-3 "🏵️" :flower-4 "🌺" :flower-5 "🌻" :flower-6 "🌼" :flower-7 "🌷"
+                 :herb-1 "🌿" :herb-2 "☘️" :herb-3 "🍀" :herb-4 "🍁" :shroom "🍄" :nut "🌰"})
+
+(defn populate [{::keys [width height] :as land-data} n]
+  (reduce
+    (fn [land attempt]
+      (let [x (rand-int width)
+            y (rand-int height)
+            target (get-in land [::terrain y x])]
+        (println attempt target)
+        (cond
+          ;; we've hit how many we wanted, so stop
+          (= n attempt)
+          (reduced land)
+
+          (not= target :ocean)
+          (let [kind (rand-nth [:bush :tree-1 :tree-2 :tree-3 :tree-4 :tree-5 :tree-6 :magic-tree
+                                :flower-1 :flower-2 :flower-3 :flower-4 :flower-5 :flower-6 :flower-7
+                                :herb-1 :herb-2 :herb-3 :herb-4 :nut :shroom])]
+            (assoc-in land [::area->units [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)}))
+
+          :else
+          land)))
+    land-data
+    ;; basically try three times for each
+    (range (* n 3))))
 
 (defn render-tile-colour [terrain]
   (condp = terrain

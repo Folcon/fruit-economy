@@ -34,7 +34,7 @@
      :peep [5 5]
      :cell 20
 
-     :world (-> (land/gen-land (land/make-land "World" width height))
+     :world (-> (land/populate (land/gen-land (land/make-land "World" width height)) 100)
               (civ/try-spawn-new-civs 10))
      :history-index 0
      :civ-index 0
@@ -51,6 +51,9 @@
 
 (defonce ^Typeface face-default
   (.matchFamiliesStyle ^FontMgr font-mgr (into-array String [".SF NS", "Helvetica Neue", "Arial"]) FontStyle/NORMAL))
+
+(defonce emoji-glyph "🍀")
+(defonce ^Typeface emoji-face (.matchFamilyStyleCharacter ^FontMgr font-mgr nil FontStyle/NORMAL nil (.codePointAt ^String emoji-glyph 0)))
 
 (defonce *clicks (atom 0))
 #_
@@ -106,11 +109,30 @@
       :tick tick'
       :last-tick now)))
 
+(comment
+  (let [[x y] [21 47]
+        loc [x y]
+        path [y x]]
+   (->
+     (get-in @*state [:world ::land/civ-name->civ #_:terrain "Civ A+0"])
+     ;(get-in @*state [:world ::land/terrain y x])
+     #_keys))
+  ,)
+
 (defn draw-impl [^Canvas canvas window-width window-height]
   (let [{:keys [camera peep world cell hovering tick paused? tick-ms last-tick] :as state} @*state
-        font-default (Font. face-default (float (* 24 1.0)))
+        font-default (Font. face-default (float 24))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
-        {::land/keys [terrain area->civ-name civ-name->civ area->manor]} world
+
+        ;; Rendering emoji
+        emoji-font (Font. emoji-face (float 24))
+        emoji-bounds (.measureText emoji-font emoji-glyph)
+        emoji-offset-x (-> (- (.getLeft emoji-bounds))
+                         (- (/ (- (.getWidth emoji-bounds) cell) 2)))
+        emoji-offset-y (-> (- (.getTop emoji-bounds))
+                         (- (/ (- (.getHeight emoji-bounds) cell) 2)))
+
+        {::land/keys [terrain area->civ-name civ-name->civ area->units]} world
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera
         now (System/currentTimeMillis)]
@@ -129,10 +151,13 @@
                   loc [(+ camera-x x) (+ camera-y y)]
                   path [(+ camera-y y) (+ camera-x x)]
                   tile (get-in terrain path)
+                  unit (get-in area->units [loc :glyph])
+                  territory? (contains? territory loc)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour font dx dy] (cond
                                                    civ [symbol tint font-default 0 cell]
-                                                   (contains? territory loc) [(land/render-tile-str tile) tint font-default 0 cell]
+                                                   unit [unit (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
+                                                   territory? [(land/render-tile-str tile) tint font-default 0 cell]
                                                    :else [(land/render-tile-str tile) (if (= (:world hovering) loc) (colour 255 255 255) (land/render-tile-colour tile)) font-default 0 cell])
                   fill (doto (Paint.) (.setColor tile-colour))]]
       (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) cell cell) fill)
