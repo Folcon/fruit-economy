@@ -125,7 +125,7 @@
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
 
         ;; Rendering emoji
-        emoji-font (Font. emoji-face (float 24))
+        emoji-font (Font. emoji-face (float 20))
         emoji-bounds (.measureText emoji-font emoji-glyph)
         emoji-offset-x (-> (- (.getLeft emoji-bounds))
                          (- (/ (- (.getWidth emoji-bounds) cell) 2)))
