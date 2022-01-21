@@ -224,11 +224,17 @@
         #{:key/p}
         (swap! *state update :paused? not)
 
-        #{:key/n}
+        #{:key/close-bracket}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
               size (count civ-name->civ)]
           (swap! *state assoc :civ-index (rem (inc civ-index) size)))
+
+        #{:key/open-bracket}
+        (let [civ-index (get state :civ-index)
+              civ-name->civ (get-in state [:world ::land/civ-name->civ])
+              size (count civ-name->civ)]
+          (swap! *state assoc :civ-index (rem (+ (dec civ-index) size) size)))
 
         #{:key/digit5}
         (let [civ-index (get state :civ-index)
