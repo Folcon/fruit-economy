@@ -126,17 +126,17 @@
     (doseq [x (range (quot window-width cell))
             y (range (quot window-height cell))
             :let [;; offset by camera position
-                  loc [(+ camera-x x) (+ camera-y (dec y))]
-                  path [(+ camera-y (dec y)) (+ camera-x x)]
+                  loc [(+ camera-x x) (+ camera-y y)]
+                  path [(+ camera-y y) (+ camera-x x)]
                   tile (get-in terrain path)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
-                  [glyph tile-colour] (cond
-                                        civ [symbol tint]
-                                        (contains? territory loc) [(land/render-tile-str tile) tint]
-                                        :else [(land/render-tile-str tile) (if (= (:world hovering) loc) (colour 255 255 255) (land/render-tile-colour tile))])
+                  [glyph tile-colour font dx dy] (cond
+                                                   civ [symbol tint font-default 0 cell]
+                                                   (contains? territory loc) [(land/render-tile-str tile) tint font-default 0 cell]
+                                                   :else [(land/render-tile-str tile) (if (= (:world hovering) loc) (colour 255 255 255) (land/render-tile-colour tile)) font-default 0 cell])
                   fill (doto (Paint.) (.setColor tile-colour))]]
-      (.drawRect canvas (Rect/makeXYWH (* x cell) (- (* y cell) cell) cell cell) fill)
-      (.drawString canvas glyph (* x cell) (* y cell) font-default fill-default))
+      (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) cell cell) fill)
+      (.drawString canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default))
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
 
