@@ -157,8 +157,8 @@
                   [glyph tile-colour font dx dy] (cond
                                                    civ [symbol tint font-default 0 cell]
                                                    unit [unit (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
-                                                   territory? [(land/render-tile-str tile) tint font-default 0 cell]
-                                                   :else [(land/render-tile-str tile) (land/render-tile-colour tile) font-default 0 cell])
+                                                   territory? ["" #_(land/render-tile-str tile) tint font-default 0 cell]
+                                                   :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default 0 cell])
                   tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
                   fill (doto (Paint.) (.setColor tile-colour))]]
       (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) cell cell) fill)
