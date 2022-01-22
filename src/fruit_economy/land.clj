@@ -73,9 +73,6 @@
     land-data
     (range height)))
 
-(defn populate [{::keys [width height sea-level] :as land-data}]
-  (into {} (repeatedly 100 (fn [] {:glyph (rand-nth ["🌳" "🌴" "🌲"])}))))
-
 (def kind->name {:growing-plant "🌱" :dying-plant "🥀"
                  :bush "🌳" :tree-1 "🌴" :tree-2 "🌲" :tree-3 "🌵" :tree-4 "🌾" :tree-5 "🎋" :tree-6 "🎍" :magic-tree "🎄"
                  :flower-1 "🌸" :flower-2 "💮" :flower-3 "🏵️" :flower-4 "🌺" :flower-5 "🌻" :flower-6 "🌼" :flower-7 "🌷"
