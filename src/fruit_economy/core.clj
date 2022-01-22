@@ -277,7 +277,7 @@
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
                    {:keys [camera tick history-index civ-index economy?]} @*state
-                   history economy (get-in @*state [:world ::land/history])]
+                   history (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
