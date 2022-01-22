@@ -206,6 +206,41 @@
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
+        ;; (println key)
+        nil))))
+
+(defn draw-mini-panel-impl
+  "Render for small panel, this will be a sort of global render
+  context to ensure stuff like ticks still keep happening"
+  [^Canvas canvas window-width window-height]
+  (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
+        now (System/currentTimeMillis)]
+    ;; tick handling
+    (when (and
+            (not paused?)
+            (> (- now last-tick) tick-ms))
+      (swap! *state on-tick now))
+
+    ;; Put the clear here to show where the mini panel is,
+    ;;   will probably use it in some other way later
+    (.clear canvas (unchecked-int 0xFFFFFBBB))))
+
+(defn on-key-pressed-mini-panel-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+  (let [state @*state
+        move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
+
+    ;; mouse
+    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
+      (println event))
+
+    (when (= event-type :hui/mouse-button)
+      (println event))
+
+    ;; keyboard
+    (when (and (= event-type :hui/key) pressed?)
+      (println key)
+      (println (:peep @*state))
+      (condp contains? key
         #{:key/q}
         (let [history-index (get state :history-index)
               history (get-in state [:world ::land/history])
@@ -258,22 +293,6 @@
         ;; (println key)
         nil))))
 
-(defn draw-mini-panel-impl
-  "Render for small panel, this will be a sort of global render
-  context to ensure stuff like ticks still keep happening"
-  [^Canvas canvas window-width window-height]
-  (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
-        now (System/currentTimeMillis)]
-    ;; tick handling
-    (when (and
-            (not paused?)
-            (> (- now last-tick) tick-ms))
-      (swap! *state on-tick now))
-
-    ;; Put the clear here to show where the mini panel is,
-    ;;   will probably use it in some other way later
-    (.clear canvas (unchecked-int 0xFFFFFBBB))))
-
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
                    {:keys [camera tick history-index civ-index economy?]} @*state
@@ -287,14 +306,14 @@
         (ui/halign 0.5
           (ui/column
             (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
-                                          :on-event #'on-key-pressed-impl})
+                                          :on-event #'on-key-pressed-mini-panel-impl})
             (if (zero? history-size)
               (ui/gap 0 0)
               (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
             (if (and (seq (:nodes economy)) economy?)
               (custom-ui/svg-canvas 1200 800 {:svg-str (economy/as-svg (economy/viz-economy economy))})
               (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
-                                             #_#_:on-event #'on-key-pressed-impl}))
+                                             :on-event #'on-key-pressed-impl}))
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
 
 (comment
