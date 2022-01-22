@@ -134,14 +134,7 @@
 
         {::land/keys [terrain area->civ-name civ-name->civ area->units]} world
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
-        [camera-x camera-y] camera
-        now (System/currentTimeMillis)]
-    ;; tick handling
-    (when (and
-            (not paused?)
-            (> (- now last-tick) tick-ms))
-      (swap! *state on-tick now))
-
+        [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
     ;; walk cells eq to window size
@@ -260,6 +253,22 @@
         ;; (println key)
         nil))))
 
+(defn draw-mini-panel-impl
+  "Render for small panel, this will be a sort of global render
+  context to ensure stuff like ticks still keep happening"
+  [^Canvas canvas window-width window-height]
+  (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
+        now (System/currentTimeMillis)]
+    ;; tick handling
+    (when (and
+            (not paused?)
+            (> (- now last-tick) tick-ms))
+      (swap! *state on-tick now))
+
+    ;; Put the clear here to show where the mini panel is,
+    ;;   will probably use it in some other way later
+    (.clear canvas (unchecked-int 0xFFFFFBBB))))
+
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
                    {:keys [camera tick history-index civ-index]} @*state
@@ -272,6 +281,8 @@
       (ui/valign 0.5
         (ui/halign 0.5
           (ui/column
+            (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
+                                          :on-event #'on-key-pressed-impl})
             (if (zero? history-size)
               (ui/gap 0 0)
               (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
