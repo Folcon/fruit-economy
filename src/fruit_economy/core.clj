@@ -302,19 +302,21 @@
           history-size (count history)
           {::land/keys [civ-name->civ economy]} (get @*state :world)
           controlling (nth (keys civ-name->civ) civ-index)]
-      (ui/valign 0.5
-        (ui/halign 0.5
-          (ui/column
-            (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
-                                          :on-event #'on-key-pressed-mini-panel-impl})
-            (if (zero? history-size)
-              (ui/gap 0 0)
-              (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
-            (if (and (seq (:nodes economy)) economy?)
-              (custom-ui/svg-canvas 1200 800 {:svg-str (economy/as-svg (economy/viz-economy economy))})
-              (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
-                                             :on-event #'on-key-pressed-impl}))
-            (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
+      (ui/row
+        (ui/column
+          (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
+                                        :on-event #'on-key-pressed-impl}))
+        (ui/valign 0.5
+          (ui/halign 0.5
+            (ui/column
+              (if (zero? history-size)
+                (ui/gap 0 0)
+                (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
+              (if (and (seq (:nodes economy)) economy?)
+                (custom-ui/svg-canvas 1200 800 {:svg-str (economy/as-svg (economy/viz-economy economy))})
+                (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
+                                               :on-event #'on-key-pressed-impl}))
+              (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text))))))))
 
 (comment
   (window/request-frame @*window))
