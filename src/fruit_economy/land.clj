@@ -26,7 +26,8 @@
       ::civ-name->civ (sorted-map)
       ::civ-missives []
       ::civ-letters allowed-civ-letters
-      ::history []})))
+      ::history []
+      ::economy {:nodes [] :edges []}})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
   (reduce
