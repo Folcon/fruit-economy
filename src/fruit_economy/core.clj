@@ -305,7 +305,7 @@
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
-                                        :on-event #'on-key-pressed-impl}))
+                                        :on-event #'on-key-pressed-mini-panel-impl}))
         (ui/valign 0.5
           (ui/halign 0.5
             (ui/column
