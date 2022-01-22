@@ -294,7 +294,7 @@
             (if (and (seq (:nodes economy)) economy?)
               (custom-ui/svg-canvas 1200 800 {:svg-str (economy/as-svg (economy/viz-economy economy))})
               (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
-                                             :on-event #'on-key-pressed-impl}))
+                                             #_#_:on-event #'on-key-pressed-impl}))
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
 
 (comment
