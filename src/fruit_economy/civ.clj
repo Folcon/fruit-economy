@@ -1,7 +1,8 @@
 (ns fruit-economy.civ
   (:require [fruit-economy.rand :refer [roll]]
             [fruit-economy.colour :refer [colour]]
-            [fruit-economy.land :as land :refer [log-history]]))
+            [fruit-economy.land :as land :refer [log-history]]
+            [fruit-economy.economy :as economy]))
 
 
 (defn make-civ [name symbol origin home-world-name terrain ancestor]
@@ -44,7 +45,8 @@
         (assoc-in [::land/area->civ-name [x y]] civ-name)
         (update ::land/civ-name->civ assoc civ-name new-civ)
         (update ::land/civ-letters disj symbol)
-        (update ::land/curr-civ-id inc)))
+        (update ::land/curr-civ-id inc)
+        (economy/init-civ-economy new-civ)))
     (-> land-data
       (log-history (str "Tried to spawn new civ at " x " " y " ran out of letters")))))
 
