@@ -13,6 +13,7 @@
    [fruit-economy.land :as land]
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
+   [fruit-economy.economy :as economy]
    [fruit-economy.civ-actions :as civ-actions])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
@@ -39,6 +40,7 @@
      :history-index 0
      :civ-index 0
 
+     :economy?  false
      :paused?   false
      :tick      0
      :tick-ms   5000
@@ -214,6 +216,9 @@
         (let [history-index (get state :history-index)]
           (swap! *state assoc :history-index (max 0 (dec history-index))))
 
+        #{:key/y}
+        (swap! *state update :economy? not)
+
         #{:key/p}
         (swap! *state update :paused? not)
 
@@ -271,12 +276,12 @@
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
-                   {:keys [camera tick history-index civ-index]} @*state
-                   history (get-in @*state [:world ::land/history])]
+                   {:keys [camera tick history-index civ-index economy?]} @*state
+                   history economy (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 24 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
-          civ-name->civ (get-in @*state [:world ::land/civ-name->civ])
+          {::land/keys [civ-name->civ economy]} (get @*state :world)
           controlling (nth (keys civ-name->civ) civ-index)]
       (ui/valign 0.5
         (ui/halign 0.5
@@ -286,9 +291,10 @@
             (if (zero? history-size)
               (ui/gap 0 0)
               (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
-            #_(custom-ui/svg-canvas 200 100 {:svg-path "data.svg"})
-            (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
-                                           :on-event #'on-key-pressed-impl})
+            (if (and (seq (:nodes economy)) economy?)
+              (custom-ui/svg-canvas 1200 800 {:svg-str (economy/as-svg (economy/viz-economy economy))})
+              (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
+                                             :on-event #'on-key-pressed-impl}))
             (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)))))))
 
 (comment
