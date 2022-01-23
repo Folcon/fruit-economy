@@ -58,7 +58,7 @@
             (when-not @*broken
               (let [data-byte-array (cond
                                       svg-path (resource-file->byte-array svg-path)
-                                      svg-str (byte-array (map (comp byte int) svg-str)))
+                                      svg-str (.getBytes svg-str))
                     data (Data/makeFromBytes data-byte-array)
                     svg-dom (SVGDOM. data)]
                 (.render svg-dom canvas)))
