@@ -3,6 +3,8 @@
             [com.rpl.specter :refer [select-any keypath]]))
 
 
+(defn graph? [g] (contains? g :ubergraph))
+
 (defn node-ids [g] (vec (#'uber/nodes g)))
 
 (defn nodes [g] (into [] (map (fn [node-id] (select-any (keypath :attrs node-id) g))) (node-ids g)))

@@ -10,6 +10,7 @@
    [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.colour :refer [colour]]
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
+   [fruit-economy.graph :refer [graph?]]
    [fruit-economy.land :as land]
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
@@ -339,7 +340,7 @@
                 (ui/gap 0 0)
                 (ui/padding 10
                   (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)))
-              (if (and (seq (:ubergraph economy)) economy?)
+              (if (and (graph? economy) economy?)
                 (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
