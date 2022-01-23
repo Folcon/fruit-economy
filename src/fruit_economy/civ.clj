@@ -1,14 +1,16 @@
 (ns fruit-economy.civ
   (:require [fruit-economy.rand :refer [roll]]
             [fruit-economy.colour :refer [colour]]
+            [fruit-economy.language :refer [make-word]]
             [fruit-economy.land :as land :refer [log-history]]
             [fruit-economy.economy :as economy]))
 
 
-(defn make-civ [name symbol origin home-world-name terrain ancestor]
+(defn make-civ [id name symbol origin home-world-name terrain ancestor]
   (let [[x y] origin]
     (merge
-      {::name name
+      {::id id
+       ::name name
        ::symbol symbol
        ::tint (colour (rand-int 256) (rand-int 256) (rand-int 256))
        ::territory #{origin}
@@ -34,12 +36,12 @@
       (when ancestor
         {::ancestor ancestor}))))
 
-(defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters] :as land-data} x y {:keys [parent]}]
+(defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
     (let [symbol (first civ-letters)
-          civ-name (str "Civ " symbol "+" curr-civ-id)
+          civ-name (make-word lang)
           biome (get-in terrain [y x])
-          new-civ (make-civ civ-name symbol [x y] name biome parent)]
+          new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent)]
       (-> land-data
         (log-history (str "Spawning new civ at " x " " y " on " biome))
         (assoc-in [::land/area->civ-name [x y]] civ-name)

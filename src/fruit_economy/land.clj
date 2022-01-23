@@ -1,6 +1,7 @@
 (ns fruit-economy.land
   (:require [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.colour :refer [colour]]
+            [fruit-economy.language :refer [make-lang]]
             [fruit-economy.graph :refer [make]]))
 
 
@@ -28,6 +29,7 @@
       ::civ-missives []
       ::civ-letters allowed-civ-letters
       ::history []
+      ::lang (make-lang)
       ::economy (let [nodes [{:id :source :color "green"
                               :label [:P {:BORDER 1} "supply"]}
                              {:id :sink :color "red"
