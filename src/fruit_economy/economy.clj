@@ -30,21 +30,26 @@
       (update-in [::land/economy :civ-name->source name unit] (fnil inc 0)))))
 
 (defn init-civ-economy [{::land/keys [area->units] :as land-data} {:fruit-economy.civ/keys [name] :as civ}]
-  (let []
-    (reduce
-      (fn [land area]
-        (if-let [unit (area->units area)]
-          (-> (land/log-history land (str name " lays claim to a " (:name unit) " at " area))
-            (update-in [::land/economy :civ-name->source name unit] (fnil inc 0))
-            (as-> $
-              (let [civ-node (make-civ-node civ (get-in $ [::land/economy :civ-name->source name]))]
-                (-> $
-                  (update-in [::land/economy :nodes] conj civ-node)
-                  (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name civ-node]))))
-            #_(update-in [::land/economy :area->source area] unit))
-          land))
-      land-data
-      (:fruit-economy.civ/territory civ))))
+  (let [;; stop recording sources on the node directly
+        civ-node (make-civ-node civ [])]
+    (-> land-data
+      ;; Add the civ node to the graph
+      (update-in [::land/economy :nodes] conj civ-node)
+      (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name civ-node])
+
+      ;; Mark down new claims, should really use assign-source->civ,
+      ;;   but it doesn't work with the graph yet
+      (as-> $
+        (reduce
+          (fn [land area]
+            (if-let [unit (area->units area)]
+              (-> (land/log-history land (str name " lays claim to a " (:name unit) " at " area))
+                (update-in [::land/economy :civ-name->source name unit] (fnil inc 0))
+                (update-in [::land/economy :edges] conj [name (:name unit) {:label (str "at " area)}])
+                (update-in [::land/economy :ubergraph] graph/add-directed-edge name (:name unit) {:label (str "at " area)}))
+              land))
+          $
+          (:fruit-economy.civ/territory civ))))))
 
 (defn add-resources [{::land/keys [area->units] :as land-data}]
   (reduce
