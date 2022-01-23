@@ -1,6 +1,7 @@
 (ns fruit-economy.land
   (:require [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
-            [fruit-economy.colour :refer [colour]]))
+            [fruit-economy.colour :refer [colour]]
+            [fruit-economy.graph :refer [make]]))
 
 
 (def allowed-civ-letters (into #{} (map str) "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+[{]}\\|;:,<.>/?"))
@@ -27,11 +28,14 @@
       ::civ-missives []
       ::civ-letters allowed-civ-letters
       ::history []
-      ::economy {:nodes [{:id :source :color "green"
-                          :label [:P {:BORDER 1} "supply"]}
-                         {:id :sink :color "red"
-                          :label [:P {:BORDER 1} "demand"]}]
-                 :edges [[:source :sink]]}})))
+      ::economy (let [nodes [{:id :source :color "green"
+                              :label [:P {:BORDER 1} "supply"]}
+                             {:id :sink :color "red"
+                              :label [:P {:BORDER 1} "demand"]}]
+                      edges [[:source :sink]]]
+                  {:ubergraph (make {:nodes nodes :edges edges})
+                   :nodes nodes
+                   :edges edges})})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
   (reduce

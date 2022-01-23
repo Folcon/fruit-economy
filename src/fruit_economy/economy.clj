@@ -36,7 +36,11 @@
         (if-let [unit (area->units area)]
           (-> (land/log-history land (str name " lays claim to a " (:name unit) " at " area))
             (update-in [::land/economy :civ-name->source name unit] (fnil inc 0))
-            (as-> $ (update-in $ [::land/economy :nodes] conj (make-civ-node civ (get-in $ [::land/economy :civ-name->source name]))))
+            (as-> $
+              (let [civ-node (make-civ-node civ (get-in $ [::land/economy :civ-name->source name]))]
+                (-> $
+                  (update-in [::land/economy :nodes] conj civ-node)
+                  (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name civ-node]))))
             #_(update-in [::land/economy :area->source area] unit))
           land))
       land-data
@@ -45,12 +49,14 @@
 (defn add-resources [{::land/keys [area->units] :as land-data}]
   (reduce
     (fn [land {:keys [name kind] :as resource}]
-      (update-in land [::land/economy :nodes] conj
-        {:id name :ref resource
-         :kind (->> (get land/kind->category kind)
-                 clojure.core/name
-                 (str "exists-")
-                 keyword)}))
+      (let [resource-node {:id name :ref resource
+                           :kind (->> (get land/kind->category kind)
+                                   clojure.core/name
+                                   (str "exists-")
+                                   keyword)}]
+        (-> land
+          (update-in [::land/economy :nodes] conj resource-node)
+          (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name resource-node]))))
     land-data
     (distinct (vals area->units))))
 
@@ -107,8 +113,14 @@
 
   ,)
 
-(defn ->svg [{:keys [nodes edges] :as economy}]
-  (-> (graph/make economy)
+(defn ->svg [{:keys [nodes edges ubergraph] :as economy}]
+  (cond-> economy
+
+    ;; contains ubergraph, so not an ubergraph
+    ubergraph
+    (graph/make)
+
+    :always
     (graph/->svg)))
 
 ;; categories of resources
