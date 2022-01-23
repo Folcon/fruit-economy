@@ -81,6 +81,12 @@
                  :fruit-1 "🍇" :fruit-2 "🍈" :fruit-3 "🍉" :fruit-4 "🍊" :fruit-5 "🍋" :fruit-6 "🍌" :fruit-7 "🍍" :fruit-8 "🥭"
                  :fruit-9 "🍎" :fruit-10 "🍏" :fruit-11 "🍐" :fruit-12 "🍑" :fruit-13 "🍒" :fruit-14 "🍓" :fruit-15 "🥝" :fruit-16 "🍅"})
 
+(def kind->category {:bush :bush :tree-1 :tree :tree-2 :tree :tree-3 :tree :tree-4 :tree :tree-5 :tree :tree-6 :tree :magic-tree :tree
+                     :flower-1 :flower :flower-2 :flower :flower-3 :flower :flower-4 :flower :flower-5 :flower :flower-6 :flower :flower-7 :flower
+                     :herb-1 :herb :herb-2 :herb :herb-3 :herb :herb-4 :herb :nut-1 :nut :nut-2 :nut :shroom :shroom
+                     :fruit-1 :fruit :fruit-2 :fruit :fruit-3 :fruit :fruit-4 :fruit :fruit-5 :fruit :fruit-6 :fruit :fruit-7 :fruit :fruit-8 :fruit
+                     :fruit-9 :fruit :fruit-10 :fruit :fruit-11 :fruit :fruit-12 :fruit :fruit-13 :fruit :fruit-14 :fruit :fruit-15 :fruit :fruit-16 :fruit})
+
 (defn populate [{::keys [width height] :as land-data} n]
   (reduce
     (fn [land attempt]
