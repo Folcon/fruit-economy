@@ -118,12 +118,16 @@
 
   ,)
 
-(defn ->svg [{:keys [nodes edges ubergraph] :as economy}]
+(defn ->svg [{:keys [ubergraph nodes edges] :as economy}]
   (cond-> economy
 
-    ;; contains ubergraph, so not an ubergraph
-    ubergraph
+    ;; contains nodes or edges. so make ubergraph
+    (or nodes edges)
     (graph/make)
+
+    ;; contains ubergraph, so grab it
+    :ubergraph
+    (get :ubergraph)
 
     :always
     (graph/->svg)))
