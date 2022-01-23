@@ -43,12 +43,12 @@
   [width height {:keys [on-paint on-event]}]
   (UICanvas. width height on-paint on-event))
 
-(defrecord SVGCanvas [width height svg-path]
+(defrecord SVGCanvas [width height svg-path svg-str]
   IComponent
   (-layout [_ ctx cs]
     (IPoint. width height))
   (-draw [_ ctx canvas]
-    (when svg-path
+    (when (or svg-path svg-str)
       (let [canvas ^Canvas canvas
             layer  (.save canvas)
             rect  (Rect/makeXYWH 0 0 width height)]
@@ -56,7 +56,10 @@
           (.clipRect canvas rect ClipMode/INTERSECT true)
           (try
             (when-not @*broken
-              (let [data (Data/makeFromBytes (resource-file->byte-array svg-path))
+              (let [data-byte-array (cond
+                                      svg-path (resource-file->byte-array svg-path)
+                                      svg-str (byte-array (map (comp byte int) svg-str)))
+                    data (Data/makeFromBytes data-byte-array)
                     svg-dom (SVGDOM. data)]
                 (.render svg-dom canvas)))
             (catch Exception e
@@ -68,6 +71,6 @@
 
 (defn svg-canvas
   "(svg-canvas 400 300 {:svg-path \"<path in resource>\"})"
-  [width height {:keys [svg-path]}]
-  (SVGCanvas. width height svg-path))
+  [width height {:keys [svg-path svg-str]}]
+  (SVGCanvas. width height svg-path svg-str))
 ;; END Should be in io.github.humbleui.ui
