@@ -341,7 +341,7 @@
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
               (ui/padding 10
-                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling " controlling " controlling)) font-default fill-text))
+                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling (str " controlling " controlling))) font-default fill-text))
               (ui/padding 10
                 (ui/label (str "[y]: Swap between Map and Economy / Tech Tree, [r]: Reset World") font-small fill-text)))))))))
 
