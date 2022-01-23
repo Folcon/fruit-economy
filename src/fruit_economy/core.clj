@@ -291,19 +291,22 @@
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
               controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/grow-pop controlling-civ))
+          (when controlling-civ
+            (swap! *state update :world civ-actions/grow-pop controlling-civ)))
 
         #{:key/digit6}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
               controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/expand-territory controlling-civ))
+          (when controlling-civ
+            (swap! *state update :world civ-actions/expand-territory controlling-civ)))
 
         #{:key/digit7}
         (let [civ-index (get state :civ-index)
               civ-name->civ (get-in state [:world ::land/civ-name->civ])
               controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (swap! *state update :world civ-actions/improve-tech-level controlling-civ))
+          (when controlling-civ
+            (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
 
         #{:key/r}
         (reset! *state (new-state))
@@ -337,7 +340,7 @@
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
               (ui/padding 10
-                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text))
+                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling " controlling " controlling)) font-default fill-text))
               (ui/padding 10
                 (ui/label (str "[y]: Swap between Map and Economy, [r]: Reset World") font-small fill-text)))))))))
 
