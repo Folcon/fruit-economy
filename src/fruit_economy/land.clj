@@ -35,9 +35,7 @@
                              {:id :sink :color "red"
                               :label [:P {:BORDER 1} "demand"]}]
                       edges [[:source :sink]]]
-                  {:ubergraph (make {:nodes nodes :edges edges})
-                   :nodes nodes
-                   :edges edges})})))
+                  {:ubergraph (make {:nodes nodes :edges edges})})})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
   (reduce

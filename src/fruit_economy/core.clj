@@ -339,7 +339,7 @@
                 (ui/gap 0 0)
                 (ui/padding 10
                   (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)))
-              (if (and (seq (:nodes economy)) economy?)
+              (if (and (seq (:ubergraph economy)) economy?)
                 (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))

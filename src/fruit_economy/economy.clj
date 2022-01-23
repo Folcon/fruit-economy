@@ -34,7 +34,6 @@
         civ-node (make-civ-node civ [])]
     (-> land-data
       ;; Add the civ node to the graph
-      (update-in [::land/economy :nodes] conj civ-node)
       (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name civ-node])
 
       ;; Mark down new claims, should really use assign-source->civ,
@@ -60,7 +59,6 @@
                                    (str "exists-")
                                    keyword)}]
         (-> land
-          (update-in [::land/economy :nodes] conj resource-node)
           (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name resource-node]))))
     land-data
     (distinct (vals area->units))))
