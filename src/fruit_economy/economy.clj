@@ -1,6 +1,7 @@
 (ns fruit-economy.economy
-  (:require [tangle.core :refer [graph->dot dot->svg]]
-            [fruit-economy.land :as land]))
+  (:require [ubergraph.core :as uber]
+            [fruit-economy.land :as land]
+            [fruit-economy.graph :as graph]))
 
 
 (defn dec-or-dissoc [m k]
@@ -94,11 +95,6 @@
 
   ,)
 
-(defn viz-economy [{:keys [nodes edges] :as economy}]
-  (graph->dot nodes edges {:node {:shape :box}
-                           :directed? true
-                           :node->id (fn [n] (if (keyword? n) (name n) (:id n)))
-                           :node->descriptor (fn [n] (when-not (keyword? n) n))}))
-
-(defn as-svg [dot]
-  (dot->svg dot))
+(defn ->svg [{:keys [nodes edges] :as economy}]
+  (-> (graph/make economy)
+    (graph/->svg)))
