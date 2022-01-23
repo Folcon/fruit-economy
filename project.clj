@@ -19,6 +19,7 @@
 
                  [net.mikera/clisk "0.11.0"]
                  [ubergraph "0.8.2"]
+                 [com.squidpony/squidlib-util "3.0.4"]
                  [com.clojure-goes-fast/clj-async-profiler "1.0.0-alpha1"]]
   :java-source-paths ["src/java" "test/java"]
   :plugins [[reifyhealth/lein-git-down "0.4.0"]]
