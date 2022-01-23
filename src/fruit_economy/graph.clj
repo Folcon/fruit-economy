@@ -47,7 +47,12 @@
   [g]
   (with-redefs [dorothy.core/save! (fn [graph _f & [_options]]
                                      (dorothy.core/render graph {:format :svg}))]
-    (uber/viz-graph g {:save {:format :svg}})))
+    (uber/viz-graph g {:save {:format :svg}
+                       ;; available :layout opts
+                       #_[:dot :neato :twopi :circo :fdp :osage :patchwork :sfdp]
+                       ;; by preference
+                       #_[:circo :sfdp :osage :twopi :neato :fdp]
+                       :layout :circo})))
 
 (def find-edges
   "[g src dest] [g query]
