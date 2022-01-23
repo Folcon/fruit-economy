@@ -77,7 +77,9 @@
 (def kind->name {:growing-plant "🌱" :dying-plant "🥀"
                  :bush "🌳" :tree-1 "🌴" :tree-2 "🌲" :tree-3 "🌵" :tree-4 "🌾" :tree-5 "🎋" :tree-6 "🎍" :magic-tree "🎄"
                  :flower-1 "🌸" :flower-2 "💮" :flower-3 "🏵️" :flower-4 "🌺" :flower-5 "🌻" :flower-6 "🌼" :flower-7 "🌷"
-                 :herb-1 "🌿" :herb-2 "☘️" :herb-3 "🍀" :herb-4 "🍁" :shroom "🍄" :nut "🌰"})
+                 :herb-1 "🌿" :herb-2 "☘️" :herb-3 "🍀" :herb-4 "🍁" :shroom "🍄" :nut-1 "🌰" :nut-2 "🥥"
+                 :fruit-1 "🍇" :fruit-2 "🍈" :fruit-3 "🍉" :fruit-4 "🍊" :fruit-5 "🍋" :fruit-6 "🍌" :fruit-7 "🍍" :fruit-8 "🥭"
+                 :fruit-9 "🍎" :fruit-10 "🍏" :fruit-11 "🍐" :fruit-12 "🍑" :fruit-13 "🍒" :fruit-14 "🍓" :fruit-15 "🥝" :fruit-16 "🍅"})
 
 (defn populate [{::keys [width height] :as land-data} n]
   (reduce
@@ -92,9 +94,7 @@
           (reduced land)
 
           (not= target :ocean)
-          (let [kind (rand-nth [:bush :tree-1 :tree-2 :tree-3 :tree-4 :tree-5 :tree-6 :magic-tree
-                                :flower-1 :flower-2 :flower-3 :flower-4 :flower-5 :flower-6 :flower-7
-                                :herb-1 :herb-2 :herb-3 :herb-4 :nut :shroom])]
+          (let [kind (rand-nth (into [] (remove #{:growing-plant :dying-plant}) (keys kind->name)))]
             (assoc-in land [::area->units [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)}))
 
           :else
