@@ -98,3 +98,79 @@
 (defn ->svg [{:keys [nodes edges] :as economy}]
   (-> (graph/make economy)
     (graph/->svg)))
+
+;; categories of resources
+;; :bush :tree :flower :herb :shroom :nut :fruit
+(def processes [:chop :boil :magic :heat :slice])
+
+(defn apply-rules [graph rules]
+  (let [rules' (shuffle rules)]
+    (reduce
+      (fn [g {:keys [match alter] :as _rule}]
+        (let [result (reduce
+                       (fn [v match-node]
+                         (if-let [matches (graph/find-nodes g match-node)]
+                           (conj v matches)
+                           (reduced [])))
+                       []
+                       match)]
+          (if (every? seq result)
+            (apply alter g result)
+            g)))
+      graph
+      rules')))
+
+(comment
+  (let [;; Extending the matching rules?
+        ;;   https://www.metosin.fi/blog/malli-regex-schemas/
+        rules [{:match [[{:kind :source}]
+                        [{:kind :exists-fruit}]]
+                :alter (fn [graph sources exists-fruits]
+                         (let [source (rand-nth sources)
+                               exists-fruit (rand-nth exists-fruits)]
+                           (-> graph
+                             (assoc-in [:attrs (:id exists-fruit) :kind] :unused-fruit)
+                             (graph/add-directed-edge (:id source) (:id exists-fruit)))))}
+               {:match [[{:kind :unused-fruit}]
+                        [{:kind :exists-fruit-proc}]]
+                :alter (fn [graph unused-fruits exists-fruit-procs]
+                         (let [unused-fruit (rand-nth unused-fruits)
+                               exists-fruit-proc (rand-nth exists-fruit-procs)
+                               process (rand-nth processes)
+                               process-node {:id (keyword (str (name (:id unused-fruit)) "-process")) :kind :process :tag process}]
+                           (-> graph
+                             (assoc-in [:attrs (:id unused-fruit) :kind] :fruit)
+                             (assoc-in [:attrs (:id exists-fruit-proc) :kind] :fruit-proc)
+                             (graph/add-node-with-attrs [(:id process-node) process-node])
+                             (graph/add-directed-edge (:id unused-fruit) (:id process-node))
+                             (graph/add-directed-edge (:id process-node) (:id exists-fruit-proc)))))}
+               {:match [[{:kind :unused-fruit}]
+                        [{:kind :exists-fruit-proc}]
+                        [{:kind :exists-fruit-good}]]
+                :alter (fn [graph unused-fruits exists-fruit-procs exists-fruit-goods]
+                         (let [unused-fruit (rand-nth unused-fruits)
+                               exists-fruit-proc (rand-nth exists-fruit-procs)
+                               exists-fruit-good (rand-nth exists-fruit-goods)
+                               process (rand-nth processes)
+                               process-node {:id (keyword (str (name (:id unused-fruit)) "-process")) :kind :process :tag process}]
+                           (-> graph
+                             (assoc-in [:attrs (:id unused-fruit) :kind] :fruit)
+                             (assoc-in [:attrs (:id exists-fruit-proc) :kind] :fruit-proc)
+                             (assoc-in [:attrs (:id exists-fruit-good) :kind] :fruit-good)
+                             (graph/add-node-with-attrs [(:id process-node) process-node])
+                             (graph/add-directed-edge (:id unused-fruit) (:id process-node))
+                             (graph/add-directed-edge (:id process-node) (:id exists-fruit-proc) {:label :=})
+                             (graph/add-directed-edge (:id process-node) (:id exists-fruit-good) {:label :=}))))}]
+        ;; still need to figure out how to populate this with goods,
+        ;;   processes can come from some randomness and process,
+        ;;   maybe just do the same with goods for now?
+        g {:nodes [{:id :source :kind :source}
+                   {:id :sink :kind :sink}
+                   {:id "Civ R+23" :kind :civ}
+                   {:id :apple :kind :exists-fruit}
+                   {:id :banana :kind :exists-fruit}
+                   {:id :cream :kind :exists-fruit-good}
+                   {:id :chop :kind :exists-fruit-proc}],
+           :edges [[:source :sink]]}
+        g (graph/make g)]
+    (nth (iterate #(apply-rules % rules) g) 3)))

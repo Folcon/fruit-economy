@@ -48,3 +48,26 @@
   (with-redefs [dorothy.core/save! (fn [graph _f & [_options]]
                                      (dorothy.core/render graph {:format :svg}))]
     (uber/viz-graph g {:save {:format :svg}})))
+
+(def find-edges
+  "[g src dest] [g query]
+
+   Returns all edges that match the query"
+  #'uber/find-edges)
+
+(defn find-nodes
+  "Returns all nodes that match the query
+   query can take the form of {:a :b}
+   or several query values [{:a :b} {:a :c}]"
+  [g attrs-coll]
+  (let [attrs-coll (if (map? attrs-coll) [attrs-coll] attrs-coll)]
+    (reduce
+      (fn [v node-id]
+        ;; it seems faster to use node-ids and specter than just
+        ;;   use the nodes fn
+        (let [node (select-any (keypath :attrs node-id) g)]
+          (if (some #(submap? % node) attrs-coll)
+            (conj v node)
+            v)))
+      []
+      (node-ids g))))
