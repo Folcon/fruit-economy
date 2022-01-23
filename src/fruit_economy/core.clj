@@ -27,8 +27,8 @@
 
 ;; GAME STATE
 (defn new-state []
-  (let [width  120
-        height 80]
+  (let [width  60
+        height 40]
     {:width width
      :height height
      :camera [0 0]
