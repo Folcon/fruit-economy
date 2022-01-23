@@ -55,9 +55,11 @@
     (fn [land _n]
       (let [x (rand-int width)
             y (rand-int height)
-            target (get-in land [::land/terrain y x])]
-        (println _n target)
-        (if (not= target :ocean)
+            target (get-in land [::land/terrain y x])
+            occupied? (get-in land [::land/area->civ-name [x y]])]
+        (println :try-spawn-civ _n target :occupied? occupied?)
+        (if (and (not= target :ocean)
+              (not occupied?))
           (spawn-civ land x y {})
           land)))
     land-data
