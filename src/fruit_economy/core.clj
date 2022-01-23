@@ -238,14 +238,15 @@
             (> (- now last-tick) tick-ms))
       (swap! *state on-tick now))
 
+    #_(println :mini-panel tick)
+
     ;; Put the clear here to show where the mini panel is,
     ;;   will probably use it in some other way later
     (.clear canvas (unchecked-int 0xFFFFFBBB))
     (.drawString canvas game-glyph emoji-offset-x (+ emoji-offset-y (/ cell-y 2)) emoji-font fill-text)))
 
 (defn on-key-pressed-mini-panel-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
-  (let [state @*state
-        move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
+  (let [state @*state]
 
     ;; mouse
     (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
