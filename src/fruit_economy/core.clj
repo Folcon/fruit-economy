@@ -54,6 +54,11 @@
 (defonce ^Typeface face-default
   (.matchFamiliesStyle ^FontMgr font-mgr (into-array String [".SF NS", "Helvetica Neue", "Arial"]) FontStyle/NORMAL))
 
+(defonce game-glyph
+  (let [economy-glyph (rand-nth ["💰" "💸" "🤑" "🏦" "💵" "💱" "💴" "💶" "💷"])
+        fruit-glyph (rand-nth ["🥭" "🍅" "🍊" "🍉" "🍏" "🍐" "🍌" "🍑" "🍈" "🍋" "🍍" "🍓" "🍎" "🍇" "🥝" "🍒"])]
+    (str fruit-glyph economy-glyph)))
+
 (defonce emoji-glyph "🍀")
 (defonce ^Typeface emoji-face (.matchFamilyStyleCharacter ^FontMgr font-mgr nil FontStyle/NORMAL nil (.codePointAt ^String emoji-glyph 0)))
 
@@ -214,7 +219,19 @@
   context to ensure stuff like ticks still keep happening"
   [^Canvas canvas window-width window-height]
   (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
-        now (System/currentTimeMillis)]
+        now (System/currentTimeMillis)
+        fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+
+        cell-x (/ window-width 2)
+        cell-y (/ window-height 2)
+
+        ;; Rendering emoji
+        emoji-font (Font. emoji-face (float 48))
+        emoji-bounds (.measureText emoji-font emoji-glyph)
+        emoji-offset-x (-> (- (.getLeft emoji-bounds))
+                         (- (/ (- (.getWidth emoji-bounds) cell-x) 2)))
+        emoji-offset-y (-> (- (.getTop emoji-bounds))
+                         (- (/ (- (.getHeight emoji-bounds) cell-y) 2)))]
     ;; tick handling
     (when (and
             (not paused?)
@@ -223,7 +240,8 @@
 
     ;; Put the clear here to show where the mini panel is,
     ;;   will probably use it in some other way later
-    (.clear canvas (unchecked-int 0xFFFFFBBB))))
+    (.clear canvas (unchecked-int 0xFFFFFBBB))
+    (.drawString canvas game-glyph emoji-offset-x (+ emoji-offset-y (/ cell-y 2)) emoji-font fill-text)))
 
 (defn on-key-pressed-mini-panel-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
   (let [state @*state
@@ -316,7 +334,8 @@
                 (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
-              (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text))))))))
+              (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)
+              (ui/label (str "swap between map and econom[y], [r]eset world") font-default fill-text))))))))
 
 (comment
   (window/request-frame @*window))
