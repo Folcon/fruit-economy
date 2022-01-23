@@ -315,7 +315,8 @@
   (ui/dynamic ctx [scale (:scale ctx)
                    {:keys [camera tick history-index civ-index economy?]} @*state
                    history (get-in @*state [:world ::land/history])]
-    (let [font-default        (Font. face-default (float (* 24 scale)))
+    (let [font-default        (Font. face-default (float (* 18 scale)))
+          font-small          (Font. face-default (float (* 12 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
           {::land/keys [civ-name->civ economy]} (get @*state :world)
@@ -329,13 +330,16 @@
             (ui/column
               (if (zero? history-size)
                 (ui/gap 0 0)
-                (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text))
+                (ui/padding 10
+                  (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)))
               (if (and (seq (:nodes economy)) economy?)
                 (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
-              (ui/label (str "👋🌲🌳 Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text)
-              (ui/label (str "swap between map and econom[y], [r]eset world") font-default fill-text))))))))
+              (ui/padding 10
+                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick " controlling " controlling) font-default fill-text))
+              (ui/padding 10
+                (ui/label (str "[y]: Swap between Map and Economy, [r]: Reset World") font-small fill-text)))))))))
 
 (comment
   (window/request-frame @*window))
