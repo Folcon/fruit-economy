@@ -35,7 +35,7 @@
      :peep [5 5]
      :cell 20
 
-     :world (-> (land/populate (land/gen-land (land/make-land "World" width height)) 100)
+     :world (-> (economy/add-resources (land/populate (land/gen-land (land/make-land "World" width height)) 100))
               (civ/try-spawn-new-civs 10))
      :history-index 0
      :civ-index 0

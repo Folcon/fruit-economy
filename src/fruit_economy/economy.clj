@@ -42,6 +42,18 @@
       land-data
       (:fruit-economy.civ/territory civ))))
 
+(defn add-resources [{::land/keys [area->units] :as land-data}]
+  (reduce
+    (fn [land {:keys [name kind] :as resource}]
+      (update-in land [::land/economy :nodes] conj
+        {:id name :ref resource
+         :kind (->> (get land/kind->category kind)
+                 clojure.core/name
+                 (str "exists-")
+                 keyword)}))
+    land-data
+    (distinct (vals area->units))))
+
 (comment
   (require '[fruit-economy.civ :as civ])
   (do
