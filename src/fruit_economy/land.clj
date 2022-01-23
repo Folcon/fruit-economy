@@ -27,7 +27,11 @@
       ::civ-missives []
       ::civ-letters allowed-civ-letters
       ::history []
-      ::economy {:nodes [] :edges []}})))
+      ::economy {:nodes [{:id :source :color "green"
+                          :label [:P {:BORDER 1} "supply"]}
+                         {:id :sink :color "red"
+                          :label [:P {:BORDER 1} "demand"]}]
+                 :edges [[:source :sink]]}})))
 
 (defn gen-land [{::keys [width height sea-level] :as land-data}]
   (reduce
