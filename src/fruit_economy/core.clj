@@ -426,6 +426,8 @@
       (window/set-z-order :floating))))
 
 (defn -main [& args]
+  ;; TODO: Display somewhere in the UI
+  (println "VERSION:" (env :game-version))
   (when (= (env :debug?) "true")
     (future (apply nrepl.cmdline/-main args)))
   (hui/init)
