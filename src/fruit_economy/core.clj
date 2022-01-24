@@ -23,11 +23,15 @@
   (:gen-class))
 
 
+(defn debug? [] (= (env :debug?) "true"))
+
 ;; Ensure this is available for debug,
 ;;   but not prod otherwise we get compile errors
-(when (= (env :debug?) "true")
-  (require '[nrepl.cmdline :refer [-main] :rename {-main -nrepl-main}])
-  (resolve 'nrepl.cmdline))
+(if (debug?)
+  (do
+    (require '[nrepl.cmdline :refer [-main] :rename {-main -nrepl-main}])
+    (resolve 'nrepl.cmdline))
+  (declare -nrepl-main))
 
 (set! *warn-on-reflection* true)
 
@@ -435,8 +439,8 @@
 
 (defn -main [& args]
   ;; TODO: Display somewhere in the UI
-  (println "VERSION:" (env :game-version))
-  (when (= (env :debug?) "true")
+  (println (str "VERSION: " (env :game-version) (when (debug?) "\nDEBUG BUILD")))
+  (when (debug?)
     (future (apply -nrepl-main args)))
   (hui/init)
   (reset! *window (make-window))
