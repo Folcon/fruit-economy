@@ -19,13 +19,14 @@
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
-   [io.github.humbleui.types IPoint Rect]))
+   [io.github.humbleui.types IPoint Rect])
+  (:gen-class))
 
 
 ;; Ensure this is available for debug,
 ;;   but not prod otherwise we get compile errors
 (when (= (env :debug?) "true")
-  (require 'nrepl.cmdline)
+  (require '[nrepl.cmdline :refer [-main] :rename {-main -nrepl-main}])
   (resolve 'nrepl.cmdline))
 
 (set! *warn-on-reflection* true)
@@ -436,7 +437,7 @@
   ;; TODO: Display somewhere in the UI
   (println "VERSION:" (env :game-version))
   (when (= (env :debug?) "true")
-    (future (apply nrepl.cmdline/-main args)))
+    (future (apply -nrepl-main args)))
   (hui/init)
   (reset! *window (make-window))
   (hui/start))
