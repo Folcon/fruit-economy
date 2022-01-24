@@ -7,6 +7,8 @@
 
 (defn node-ids [g] (vec (#'uber/nodes g)))
 
+(defn id->node [g id] (select-any (keypath :attrs id) g))
+
 (defn nodes [g] (into [] (map (fn [node-id] (select-any (keypath :attrs node-id) g))) (node-ids g)))
 
 (defn edges [g] (vec (#'uber/edges g)))
@@ -27,6 +29,31 @@
   ([g src dest] (add-directed-edge g src dest nil))
   ([g src dest attributes]
    (#'uber/add-directed-edge g src dest attributes)))
+
+(def remove-node
+  "[g node]"
+  #'uber/remove-node)
+
+(def add-attrs
+  "[g node-or-edge attribute-map]
+   [g n1 n2 attribute-map]
+
+   Merges an attribute map with the existing attributes of a node or edge"
+  uber/add-attrs)
+
+(def set-attrs
+  "[g node-or-edge attribute-map]
+   [g n1 n2 attribute-map]
+
+   Sets the attribute map of a node or edge, overwriting existing attribute map"
+  uber/set-attrs)
+
+(def remove-attrs
+  "[g node-or-edge attributes]
+   [g n1 n2 attributes]
+
+   Removes the attributes from the node or edge"
+  uber/remove-attrs)
 
 (defn make
   "creates an ubergraph"
