@@ -428,7 +428,7 @@
                         (- (/ window-height 2)))]
     (doto
       (window/make
-        {:on-close #(reset! *window nil)
+        {:on-close (if (debug?) #(reset! *window nil) #(System/exit 0))
          :on-paint #'on-paint
          :on-event #'on-event})
       (window/set-title "Fruit Economy 👋")
