@@ -152,6 +152,106 @@
       graph
       rules')))
 
+(defn id+kind+tag->label [{:keys [id kind tag] :as _node}] (str id "\n" kind (when tag (str " " tag))))
+
+(defn generate-rules []
+  (let [categories [:bush :tree :flower :herb :shroom :nut :fruit]]
+    (into []
+      (comp
+        (map
+          (fn [category-kw]
+            (let [category-str (name category-kw)
+                  exists-kw (keyword (str "exists-" category-str))
+                  unused-kw (keyword (str "unused-" category-str))
+                  exists-process-kw (keyword (str "exists-" category-str "-process"))
+                  exists-processed-kw (keyword (str "exists-" category-str "-processed"))
+                  processed-kw (keyword (str category-str "-processed"))
+                  exists-good-kw (keyword (str "exists-" category-str "-good"))
+                  good-kw (keyword (str category-str "-good"))]
+              [;; innovation-token =>
+               ;;   (exists-category-process|exists-category-good)
+               {:match [[{:kind :innovation-token}]]
+                :alter (fn [graph innovation-tokens]
+                         (let [innovation-token (first innovation-tokens)
+                               token-id (re-find #"[0-9]+" (:id innovation-token))
+                               category-kw (rand-nth categories)
+                               category-str (name category-kw)
+                               innovation (rand-nth ["process" "good"])
+                               innovation-str (str category-str "-" innovation)
+                               exists-innovation-str (str "exists-" innovation-str)
+                               exists-innovation-kw (keyword exists-innovation-str)
+                               innovation-node-id (str innovation-str "-" token-id)]
+                           (-> graph
+                             ;; remove the old token, we might want to keep it in the future if they're created by civ's
+                             ;;   and are linked to them, we should probably use numbers as id's so that we don't need to rename nodes
+                             (graph/remove-node (:id innovation-token))
+                             (graph/add-node-with-attrs [innovation-node-id {:id innovation-node-id :kind exists-innovation-kw :color "purple"}])
+                             (graph/update-labels {:nodes [{:id innovation-node-id :label-fn id+kind+tag->label}]}))))}
+
+               ;; source + exists-category =>
+               ;;   unused-category +
+               ;;   [source unused-category]
+               {:match [[{:kind :source}]
+                        [{:kind exists-kw}]]
+                :alter (fn [graph sources exists-categories]
+                         (let [source (rand-nth sources)
+                               exists-category (rand-nth exists-categories)]
+                           (-> graph
+                             (assoc-in [:attrs (:id exists-category) :kind] unused-kw)
+                             (graph/add-directed-edge (:id source) (:id exists-category))
+                             (graph/update-labels {:nodes [{:id (:id exists-category) :label-fn id+kind+tag->label}]}))))}
+
+               ;; unused-category + exists-category-process =>
+               ;;   category + category-processed + processor +
+               ;;   [category processor] [processor category-processed]
+               {:match [[{:kind unused-kw}]
+                        [{:kind exists-process-kw}]]
+                :alter (fn [graph unused-categories exists-category-processes]
+                         (let [unused-category (rand-nth unused-categories)
+                               exists-category-process (rand-nth exists-category-processes)
+                               processor (rand-nth processes)
+                               processor-node {:id (keyword (str (name (:id unused-category)) "-processor")) :kind :process :tag processor}]
+                           (-> graph
+                             (assoc-in [:attrs (:id unused-category) :kind] category-kw)
+                             (assoc-in [:attrs (:id exists-category-process) :kind] processed-kw)
+                             (graph/add-node-with-attrs [(:id processor-node) processor-node])
+                             (graph/add-directed-edge (:id unused-category) (:id processor-node))
+                             (graph/add-directed-edge (:id processor-node) (:id exists-category-process))
+                             (graph/update-labels {:nodes [{:id (:id unused-category) :label-fn id+kind+tag->label}
+                                                           {:id (:id exists-category-process) :label-fn id+kind+tag->label}
+                                                           {:id (:id processor-node) :label-fn id+kind+tag->label}]}))))}
+
+               ;; unused-category + exists-category-process + exists-category-good =>
+               ;;   category + category-good + category-processed + processor +
+               ;;   [category processor] [processor category-good] [processor category-processed]
+               {:match [[{:kind unused-kw}]
+                        [{:kind exists-processed-kw}]
+                        [{:kind exists-good-kw}]]
+                :alter (fn [graph unused-categories exists-category-processeds exists-category-goods]
+                         (let [unused-category (rand-nth unused-categories)
+                               exists-category-processed (rand-nth exists-category-processeds)
+                               exists-category-good (rand-nth exists-category-goods)
+                               processor (rand-nth processes)
+                               processor-node {:id (keyword (str (name (:id unused-category)) "-process")) :kind :process :tag processor}]
+                           (-> graph
+                             (assoc-in [:attrs (:id unused-category) :kind] category-kw)
+                             (assoc-in [:attrs (:id exists-category-processed) :kind] processed-kw)
+                             (assoc-in [:attrs (:id exists-category-good) :kind] good-kw)
+                             (graph/add-node-with-attrs [(:id processor-node) processor-node])
+                             (graph/add-directed-edge (:id unused-category) (:id processor-node))
+                             (graph/add-directed-edge (:id processor-node) (:id exists-category-processed) {:label :=})
+                             (graph/add-directed-edge (:id processor-node) (:id exists-category-good) {:label :=})
+                             (graph/update-labels {:nodes [{:id (:id unused-category) :label-fn id+kind+tag->label}
+                                                           {:id (:id exists-category-processed) :label-fn id+kind+tag->label}
+                                                           {:id (:id exists-category-good) :label-fn id+kind+tag->label}
+                                                           {:id (:id processor-node) :label-fn id+kind+tag->label}]}))))}])))
+        cat)
+      categories)))
+
+(defn step-economy [land-data]
+  (let [rules (generate-rules)]
+    (update-in land-data [::land/economy :ubergraph] apply-rules rules)))
+
 (comment
   (let [;; Extending the matching rules?
         ;;   https://www.metosin.fi/blog/malli-regex-schemas/
