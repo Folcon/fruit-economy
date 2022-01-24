@@ -52,11 +52,13 @@
 (defn add-resources [{::land/keys [area->units] :as land-data}]
   (reduce
     (fn [land {:keys [name kind] :as resource}]
-      (let [resource-node {:id name :ref resource
-                           :kind (->> (get land/kind->category kind)
-                                   clojure.core/name
-                                   (str "exists-")
-                                   keyword)}]
+      (let [node-kind (->> (get land/kind->category kind)
+                        clojure.core/name
+                        (str "exists-")
+                        keyword)
+            resource-node {:id name :ref resource
+                           :kind node-kind
+                           :label (str name "\n" node-kind)}]
         (-> land
           (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name resource-node]))))
     land-data
