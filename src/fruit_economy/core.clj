@@ -2,11 +2,11 @@
   (:require
    [clojure.string :as str]
    [clojure.java.io :as io]
+   [environ.core :refer [env]]
    [clojure.stacktrace :as stacktrace]
    [io.github.humbleui.core :as hui]
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
-   [nrepl.cmdline :as nrepl]
    [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.colour :refer [colour]]
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
@@ -21,6 +21,12 @@
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
    [io.github.humbleui.types IPoint Rect]))
 
+
+;; Ensure this is available for debug,
+;;   but not prod otherwise we get compile errors
+(when (= (env :debug?) "true")
+  (require 'nrepl.cmdline)
+  (resolve 'nrepl.cmdline))
 
 (set! *warn-on-reflection* true)
 
@@ -420,7 +426,8 @@
       (window/set-z-order :floating))))
 
 (defn -main [& args]
-  (future (apply nrepl/-main args))
+  (when (= (env :debug?) "true")
+    (future (apply nrepl.cmdline/-main args)))
   (hui/init)
   (reset! *window (make-window))
   (hui/start))
