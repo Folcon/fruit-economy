@@ -347,7 +347,9 @@
                 (ui/padding 10
                   (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)))
               (if (and (graph? economy) economy?)
-                (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})
+                (ui/valign 0.5
+                  (ui/halign 0.5
+                    (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})))
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
               (ui/padding 10
