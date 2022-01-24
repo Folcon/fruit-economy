@@ -30,9 +30,9 @@
       ::civ-letters allowed-civ-letters
       ::history []
       ::lang (make-lang)
-      ::economy (let [nodes [{:id :source :color "green"
+      ::economy (let [nodes [{:id :source :kind :source :color "green"
                               :label [:P {:BORDER 1} "supply"]}
-                             {:id :sink :color "red"
+                             {:id :sink :kind :sink :color "red"
                               :label [:P {:BORDER 1} "demand"]}]
                       edges [[:source :sink]]]
                   {:ubergraph (make {:nodes nodes :edges edges})})})))
