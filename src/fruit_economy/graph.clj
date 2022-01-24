@@ -81,7 +81,7 @@
                        #_[:dot :neato :twopi :circo :fdp :osage :patchwork :sfdp]
                        ;; by preference
                        #_[:circo :sfdp :osage :twopi :neato :fdp]
-                       :layout :circo})))
+                       :layout :fdp})))
 
 (def find-edges
   "[g src dest] [g query]
