@@ -1,11 +1,14 @@
 .PHONY: dev prod
 
 dev:
-	lein with-profile +macos,+dev trampoline run
+	lein clean && lein with-profile +macos,+dev trampoline run
 
-prod: prod-mac # prod-win prod-linux ## Others can only be built on respective systems, so test later
+uberjar:
+	lein clean && lein uberjar
+
+prod: uberjar prod-mac # prod-win prod-linux ## Others can only be built on respective systems, so test later
 	echo "DONE"
-prod-mac:
+prod-mac: uberjar
 	export JAVA_HOME=`/usr/libexec/java_home` && \
 	cd releases && \
 	$$JAVA_HOME/bin/jpackage --name "Fruit Economy" \
