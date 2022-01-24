@@ -105,3 +105,18 @@
             v)))
       []
       (node-ids g))))
+
+(defn update-labels [g {:keys [nodes edges]}]
+  (as-> g $
+    (reduce
+      (fn [g {:keys [id label-fn] :as _n}]
+        (let [node (id->node g id)]
+          (add-attrs g id {:label (label-fn node)})))
+      $
+      nodes)
+    (reduce
+      (fn [g {:keys [src dest label-fn] :as _e}]
+        (let [edge (find-edges g src dest)]
+          (add-attrs g src dest {:label (label-fn edge)})))
+      $
+      edges)))
