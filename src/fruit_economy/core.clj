@@ -280,8 +280,11 @@
         (let [history-index (get state :history-index)]
           (swap! *state assoc :history-index (max 0 (dec history-index))))
 
-        #{:key/y}
+        #{:key/t}
         (swap! *state update :economy? not)
+
+        #{:key/y}
+        (swap! *state update :world economy/step-economy)
 
         #{:key/p}
         (swap! *state update :paused? not)
@@ -355,7 +358,9 @@
               (ui/padding 10
                 (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling (str " controlling " controlling))) font-default fill-text))
               (ui/padding 10
-                (ui/label (str "[y]: Swap between Map and Economy / Tech Tree, [r]: Reset World") font-small fill-text)))))))))
+                (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") font-small fill-text)))))))))
+
+
 
 (comment
   (window/request-frame @*window))
