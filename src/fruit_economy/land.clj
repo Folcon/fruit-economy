@@ -30,10 +30,17 @@
       ::civ-letters allowed-civ-letters
       ::history []
       ::lang (make-lang)
-      ::economy (let [nodes [{:id :source :kind :source :color "green"
-                              :label [:P {:BORDER 1} "supply"]}
-                             {:id :sink :kind :sink :color "red"
-                              :label [:P {:BORDER 1} "demand"]}]
+      ::economy (let [nodes (into
+                              [{:id :source :kind :source :color "green"
+                                :label [:P {:BORDER 1} "supply"]}
+                               {:id :sink :kind :sink :color "red"
+                                :label [:P {:BORDER 1} "demand"]}]
+                              (map
+                                (fn [id]
+                                  {:id (str "innovation-token-" id)
+                                   :kind :innovation-token :color "purple"
+                                   :label "innovation-token"}))
+                              (range (+ 2 (rand-int 5))))
                       edges [[:source :sink]]]
                   {:ubergraph (make {:nodes nodes :edges edges})})})))
 
