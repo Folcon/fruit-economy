@@ -44,7 +44,6 @@
             (if-let [unit (area->units area)]
               (-> (land/log-history land (str name " lays claim to a " (:name unit) " at " area))
                 (update-in [::land/economy :civ-name->source name unit] (fnil inc 0))
-                (update-in [::land/economy :edges] conj [name (:name unit) {:label (str "at " area)}])
                 (update-in [::land/economy :ubergraph] graph/add-directed-edge name (:name unit) {:label (str "at " area)}))
               land))
           $
