@@ -92,12 +92,24 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: tree /F
 
+      - name: rename file on linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: mv fruit-economy_1.0-1_amd64.deb fruit-economy_$VERSION_ARG_amd64.deb
+
+      - name: rename file on macos
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: mv Fruit\ Economy-1.0.dmg Fruit\ Economy-$VERSION_ARG.dmg
+
+      #- name: rename file on windows
+      #  if: ${{ matrix.os == 'windows-latest' }}
+      #  run: mv fruit-economy_1.0-1_amd64.deb fruit-economy_$VERSION_ARG_amd64.deb
+
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Fruit Economy-1.0.deb
+            fruit-economy_$VERSION_ARG_amd64.deb
 
           #upload_url: ${{ github.event.release.upload_url }}
           #asset_path: fruit-economy-${{ github.ref_name }}-amd64.deb
@@ -109,7 +121,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Fruit Economy-1.0.dmg
+            Fruit Economy-$VERSION_ARG.dmg
           #upload_url: ${{ github.event.release.upload_url }}
           #asset_path: fruit-economy-${{ github.ref_name }}.dmg
           #asset_name: fruit-economy-${{ github.ref_name }}.dmg
