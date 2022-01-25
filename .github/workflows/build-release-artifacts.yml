@@ -2,6 +2,10 @@ name: Build Release Artifacts
 on:
   release:
     types: [created]
+  workflow_run:
+    workflows: [Release]
+    types:
+      - completed
 jobs:
   build-deb:
     strategy:
