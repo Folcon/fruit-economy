@@ -31,11 +31,11 @@ jobs:
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
-          repo: HumbleUI/HumbleUI
+          repo: HumbleUI/JWM
           workflow: build-deploy.yml
-          # workflow_conclusion: success
+          workflow_conclusion: success
           name: jars
-          # run_id: 1718998078
+          run_id: 1718998078
 
       - name: install jwm to maven repo
         run: mvn install:install-file -Dfile=jars/jwm-b3fecb126a.jar -DpomFile=jars/maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
