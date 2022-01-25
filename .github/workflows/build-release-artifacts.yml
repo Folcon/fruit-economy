@@ -13,7 +13,7 @@ jobs:
         os: [
             ubuntu-latest,
             macos-latest,
-            # windows-latest
+            windows-latest
         ]
 
     runs-on: ${{ matrix.os }}
@@ -44,6 +44,10 @@ jobs:
       - name: recursively print info in current directory
         if: ${{ matrix.os != 'windows-latest' }}
         run: ls && find . -maxdepth 2 -type d -exec ls -ld "{}" \;
+
+      - name: recursively print info in current directory
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: tree /F
 
       - name: install jwm to maven repo
         run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
