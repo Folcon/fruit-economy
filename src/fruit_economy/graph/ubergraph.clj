@@ -1,7 +1,6 @@
 (ns fruit-economy.graph.ubergraph
   (:require [ubergraph.core :as uber]
-            [com.rpl.specter :refer [select-any keypath]]
-            [fruit-economy.graph.viz :refer [ubergraph->svg]]))
+            [com.rpl.specter :refer [select-any keypath]]))
 
 (defn node-ids [g] (vec (#'uber/nodes g)))
 
