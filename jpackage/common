@@ -1,3 +1,4 @@
+--verbose
 --name "Fruit Economy"
 --input target
 --main-jar fruit-economy-standalone.jar
