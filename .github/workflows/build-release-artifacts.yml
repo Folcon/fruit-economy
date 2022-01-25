@@ -58,7 +58,7 @@ jobs:
 
       - name: install jwm to maven repo windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven\META-INF\maven\io.github.humbleui\jwm\pom.xml
+        run: copy .\maven\META-INF\maven\io.github.humbleui\jwm\pom.xml pom.xml && mvn install:install-file -Dfile=.\jwm-b3fecb126a.jar
 
       - name: build uberjar
         run: lein uberjar
@@ -82,7 +82,7 @@ jobs:
 
       - name: build package on windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: copy .\maven\META-INF\maven\io.github.humbleui\jwm\pom.xml pom.xml && jpackage @jpackage/common @jpackage/windows $VERSION_ARG
+        run: jpackage @jpackage/common @jpackage/windows $VERSION_ARG
 
       - name: recursively print info again in current directory macos + linux
         if: ${{ matrix.os != 'windows-latest' }}
