@@ -37,8 +37,11 @@ jobs:
           name: jars
           run_id: 1718998078
 
+      - name: recursively print info in current directory
+        run: ls && find . -maxdepth 2 -type d -exec ls -ld "{}" \;
+
       - name: install jwm to maven repo
-        run: mvn install:install-file -Dfile=jars/jwm-b3fecb126a.jar -DpomFile=jars/maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
+        run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
 
       - name: build uberjar
         run: lein uberjar
