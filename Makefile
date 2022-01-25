@@ -8,7 +8,7 @@ uberjar:
 
 prod: uberjar prod-mac # prod-win prod-linux ## Others can only be built on respective systems, so test later
 	echo "DONE"
-prod-mac: uberjar
+prod-mac:
 	export JAVA_HOME=`/usr/libexec/java_home` && \
 	cd releases && \
 	$$JAVA_HOME/bin/jpackage --name "Fruit Economy" \
