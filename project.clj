@@ -22,8 +22,7 @@
                  [ubergraph "0.8.2"]
                  [hiccup "1.0.5"]
                  [guru.nidi/graphviz-java "0.18.1"]
-                 [com.squidpony/squidlib-util "3.0.4"]
-                 [com.clojure-goes-fast/clj-async-profiler "1.0.0-alpha1"]]
+                 [com.squidpony/squidlib-util "3.0.4"]]
   :java-source-paths ["src/java" "test/java"]
   :plugins [[reifyhealth/lein-git-down "0.4.0"]
             [lein-environ "1.2.0"]]
@@ -36,6 +35,7 @@
              :dev {:jvm-opts  ["-Djdk.attach.allowAttachSelf" "-XX:+UnlockDiagnosticVMOptions" "-XX:+DebugNonSafepoints"]
                    :source-paths ["dev"]
                    :env {:debug? "true"}
-                   :dependencies  [[nrepl/nrepl "0.9.0"]]
+                   :dependencies  [[nrepl/nrepl "0.9.0"]
+                                   [com.clojure-goes-fast/clj-async-profiler "1.0.0-alpha1"]]
                    :main-opts   ["-m" "user" "--interactive"]}}
   :repl-options {:init-ns fruit-economy.core})
