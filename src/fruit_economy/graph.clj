@@ -63,6 +63,7 @@
    creates an ubergraph"
   uber-wrapper/make)
 
+#_
 (defn ->svg
   "generates an svg string from an ubergraph"
   [g]
@@ -74,6 +75,10 @@
                        ;; by preference
                        #_[:circo :sfdp :osage :twopi :neato :fdp]
                        :layout :fdp})))
+(defn ->svg
+  "generates an svg string from an ubergraph"
+  [g]
+  (ubergraph->svg g))
 
 (def find-edges
   "[g src dest] [g query]
