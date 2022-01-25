@@ -72,23 +72,36 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: jpackage @jpackage/common @jpackage/windows
 
+      - name: recursively print info again in current directory macos + linux
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: ls && find . -maxdepth 2 -type d -exec ls -ld "{}" \;
+
+      - name: recursively print info again in current directory windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: tree /F
+
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: fruit-economy-${{ github.ref_name }}-amd64.deb
-          asset_name: fruit-economy-${{ github.ref_name }}-amd64.deb
-          asset_content_type: application/vnd.debian.binary-package
+          files: |
+            "Fruit Economy-1.0.deb"
+
+          #upload_url: ${{ github.event.release.upload_url }}
+          #asset_path: fruit-economy-${{ github.ref_name }}-amd64.deb
+          #asset_name: fruit-economy-${{ github.ref_name }}-amd64.deb
+          #asset_content_type: application/vnd.debian.binary-package
 
       - name: release artifacts on macos
         if: ${{ matrix.os == 'macos-latest' }}
         uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: fruit-economy-${{ github.ref_name }}.dmg
-          asset_name: fruit-economy-${{ github.ref_name }}.dmg
-          asset_content_type: application/x-apple-diskimage
+          files: |
+            "Fruit Economy-1.0.dmg"
+          #upload_url: ${{ github.event.release.upload_url }}
+          #asset_path: fruit-economy-${{ github.ref_name }}.dmg
+          #asset_name: fruit-economy-${{ github.ref_name }}.dmg
+          #asset_content_type: application/x-apple-diskimage
 
       - name: release artifacts on windows
         if: ${{ matrix.os == 'windows-latest' }}
