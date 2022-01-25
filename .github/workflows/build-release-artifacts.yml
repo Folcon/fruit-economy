@@ -38,6 +38,7 @@ jobs:
           run_id: 1718998078
 
       - name: recursively print info in current directory
+        if: ${{ matrix.os != 'windows-latest' }}
         run: ls && find . -maxdepth 2 -type d -exec ls -ld "{}" \;
 
       - name: install jwm to maven repo
