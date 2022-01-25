@@ -1,17 +1,19 @@
 (ns fruit-economy.graph
   (:require [ubergraph.core :as uber]
-            [com.rpl.specter :refer [select-any keypath]]))
+            [com.rpl.specter :refer [select-any keypath]]
+            [fruit-economy.graph.ubergraph :as uber-wrapper]
+            [fruit-economy.graph.viz :refer [ubergraph->svg]]))
 
 
 (defn graph? [g] (contains? g :ubergraph))
 
-(defn node-ids [g] (vec (#'uber/nodes g)))
+(def node-ids uber-wrapper/node-ids)
 
 (defn id->node [g id] (select-any (keypath :attrs id) g))
 
-(defn nodes [g] (into [] (map (fn [node-id] (select-any (keypath :attrs node-id) g))) (node-ids g)))
+(def nodes uber-wrapper/nodes)
 
-(defn edges [g] (vec (#'uber/edges g)))
+(def edges uber-wrapper/edges)
 
 (def submap?
   "[m1 m2]
@@ -23,12 +25,12 @@
   "[g [node attr-map]]
 
    Adds node to g with a given attribute map. Takes a [node attribute-map] pair."
-  #'uber/add-node-with-attrs)
+  #'uber-wrapper/add-node-with-attrs)
 
-(defn add-directed-edge
-  ([g src dest] (add-directed-edge g src dest nil))
-  ([g src dest attributes]
-   (#'uber/add-directed-edge g src dest attributes)))
+(def add-directed-edge
+  "[g src dest]
+   [g src dest attributes]"
+  #'uber-wrapper/add-directed-edge)
 
 (def remove-node
   "[g node]"
@@ -55,21 +57,11 @@
    Removes the attributes from the node or edge"
   uber/remove-attrs)
 
-(defn make
-  "creates an ubergraph"
-  [{:keys [nodes edges]}]
-  (-> (uber/ubergraph true false)
-    (as-> $
-      (reduce
-        (fn [graph {:keys [id] :as node}]
-          (add-node-with-attrs graph [id node]))
-        $
-        nodes)
-      (reduce
-        (fn [graph [to from attrs]]
-          (add-directed-edge graph to from attrs))
-        $
-        edges))))
+(def make
+  "[{:keys [nodes edges]}]
+
+   creates an ubergraph"
+  uber-wrapper/make)
 
 (defn ->svg
   "generates an svg string from an ubergraph"
