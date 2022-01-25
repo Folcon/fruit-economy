@@ -68,15 +68,15 @@ jobs:
 
       - name: build package on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: jpackage @jpackage/common @jpackage/linux
+        run: jpackage @jpackage/common @jpackage/linux --app-version $RELEASE_VERSION
 
       - name: build package on macos
         if: ${{ matrix.os == 'macos-latest' }}
-        run: jpackage @jpackage/common @jpackage/mac
+        run: jpackage @jpackage/common @jpackage/mac --app-version $RELEASE_VERSION
 
       - name: build package on windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: jpackage @jpackage/common @jpackage/windows
+        run: jpackage @jpackage/common @jpackage/windows --app-version $RELEASE_VERSION
 
       - name: recursively print info again in current directory macos + linux
         if: ${{ matrix.os != 'windows-latest' }}

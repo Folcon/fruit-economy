@@ -1,5 +1,4 @@
 --name "Fruit Economy"
---app-version $RELEASE_VERSION
 --input target
 --main-jar fruit-economy-standalone.jar
 --main-class clojure.main
