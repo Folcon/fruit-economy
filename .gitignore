@@ -10,3 +10,9 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+
+# Remove macos .DS_Store
+.DS_Store
+
+# .idea files
+.idea/
