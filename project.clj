@@ -30,6 +30,7 @@
   :git-down {humbleui {:coordinates HumbleUI/HumbleUI}}
   ;:jvm-opts  ["-XstartOnFirstThread"]
   :main fruit-economy.core
+  :uberjar-name "fruit-economy-standalone.jar"
   :env {:game-version :project/version}
   :profiles {:macos {:jvm-opts  ["-XstartOnFirstThread"]}
              :dev {:jvm-opts  ["-Djdk.attach.allowAttachSelf" "-XX:+UnlockDiagnosticVMOptions" "-XX:+DebugNonSafepoints"]

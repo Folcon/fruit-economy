@@ -1,6 +1,6 @@
 --name "Fruit Economy"
 --input dist
---main-jar fruit-economy.jar
+--main-jar fruit-economy-standalone.jar
 --main-class clojure.main
 --arguments -m
 --arguments fruit-economy.core
