@@ -12,9 +12,9 @@
 
 (defn make-civ-node [{:fruit-economy.civ/keys [name tint] :as civ} sources]
   {:id (str name) :color "blue"
-   :label (into [:TABLE {:BORDER 0}
-                 [:TR [:TD {:BORDER 1} (str name)]]]
-            (map (fn [[k v]] [:TR [:TD (:name k)] [:TD {:BORDER 1} v]]))
+   :label (into [:table {:border 0}
+                 [:tr [:td {:border 1} (str name)]]]
+            (map (fn [[k v]] [:tr [:td (:name k)] [:td {:border 1} v]]))
             sources)})
 
 (defn assign-source->civ [{::land/keys [economy area->civ-name area->units] :as land-data} {:fruit-economy.civ/keys [name] :as _civ} area]
@@ -152,7 +152,7 @@
       graph
       rules')))
 
-(defn id+kind+tag->label [{:keys [id kind tag] :as _node}] (str id "\n" kind (when tag (str " " tag))))
+(defn id+kind+tag->label [{:keys [id kind tag] :as _node}] (str id "<br />" kind (when tag (str " " tag))))
 
 (defn generate-rules []
   (let [categories [:bush :tree :flower :herb :shroom :nut :fruit]]

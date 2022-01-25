@@ -32,9 +32,9 @@
       ::lang (make-lang)
       ::economy (let [nodes (into
                               [{:id :source :kind :source :color "green"
-                                :label [:P {:BORDER 1} "supply"]}
+                                :label "supply"}
                                {:id :sink :kind :sink :color "red"
-                                :label [:P {:BORDER 1} "demand"]}]
+                                :label "demand"}]
                               (map
                                 (fn [id]
                                   {:id (str "innovation-token-" id)
