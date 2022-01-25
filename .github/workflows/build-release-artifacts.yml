@@ -24,10 +24,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
-      - name: set latest tag as output
-        id: tag_step
-        run: echo ::set-output name=release_tag::${GITHUB_REF#refs/*/}
-
       - name: prepare java
         uses: actions/setup-java@v2
         with:
@@ -91,7 +87,6 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag_step.outputs.release_tag }}
           files: |
             Fruit Economy-1.0.deb
 
