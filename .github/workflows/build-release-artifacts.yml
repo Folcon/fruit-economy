@@ -64,7 +64,7 @@ jobs:
           ; $env:ARTIFACT_ID=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression="project.artifactId" -q -DforceStdout) `
           ; $env:VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression="project.version" -q -DforceStdout) `
           ; $env:PACKAGING=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression="project.packaging" -q -DforceStdout) `
-          ; & mvn "install:install-file -Dfile=.\jwm-b3fecb126a.jar -DgroupId=$env:GROUP_ID -DartifactId=$env:ARTIFACT_ID -Dversion=$env:VERSION -Dpackaging=$env:PACKAGING"
+          ; & mvn install:install-file -Dfile=.\jwm-b3fecb126a.jar -DgroupId="$env:GROUP_ID" -DartifactId="$env:ARTIFACT_ID" -Dversion="$env:VERSION" -Dpackaging="$env:PACKAGING"
 
       - name: build uberjar
         run: lein uberjar
