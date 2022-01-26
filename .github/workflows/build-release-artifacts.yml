@@ -63,7 +63,11 @@ jobs:
 
       - name: get deps on windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: lein deps
+        shell: bash
+        run:  |
+          curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > lein \
+          chmod a+x lein \
+          lein uberjar
 
       - name: install humbleui to maven repo windows
         if: ${{ matrix.os == 'windows-latest' }}
