@@ -66,12 +66,8 @@ jobs:
         shell: bash
         run:  |
           curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > lein && \
-          chmod a+x lein
-
-      - name: recursively print info in current directory windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: bash
-        run: ls -lah && lein uberjar
+          chmod a+x lein && \
+          ./lein uberjar
 
       - name: install humbleui to maven repo windows
         if: ${{ matrix.os == 'windows-latest' }}
