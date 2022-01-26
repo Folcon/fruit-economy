@@ -52,7 +52,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: tree /F
 
-      - name: install jwm to maven repo macos + li
+      - name: install jwm to maven repo macos + linux
         if: ${{ matrix.os != 'windows-latest' }}
         run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
 
