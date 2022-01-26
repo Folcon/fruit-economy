@@ -28,7 +28,7 @@
             [lein-environ "1.2.0"]]
   :repositories [["public-github" {:url "git://github.com"}]]
   :git-down {humbleui {:coordinates HumbleUI/HumbleUI}}
-  ;:jvm-opts  ["-XstartOnFirstThread"]
+  :middleware [lein-git-down.plugin/inject-properties]
   :main fruit-economy.core
   :uberjar-name "fruit-economy-standalone.jar"
   :env {:game-version :project/version}
