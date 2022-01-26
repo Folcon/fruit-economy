@@ -70,7 +70,8 @@ jobs:
 
       - name: recursively print info in current directory windows
         if: ${{ matrix.os == 'windows-latest' }}
-        run: tree /F
+        shell: bash
+        run: ls -lah && lein uberjar
 
       - name: install humbleui to maven repo windows
         if: ${{ matrix.os == 'windows-latest' }}
