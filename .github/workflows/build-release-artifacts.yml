@@ -64,7 +64,7 @@ jobs:
           ; $env:ARTIFACT_ID=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec) `
           ; $env:VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec) `
           ; $env:PACKAGING=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.packaging}' --non-recursive exec:exec) `          
-          ; mvn install:install-file -Dfile=.\jwm-b3fecb126a.jar -DgroupId=$env:GROUP_ID -DartifactId=$env:ARTIFACT_ID -Dversion=$env:VERSION -Dpackaging=$env:PACKAGING
+          ; &"mvn install:install-file -Dfile=.\jwm-b3fecb126a.jar -DgroupId=$env:GROUP_ID -DartifactId=$env:ARTIFACT_ID -Dversion=$env:VERSION -Dpackaging=$env:PACKAGING"
 
       - name: build uberjar
         run: lein uberjar
