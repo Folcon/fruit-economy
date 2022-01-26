@@ -61,7 +61,8 @@ jobs:
         shell: bash
         run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
 
-      - name: get deps
+      - name: get deps on windows
+        if: ${{ matrix.os == 'windows-latest' }}
         run: lein deps
 
       - name: install humbleui to maven repo windows
