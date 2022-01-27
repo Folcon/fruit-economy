@@ -70,8 +70,8 @@ jobs:
           && echo ::set-output app_version_arg= \
           || echo ::set-output app_version_arg=$(echo --app-version ${RELEASE_VERSION})
 
-      - name: did we record app-version?
-        run: echo "${{ steps.app_version.outputs.app_version_arg }}"
+      - name: did we record app-version or the RELEASE_VERSION?
+        run: echo "${{ steps.app_version.outputs.app_version_arg }}" ; echo "${RELEASE_VERSION}" ; echo "${{ env.RELEASE_VERSION }}"
 
       - name: build package on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
