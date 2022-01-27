@@ -67,8 +67,8 @@ jobs:
         shell: bash
         run: |
           [[ ${RELEASE_VERSION%.*.*} == 0 ]] \
-          && echo ::set-output app_version_arg= \
-          || echo ::set-output app_version_arg=$(echo --app-version ${RELEASE_VERSION})
+          && echo ::set-output name=app_version_arg::"" \
+          || echo ::set-output name=app_version_arg::$(echo --app-version ${RELEASE_VERSION})
 
       - name: did we record app-version or the RELEASE_VERSION?
         run: echo "${{ steps.app_version.outputs.app_version_arg }}" ; echo "${RELEASE_VERSION}" ; echo "${{ env.RELEASE_VERSION }}"
