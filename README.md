@@ -1,6 +1,16 @@
-# fruit-economy
+# Fruit Economy
 
-A Clojure library designed to ... well, that part is up to you.
+This page is for a **very alpha** prototype which is still **actively** in development.
+
+Fruit Economy is something I'm fiddling around with to play with the ideas of an evolving world where:
+
+- There is minimal direct combat
+- There's space for non-standard races
+- Lots of things are generated, including as much as possible:
+  - The tech tree
+  - What's available for people in these civilisations to buy or trade
+
+The art is going to be very basic to start, but that may change as things continue.
 
 ## Usage
 
@@ -14,9 +24,12 @@ FIXME
 
 From `https://github.com/HumbleUI/HumbleUI/issues/13#issuecomment-1017687992`
 
+# Store Links
+- [itch.io](https://folcon.itch.io/fruit-economy), it may be 👻(hidden 😉).
+
 ## License
 
-Copyright © 2022 FIXME
+Copyright © 2022 Folcon
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
