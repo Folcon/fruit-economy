@@ -52,29 +52,12 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: tree /F
 
-      - name: install jwm to maven repo macos + linux
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
-
-      - name: install jwm to maven repo windows
-        if: ${{ matrix.os == 'windows-latest' }}
+      - name: install jwm to maven repo
         shell: bash
         run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
-
-      - name: get deps on windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: bash
-        run:  |
-          curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > lein && \
-          chmod a+x lein && \
-          ./lein uberjar
-
-      - name: install humbleui to maven repo windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: bash
-        run: mvn install:install-file -Dfile=~/.gitlibs\libs\humbleui\humbleui\fc60fd319ba905dada9a6917a1a1632413c132d5\target\humbleui-0.1.0.jar
 
       - name: build uberjar
+        shell: bash
         run: lein uberjar
 
       - name: create version number for app
