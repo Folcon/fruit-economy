@@ -57,7 +57,6 @@ jobs:
         run: mvn install:install-file -Dfile=jwm-b3fecb126a.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
 
       - name: build uberjar
-        shell: bash
         run: lein uberjar
 
       - name: create version number for app
