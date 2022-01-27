@@ -24,7 +24,7 @@
                  [guru.nidi/graphviz-java "0.18.1"]
                  [com.squidpony/squidlib-util "3.0.4"]]
   :java-source-paths ["src/java" "test/java"]
-  :plugins [[reifyhealth/lein-git-down "0.4.0"]
+  :plugins [[reifyhealth/lein-git-down "0.4.1"]
             [lein-environ "1.2.0"]]
   :repositories [["public-github" {:url "git://github.com"}]]
   :git-down {humbleui {:coordinates HumbleUI/HumbleUI}}
