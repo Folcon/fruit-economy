@@ -124,7 +124,9 @@ jobs:
       - name: rename file on windows
         shell: bash
         if: ${{ matrix.os == 'windows-latest' }}
-        run: mv Fruit\ Economy/Fruit\ Economy.exe Fruit\ Economy-${{ env.RELEASE_VERSION }}.exe
+        run: |
+          zip -9 -y -r Fruit\ Economy.zip Fruit\ Economy/ && \
+          mv Fruit\ Economy.zip Fruit\ Economy-${{ env.RELEASE_VERSION }}.zip
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -154,7 +156,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Fruit Economy-${{ env.RELEASE_VERSION }}.exe
+            Fruit Economy-${{ env.RELEASE_VERSION }}.zip
           #upload_url: ${{ github.event.release.upload_url }}
           #asset_path: fruit-economy-${{ github.ref_name }}.exe
           #asset_name: fruit-economy-${{ github.ref_name }}.exe
