@@ -125,8 +125,8 @@ jobs:
         uses: vimtor/action-zip@v1
         if: ${{ matrix.os == 'windows-latest' }}
         with:
-          files: Fruit\ Economy/
-          dest: Fruit\ Economy-${{ env.RELEASE_VERSION }}.zip
+          files: "Fruit Economy/"
+          dest: "Fruit Economy-${{ env.RELEASE_VERSION }}.zip"
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
