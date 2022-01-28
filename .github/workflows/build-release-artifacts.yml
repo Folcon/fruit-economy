@@ -119,7 +119,7 @@ jobs:
 
       - name: rename file on macos
         if: ${{ matrix.os == 'macos-latest' }}
-        run: mv Fruit\ Economy-1.0.dmg Fruit\ Economy-${{ env.RELEASE_VERSION }}.dmg
+        run: mv Fruit\ Economy-1.0.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
       - name: zip + rename file on windows
         uses: vimtor/action-zip@v1
@@ -145,7 +145,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Fruit Economy-${{ env.RELEASE_VERSION }}.dmg
+            Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
           #upload_url: ${{ github.event.release.upload_url }}
           #asset_path: fruit-economy-${{ github.ref_name }}.dmg
           #asset_name: fruit-economy-${{ github.ref_name }}.dmg
