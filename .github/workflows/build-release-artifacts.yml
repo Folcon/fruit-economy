@@ -121,12 +121,12 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
         run: mv Fruit\ Economy-1.0.dmg Fruit\ Economy-${{ env.RELEASE_VERSION }}.dmg
 
-      - name: rename file on windows
-        shell: bash
+      - name: zip + rename file on windows
+        uses: papeloto/action-zip@v1
         if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          zip -9 -y -r Fruit\ Economy.zip Fruit\ Economy/ && \
-          mv Fruit\ Economy.zip Fruit\ Economy-${{ env.RELEASE_VERSION }}.zip
+        with:
+          files: Fruit\ Economy/
+          dest: Fruit\ Economy-${{ env.RELEASE_VERSION }}.zip
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
