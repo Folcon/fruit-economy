@@ -122,7 +122,7 @@ jobs:
         run: mv Fruit\ Economy-1.0.dmg Fruit\ Economy-${{ env.RELEASE_VERSION }}.dmg
 
       - name: zip + rename file on windows
-        uses: papeloto/action-zip@v1
+        uses: vimtor/action-zip@v1
         if: ${{ matrix.os == 'windows-latest' }}
         with:
           files: Fruit\ Economy/
