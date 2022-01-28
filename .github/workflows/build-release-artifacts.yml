@@ -96,6 +96,21 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         run: tree /F
 
+      - name: rename file on linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: mv fruit-economy_1.0-1_amd64.deb fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+
+      - name: rename file on macos
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: mv Fruit\ Economy-1.0.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+
+      - name: zip + rename file on windows
+        uses: vimtor/action-zip@v1
+        if: ${{ matrix.os == 'windows-latest' }}
+        with:
+          files: "Fruit Economy/"
+          dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
       - name: codesign executable on macos
         if: ${{ matrix.os == 'macos-latest' }}
         env:
@@ -112,21 +127,6 @@ jobs:
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
           /usr/bin/codesign --force -s $MACOS_IDENTITY Fruit\ Economy-1.0.dmg -v
-
-      - name: rename file on linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        run: mv fruit-economy_1.0-1_amd64.deb fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
-
-      - name: rename file on macos
-        if: ${{ matrix.os == 'macos-latest' }}
-        run: mv Fruit\ Economy-1.0.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-
-      - name: zip + rename file on windows
-        uses: vimtor/action-zip@v1
-        if: ${{ matrix.os == 'windows-latest' }}
-        with:
-          files: "Fruit Economy/"
-          dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
