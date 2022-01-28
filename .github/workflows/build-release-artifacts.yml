@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         os: [
-            ubuntu-latest,
+            # ubuntu-latest,
             macos-latest,
-            windows-latest
+            # windows-latest
         ]
 
     runs-on: ${{ matrix.os }}
@@ -115,6 +115,14 @@ jobs:
         with:
           files: Fruit_Economy/
           dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        with:
+          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+          limit-access-to-actor: true
+          ## limits ssh access and adds the ssh public keys of the listed GitHub users
+          limit-access-to-users: folcon
 
       - name: codesign executable on macos
         if: ${{ matrix.os == 'macos-latest' }}
