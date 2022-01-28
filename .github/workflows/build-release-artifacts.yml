@@ -126,7 +126,7 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         with:
           files: "Fruit Economy/"
-          dest: "Fruit Economy-${{ env.RELEASE_VERSION }}.zip"
+          dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -156,7 +156,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Fruit Economy-${{ env.RELEASE_VERSION }}.zip
+            Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           #upload_url: ${{ github.event.release.upload_url }}
           #asset_path: fruit-economy-${{ github.ref_name }}.exe
           #asset_name: fruit-economy-${{ github.ref_name }}.exe
