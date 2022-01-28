@@ -60,6 +60,7 @@ jobs:
         run: lein uberjar
 
       - name: create version number for app
+        shell: bash
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
 
       - name: set conditional app-version arg
@@ -71,6 +72,7 @@ jobs:
           || echo ::set-output name=app_version_arg::$(echo --app-version ${RELEASE_VERSION})
 
       - name: did we record app-version or the RELEASE_VERSION?
+        shell: bash
         run: echo "${{ steps.app_version.outputs.app_version_arg }}" ; echo "${RELEASE_VERSION}" ; echo "${{ env.RELEASE_VERSION }}"
 
       - name: build package on linux
@@ -82,6 +84,7 @@ jobs:
         run: jpackage @jpackage/common @jpackage/mac ${{ steps.app_version.outputs.app_version_arg }}
 
       - name: build package on windows
+        shell: bash
         if: ${{ matrix.os == 'windows-latest' }}
         run: jpackage @jpackage/common @jpackage/windows ${{ steps.app_version.outputs.app_version_arg }}
 
@@ -102,6 +105,7 @@ jobs:
         run: mv Fruit\ Economy-1.0.dmg Fruit\ Economy-${{ env.RELEASE_VERSION }}.dmg
 
       - name: rename file on windows
+        shell: bash
         if: ${{ matrix.os == 'windows-latest' }}
         run: mv Fruit\ Economy-1.0.exe Fruit\ Economy-${{ env.RELEASE_VERSION }}.exe
 
