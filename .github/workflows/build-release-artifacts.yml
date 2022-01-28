@@ -118,6 +118,9 @@ jobs:
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
           MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
           DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}
+          PRIMARY_BUNDLE_ID: ${{ secrets.DEVELOPER_ID }}
+          NOTARY_USERNAME: ${{ secrets.DEVELOPER_ID }}
+          NOTARY_PASSWORD: ${{ secrets.DEVELOPER_ID }}
         run: |
           export PASSWORD=$(echo $RANDOM | git hash-object --stdin | head -c 20)
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
@@ -127,6 +130,7 @@ jobs:
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
           /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg -v
+          /usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
