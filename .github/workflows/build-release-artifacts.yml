@@ -123,7 +123,7 @@ jobs:
       - name: rename file on windows
         shell: bash
         if: ${{ matrix.os == 'windows-latest' }}
-        run: mv Fruit\ Economy-1.0.exe Fruit\ Economy-${{ env.RELEASE_VERSION }}.exe
+        run: mv Fruit\ Economy/Fruit\ Economy.exe Fruit\ Economy-${{ env.RELEASE_VERSION }}.exe
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
