@@ -104,11 +104,15 @@ jobs:
         if: ${{ matrix.os == 'macos-latest' }}
         run: mv Fruit\ Economy-1.0.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
+      - name: rename file on windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: mv Fruit\ Economy/ Fruit_Economy/
+
       - name: zip + rename file on windows
         uses: vimtor/action-zip@v1
         if: ${{ matrix.os == 'windows-latest' }}
         with:
-          files: "Fruit Economy/"
+          files: Fruit_Economy/
           dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
 
       - name: codesign executable on macos
