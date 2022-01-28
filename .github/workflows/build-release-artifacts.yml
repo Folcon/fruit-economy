@@ -126,7 +126,7 @@ jobs:
           security unlock-keychain -p $PASSWORD build.keychain
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
-          /usr/bin/codesign --force -s $MACOS_IDENTITY Fruit\ Economy-1.0.dmg -v
+          /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg -v
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
