@@ -103,7 +103,7 @@ jobs:
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
           MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
         run: |
-          export PASSWORD=$(echo $RANDOM | sha1sum | head -c 20)
+          export PASSWORD=$(echo $RANDOM | git hash-object --stdin | head -c 20)
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
           security create-keychain -p $PASSWORD build.keychain
           security default-keychain -s build.keychain
