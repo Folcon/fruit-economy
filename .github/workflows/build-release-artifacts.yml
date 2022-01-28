@@ -102,6 +102,7 @@ jobs:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
           MACOS_CERTIFICATE_PWD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
           MACOS_IDENTITY: ${{ secrets.MACOS_IDENTITY }}
+          DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}
         run: |
           export PASSWORD=$(echo $RANDOM | git hash-object --stdin | head -c 20)
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
