@@ -152,7 +152,7 @@ jobs:
           echo "=> Create a Zip"
           ditto -ck --sequesterRsrc --keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           echo "=> Sign the Zip"
-          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           echo "=> Send Zip to be Notarised"
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.zip --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
