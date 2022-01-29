@@ -168,7 +168,7 @@ jobs:
           done
           echo "=> apple has made a decision"
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
-          [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> apple says it's invalid" && exit 1 || echo "=> apple says it's valid"
+          [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> apple says it's invalid" || echo "=> apple says it's valid"
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
