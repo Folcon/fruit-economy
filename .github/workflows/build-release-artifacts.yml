@@ -165,6 +165,9 @@ jobs:
           echo $NOTARY_TOKEN
           echo "Check Notarised Progress"
           NOTARY_USERNAME=$NOTARY_USERNAME NOTARY_PASSWORD=$NOTARY_PASSWORD NOTARY_TOKEN=$NOTARY_TOKEN . build/check-notarization-progress
+          NOTARY_CHECK_OUTPUT_STATUS=$(jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data."notarization-info"."Status"')
+          jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
+          [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "apple says it's invalid" && exit 1 || echo "apple says it's valid"
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
