@@ -116,9 +116,6 @@ jobs:
           files: Fruit_Economy/
           dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-
       - name: codesign executable on macos
         if: ${{ matrix.os == 'macos-latest' }}
         env:
@@ -137,8 +134,11 @@ jobs:
           security unlock-keychain -p $PASSWORD build.keychain
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
-          /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg -v
-          /usr/bin/xcrun altool -t osx --deep -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD
+          /usr/bin/codesign --force --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg -v
+          NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
+          echo $NOTARY_RESPONSE
+          NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}' -o)
+          ./build/check-notarization-progress
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
