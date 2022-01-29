@@ -156,7 +156,7 @@ jobs:
           NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8,12}' -o)
           echo $NOTARY_TOKEN
           echo "Check Notarised Progress"
-          NOTARY_USERNAME=$NOTARY_USERNAME NOTARY_PASSWORD=$NOTARY_PASSWORD NOTARY_TOKEN=$NOTARY_TOKEN ./build/check-notarization-progress
+          NOTARY_USERNAME=$NOTARY_USERNAME NOTARY_PASSWORD=$NOTARY_PASSWORD NOTARY_TOKEN=$NOTARY_TOKEN . build/check-notarization-progress
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
