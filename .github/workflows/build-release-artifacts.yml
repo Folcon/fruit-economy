@@ -170,6 +170,9 @@ jobs:
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
           [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> apple says it's invalid" && exit 1 || echo "=> apple says it's valid"
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
