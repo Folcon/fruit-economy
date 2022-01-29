@@ -127,56 +127,56 @@ jobs:
           NOTARY_USERNAME: ${{ secrets.NOTARY_USERNAME }}
           NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
         run: |
-          echo "Generate Local Password"
+          echo "=> Generate Local Password"
           export PASSWORD=$(echo $RANDOM | git hash-object --stdin | head -c 20)
-          echo "Load Certificate to Local System"
+          echo "=> Load Certificate to Local System"
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
-          echo "Create New Keychain"
+          echo "=> Create New Keychain"
           security create-keychain -p $PASSWORD build.keychain
-          echo "Assign Keychain as System Default"
+          echo "=> Assign Keychain as System Default"
           security default-keychain -s build.keychain
-          echo "Unlock Keychain"
+          echo "=> Unlock Keychain"
           security unlock-keychain -p $PASSWORD build.keychain
-          echo "Load Local System Certificate to Keychain"
+          echo "=> Load Local System Certificate to Keychain"
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
-          echo "Set Permissions on Keychain Certificate"
+          echo "=> Set Permissions on Keychain Certificate"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
-          echo "Mount DMG"
+          echo "=> Mount DMG"
           hdiutil attach Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-          echo "Copy App to Local Workspace"
+          echo "=> Copy App to Local Workspace"
           cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app .
-          echo "Codesign App"
+          echo "=> Codesign App"
           /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
-          echo "Make Directory For Data to Build into DMG"
+          echo "=> Make Directory For Data to Build into DMG"
           mkdir dmg_dir
-          echo "Copy App into DMG Data Directory"
+          echo "=> Copy App into DMG Data Directory"
           cp -r Fruit\ Economy.app dmg_dir/
-          echo "Create Writable DMG File"
+          echo "=> Create Writable DMG File"
           hdiutil create /tmp/tmp.dmg -ov -volname "Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg" -fs HFS+ -srcfolder "dmg_dir/"
-          echo "Move Old DMG Version"
+          echo "=> Move Old DMG Version"
           mv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.old.dmg
-          echo "Convert Writable DMG File to Readonly DMG File"
+          echo "=> Convert Writable DMG File to Readonly DMG File"
           hdiutil convert /tmp/tmp.dmg -format UDZO -o Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-          echo "Send DMG to be Notarised"
+          echo "=> Send DMG to be Notarised"
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
-          echo "Extract Notary Token from Response"
+          echo "=> Extract Notary Token from Response"
           NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8,12}' -o)
           echo $NOTARY_TOKEN
-          echo "Checking Notarised Progress"
+          echo "=> Checking Notarised Progress"
           n=0
           until [ "$n" -ge 15 ]
           do
-            echo "Asking Apple if it's Notarised"
+            echo "=> Asking Apple if it's Notarised"
             NOTARY_CHECK_OUTPUT=$(/usr/bin/xcrun altool --notarization-info "$NOTARY_TOKEN" --username $NOTARY_USERNAME --password $NOTARY_PASSWORD --output=json)
             NOTARY_CHECK_OUTPUT_STATUS=$(jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data."notarization-info"."Status"')
-            [[ $NOTARY_CHECK_OUTPUT_STATUS == '"in progress"' ]] && echo "apple is still deciding" || break
+            [[ $NOTARY_CHECK_OUTPUT_STATUS == '"in progress"' ]] && echo "=> apple is still deciding" || break
             n=$((n+1))
             sleep 60
           done
-          echo "apple has made a decision"
+          echo "=> apple has made a decision"
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
-          [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "apple says it's invalid" && exit 1 || echo "apple says it's valid"
+          [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> apple says it's invalid" && exit 1 || echo "=> apple says it's valid"
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
