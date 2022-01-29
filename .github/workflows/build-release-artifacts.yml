@@ -147,6 +147,8 @@ jobs:
           cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app .
           echo "=> Codesign App"
           /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
+          echo "=> Codesign App Native Libs"
+          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app/Contents/runtime/Contents/MacOS/libjli.dylib -v
           echo "=> Create a Zip"
           ditto -ck --sequesterRsrc --keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           echo "=> Sign the Zip"
