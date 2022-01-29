@@ -163,9 +163,17 @@ jobs:
           echo "Extract Notary Token from Response"
           NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8,12}' -o)
           echo $NOTARY_TOKEN
-          echo "Check Notarised Progress"
-          NOTARY_USERNAME=$NOTARY_USERNAME NOTARY_PASSWORD=$NOTARY_PASSWORD NOTARY_TOKEN=$NOTARY_TOKEN . build/check-notarization-progress
-          NOTARY_CHECK_OUTPUT_STATUS=$(jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data."notarization-info"."Status"')
+          echo "Checking Notarised Progress"
+          n=0
+          until [ "$n" -ge 15 ]
+          do
+            echo "Asking Apple if it's Notarised"
+            NOTARY_CHECK_OUTPUT=$(/usr/bin/xcrun altool --notarization-info "$NOTARY_TOKEN" --username $NOTARY_USERNAME --password $NOTARY_PASSWORD --output=json)
+            NOTARY_CHECK_OUTPUT_STATUS=$(jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data."notarization-info"."Status"')
+            [[ $NOTARY_CHECK_OUTPUT_STATUS == '"in progress"' ]] && echo "apple is still deciding" || echo "apple has made a decision" && break
+            n=$((n+1))
+            sleep 60
+          done
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
           [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "apple says it's invalid" && exit 1 || echo "apple says it's valid"
 
