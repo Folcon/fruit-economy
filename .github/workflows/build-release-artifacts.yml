@@ -153,7 +153,7 @@ jobs:
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit\ Economy.app --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
           echo "Extract Notary Token from Response"
-          NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8}' -o)
+          NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8,12}' -o)
           echo $NOTARY_TOKEN
           echo "Check Notarised Progress"
           NOTARY_USERNAME=$NOTARY_USERNAME NOTARY_PASSWORD=$NOTARY_PASSWORD NOTARY_TOKEN=$NOTARY_TOKEN ./build/check-notarization-progress
