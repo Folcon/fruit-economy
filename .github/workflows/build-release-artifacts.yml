@@ -159,7 +159,7 @@ jobs:
           n=0
           until [ "$n" -ge 15 ]
           do
-            echo "==> Asking Apple if it's Notarised"
+            echo "==> $n: Asking Apple if it's Notarised"
             NOTARY_CHECK_OUTPUT=$(/usr/bin/xcrun altool --notarization-info "$NOTARY_TOKEN" --username $NOTARY_USERNAME --password $NOTARY_PASSWORD --output=json)
             NOTARY_CHECK_OUTPUT_STATUS=$(jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data."notarization-info"."Status"')
             [[ $NOTARY_CHECK_OUTPUT_STATUS == '"in progress"' ]] && echo "==> apple is still deciding" || break
