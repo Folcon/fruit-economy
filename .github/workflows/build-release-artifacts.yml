@@ -146,7 +146,7 @@ jobs:
           echo "Copy App to Local Workspace"
           cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app .
           echo "Codesign App"
-          /usr/bin/codesign --force --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
+          /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
           echo "Make Directory For Data to Build into DMG"
           mkdir dmg_dir
           echo "Copy App into DMG Data Directory"
