@@ -145,22 +145,12 @@ jobs:
           hdiutil attach Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
           echo "=> Copy App to Local Workspace"
           cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app .
-          echo "=> Codesign App Executable"
-          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app/Contents/MacOS/Fruit\ Economy -v
-          echo "=> Codesign App Native Libs"
-          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app/Contents/runtime/Contents/MacOS/libjli.dylib -v
-          echo "=> Make Directory For Data to Build into DMG"
-          mkdir dmg_dir
-          echo "=> Copy App into DMG Data Directory"
-          cp -r Fruit\ Economy.app dmg_dir/
-          echo "=> Create Writable DMG File"
-          hdiutil create /tmp/tmp.dmg -ov -volname "Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg" -fs HFS+ -srcfolder "dmg_dir/"
-          echo "=> Move Old DMG Version"
-          mv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.old.dmg
-          echo "=> Convert Writable DMG File to Readonly DMG File"
-          hdiutil convert /tmp/tmp.dmg -format UDZO -o Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-          echo "=> Send DMG to be Notarised"
-          NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
+          echo "=> Codesign App"
+          /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
+          echo "=> Create a Zip"
+          ditto -c -k –sequesterRsrc –keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          echo "=> Send Zip to be Notarised"
+          NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.zip --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
           echo "=> Extract Notary Token from Response"
           NOTARY_TOKEN=$(echo $NOTARY_RESPONSE | egrep '[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{8,12}' -o)
