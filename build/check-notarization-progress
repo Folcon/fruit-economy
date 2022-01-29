@@ -6,7 +6,7 @@ echo "NOTARY_TOKEN: $NOTARY_TOKEN"
 n=0
   until [ "$n" -ge 5 ]
   do
-    /usr/bin/xcrun altool --notarization-info "$NOTARY_TOKEN" --username $NOTARY_USERNAME --password $NOTARY_PASSWORD && break
+    /usr/bin/xcrun altool --notarization-info "$NOTARY_TOKEN" --username $NOTARY_USERNAME --password $NOTARY_PASSWORD --output=json && break
     n=$((n+1))
     sleep 60
 done
