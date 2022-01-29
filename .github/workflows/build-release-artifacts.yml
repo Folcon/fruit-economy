@@ -116,6 +116,9 @@ jobs:
           files: Fruit_Economy/
           dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
       - name: codesign executable on macos
         if: ${{ matrix.os == 'macos-latest' }}
         env:
