@@ -149,6 +149,8 @@ jobs:
           /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
           echo "=> Create a Zip"
           ditto -ck --sequesterRsrc --keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          echo "=> Sign the Zip"
+          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           echo "=> Send Zip to be Notarised"
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.zip --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
@@ -169,6 +171,24 @@ jobs:
           echo "=> apple has made a decision"
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
           [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> apple says it's invalid" || echo "=> apple says it's valid"
+          
+          echo "# For sanity"
+          echo "=> Copy Another App to Local Workspace"
+          cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app Fruit\ Economy-alt.app
+          echo "=> Codesign App Executable"
+          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy-alt.app/Contents/MacOS/Fruit\ Economy -v
+          echo "=> Codesign App Native Libs"
+          /usr/bin/codesign --force --options runtime --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy-alt.app/Contents/runtime/Contents/MacOS/libjli.dylib -v
+          echo "=> Make Directory For Data to Build into DMG"
+          mkdir dmg_dir
+          echo "=> Copy App into DMG Data Directory"
+          cp -r Fruit\ Economy-alt.app dmg_dir/
+          echo "=> Create Writable DMG File"
+          hdiutil create /tmp/tmp.dmg -ov -volname "Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg" -fs HFS+ -srcfolder "dmg_dir/"
+          echo "=> Move Old DMG Version"
+          mv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg Fruit_Economy-${{ env.RELEASE_VERSION }}.old.dmg
+          echo "=> Convert Writable DMG File to Readonly DMG File"
+          hdiutil convert /tmp/tmp.dmg -format UDZO -o Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
