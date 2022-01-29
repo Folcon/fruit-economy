@@ -141,8 +141,14 @@ jobs:
           security import certificate.p12 -k build.keychain -P $MACOS_CERTIFICATE_PWD -T /usr/bin/codesign
           echo "Set Permissions on Keychain Certificate"
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $PASSWORD build.keychain
-          echo "Codesign DMG"
-          /usr/bin/codesign --force --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg -v
+          echo "Mount DMG"
+          hdiutil attach Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          echo "Copy App to Local Workspace"
+          cp -r /Volumes/Fruit\ Economy/Fruit\ Economy.app .
+          echo "Codesign App Executable"
+          /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app/Contents/MacOS/Fruit\ Economy -v
+          echo "Codesign App Native Libs"
+          /usr/bin/codesign --force --timestamp -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app/Contents/runtime/Contents/MacOS/libjli.dylib -v
           echo "Send App to be Notarised"
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
