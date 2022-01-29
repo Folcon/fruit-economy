@@ -148,7 +148,7 @@ jobs:
           echo "=> Codesign App"
           /usr/bin/codesign --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
           echo "=> Create a Zip"
-          ditto -c -k –sequesterRsrc –keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          ditto -ck --sequesterRsrc --keepParent Fruit\ Economy.app Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
           echo "=> Send Zip to be Notarised"
           NOTARY_RESPONSE=$(/usr/bin/xcrun altool -t osx -f Fruit_Economy-${{ env.RELEASE_VERSION }}.zip --primary-bundle-id $PRIMARY_BUNDLE_ID --notarize-app --username $NOTARY_USERNAME --password $NOTARY_PASSWORD)
           echo $NOTARY_RESPONSE
