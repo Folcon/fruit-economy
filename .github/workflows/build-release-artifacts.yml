@@ -270,7 +270,6 @@ jobs:
         run: ls -R
 
       - name: release artifacts for itch.io on linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: josephbmanley/butler-publish-itchio-action@v1.0.2
         env:
           ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
@@ -281,7 +280,6 @@ jobs:
           VERSION: ${{ env.RELEASE_VERSION }}
 
       - name: release artifacts for itch.io on macos
-        if: ${{ matrix.os == 'macos-latest' }}
         uses: josephbmanley/butler-publish-itchio-action@v1.0.2
         env:
           ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
@@ -292,7 +290,6 @@ jobs:
           VERSION: ${{ env.RELEASE_VERSION }}
 
       - name: release artifacts for itch.io on windows
-        if: ${{ matrix.os == 'windows-latest' }}
         uses: josephbmanley/butler-publish-itchio-action@v1.0.2
         env:
           ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
