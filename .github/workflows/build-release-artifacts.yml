@@ -179,6 +179,12 @@ jobs:
           echo "=> Apple has made a decision"
           jq -n --argjson data "$NOTARY_CHECK_OUTPUT" '$data'
           [[ $NOTARY_CHECK_OUTPUT_STATUS == '"invalid"' ]] && echo "=> Apple says it's invalid" && exit 1 || echo "=> Apple says it's valid"
+          echo "=> We're valid 🎉. Let's get a ✔️ to make it official."
+          /usr/bin/xcrun stapler staple Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          echo "=> Final checks on the App and DMG"
+          /usr/bin/spctl -vvv --assess --type exec Fruit\ Economy.app
+          /usr/bin/codesign -vvv --deep --strict Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          /usr/bin/codesign -dvv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
