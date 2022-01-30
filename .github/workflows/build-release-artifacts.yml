@@ -14,9 +14,9 @@ jobs:
     strategy:
       matrix:
         os: [
-            ubuntu-latest,
+            #ubuntu-latest,
             macos-latest,
-            windows-latest
+            #windows-latest
         ]
 
     runs-on: ${{ matrix.os }}
@@ -115,6 +115,9 @@ jobs:
         with:
           files: Fruit_Economy/
           dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
 
       - name: codesign executable on macos
         if: ${{ matrix.os == 'macos-latest' }}
