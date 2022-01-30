@@ -23,9 +23,9 @@
   (:gen-class))
 
 
-(defn debug? [] (= (env :debug?) "true"))
-
 (set! *warn-on-reflection* true)
+
+(defn debug? [] (= (env :debug?) "true"))
 
 (defonce font-mgr (FontMgr/getDefault))
 
