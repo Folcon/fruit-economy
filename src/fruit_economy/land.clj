@@ -20,6 +20,7 @@
       ::base-biome base-biome
       ::terrain (vec (repeat height (vec (repeat width base-biome))))
       ::area->units {}
+      ::area->resources {}
       ::area->civ-name {}
       ::area->manor {}
       ::area->ruin {}
@@ -116,7 +117,7 @@
 
           (not= target :ocean)
           (let [kind (rand-nth (into [] (remove #{:growing-plant :dying-plant}) (keys kind->name)))]
-            (assoc-in land [::area->units [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)}))
+            (assoc-in land [::area->resources [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)}))
 
           :else
           land)))

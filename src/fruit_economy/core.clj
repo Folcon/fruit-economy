@@ -156,7 +156,7 @@
         emoji-offset-y (-> (- (.getTop emoji-bounds))
                          (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
-        {::land/keys [terrain area->civ-name civ-name->civ area->units]} world
+        {::land/keys [terrain area->civ-name civ-name->civ area->resources]} world
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
@@ -170,11 +170,11 @@
                   loc [(+ camera-x x) (+ camera-y y)]
                   path [(+ camera-y y) (+ camera-x x)]
                   tile (get-in terrain path)
-                  unit (get-in area->units [loc :glyph])
+                  resource (get-in area->resources [loc :glyph])
                   territory? (contains? territory loc)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour font dx dy] (cond
-                                                   unit [unit (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
+                                                   resource [resource (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
                                                    civ [symbol tint font-default 0 cell]
                                                    territory? ["" #_(land/render-tile-str tile) tint font-default 0 cell]
                                                    :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default 0 cell])

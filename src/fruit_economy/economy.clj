@@ -17,19 +17,19 @@
             (map (fn [[k v]] [:tr [:td (:name k)] [:td {:border 1} v]]))
             sources)})
 
-(defn assign-source->civ [{::land/keys [economy area->civ-name area->units] :as land-data} {:fruit-economy.civ/keys [name] :as _civ} area]
+(defn assign-source->civ [{::land/keys [economy area->civ-name area->resources] :as land-data} {:fruit-economy.civ/keys [name] :as _civ} area]
   (let [existing-owner (area->civ-name area)
-        unit (area->units area)]
-    (cond-> (land/log-history land-data (str (when existing-owner (str existing-owner " relinquishes claim on and ")) name " lays claim to a " (:name unit) " at " area))
+        resource (area->resources area)]
+    (cond-> (land/log-history land-data (str (when existing-owner (str existing-owner " relinquishes claim on and ")) name " lays claim to a " (:name resource) " at " area))
       ;; remove from existing owner
       existing-owner
-      (update-in [::land/economy :civ-name->source existing-owner] dec-or-dissoc unit)
+      (update-in [::land/economy :civ-name->source existing-owner] dec-or-dissoc resource)
 
       ;; add to new owner
       :always
-      (update-in [::land/economy :civ-name->source name unit] (fnil inc 0)))))
+      (update-in [::land/economy :civ-name->source name resource] (fnil inc 0)))))
 
-(defn init-civ-economy [{::land/keys [area->units] :as land-data} {:fruit-economy.civ/keys [name] :as civ}]
+(defn init-civ-economy [{::land/keys [area->resources] :as land-data} {:fruit-economy.civ/keys [name] :as civ}]
   (let [;; stop recording sources on the node directly
         civ-node (make-civ-node civ [])]
     (-> land-data
@@ -41,15 +41,15 @@
       (as-> $
         (reduce
           (fn [land area]
-            (if-let [unit (area->units area)]
-              (-> (land/log-history land (str name " lays claim to a " (:name unit) " at " area))
-                (update-in [::land/economy :civ-name->source name unit] (fnil inc 0))
-                (update-in [::land/economy :ubergraph] graph/add-directed-edge name (:name unit) {:label (str "at " area)}))
+            (if-let [resource (area->resources area)]
+              (-> (land/log-history land (str name " lays claim to a " (:name resource) " at " area))
+                (update-in [::land/economy :civ-name->source name resource] (fnil inc 0))
+                (update-in [::land/economy :ubergraph] graph/add-directed-edge name (:name resource) {:label (str "at " area)}))
               land))
           $
           (:fruit-economy.civ/territory civ))))))
 
-(defn add-resources [{::land/keys [area->units] :as land-data}]
+(defn add-resources [{::land/keys [area->resources] :as land-data}]
   (reduce
     (fn [land {:keys [name kind] :as resource}]
       (let [node-kind (->> (get land/kind->category kind)
@@ -62,7 +62,7 @@
         (-> land
           (update-in [::land/economy :ubergraph] graph/add-node-with-attrs [name resource-node]))))
     land-data
-    (distinct (vals area->units))))
+    (distinct (vals area->resources))))
 
 (comment
   (require '[fruit-economy.civ :as civ])
@@ -77,38 +77,38 @@
       world))
 
   (let [land-data w
-        {::land/keys [economy civ-name->civ area->units area->civ-name] :as land-data} land-data
+        {::land/keys [economy civ-name->civ area->resources area->civ-name] :as land-data} land-data
         civ-name "Civ )+3"
         civ  (civ-name->civ civ-name)
         area [1 0]
         existing-owner (area->civ-name area)
-        unit (area->units area)]
+        resource (area->resources area)]
     (cond-> land-data
       ;; remove from existing owner
       existing-owner
-      (update-in [::land/economy :civ-name->source existing-owner] dec-or-dissoc unit)
+      (update-in [::land/economy :civ-name->source existing-owner] dec-or-dissoc resource)
 
       ;; add to new owner
       :always
-      (update-in [::land/economy :civ-name->source civ-name unit] (fnil inc 0))
+      (update-in [::land/economy :civ-name->source civ-name resource] (fnil inc 0))
 
       :always
       ::land/economy)
     ;nil
     #_(-> (reduce
             (fn [land area]
-              (let [unit (area->units area)]
-                (println area unit)
+              (let [resource (area->resources area)]
+                (println area resource)
                 (-> land
-                  (update-in [::land/economy :civ-name->source civ-name unit] (fnil inc 0))
-                  #_(update-in [::land/economy :area->source area] unit))))
+                  (update-in [::land/economy :civ-name->source civ-name resource] (fnil inc 0))
+                  #_(update-in [::land/economy :area->source area] resource))))
             land-data
             (:fruit-economy.civ/territory civ))
         ::land/economy))
 
   (let [world #_w (:world @fruit-economy.core/*state)]
     ((juxt
-       ::land/area->units
+       ::land/area->resources
        (comp
          #(map (juxt :fruit-economy.civ/name :fruit-economy.civ/territory) %)
          vals ::land/civ-name->civ)
