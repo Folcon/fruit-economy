@@ -52,6 +52,7 @@
      :world (-> (land/make-land "World" width height)
               (land/gen-land)
               (land/populate 50 #_100)
+              (land/spawn-units 10)
               (economy/add-resources)
               (civ/try-spawn-new-civs 10))
      :history-index 0
@@ -156,7 +157,7 @@
         emoji-offset-y (-> (- (.getTop emoji-bounds))
                          (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
-        {::land/keys [terrain area->civ-name civ-name->civ area->resources]} world
+        {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} world
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
@@ -171,9 +172,11 @@
                   path [(+ camera-y y) (+ camera-x x)]
                   tile (get-in terrain path)
                   resource (get-in area->resources [loc :glyph])
+                  unit (get-in area->units [loc :glyph])
                   territory? (contains? territory loc)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour font dx dy] (cond
+                                                   unit [unit (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
                                                    resource [resource (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
                                                    civ [symbol tint font-default 0 cell]
                                                    territory? ["" #_(land/render-tile-str tile) tint font-default 0 cell]
