@@ -247,21 +247,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: download artifacts from build
-        uses: actions/download-artifact@v2
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: create version number for app
         shell: bash
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
 
-      - name: rezip + rename file on windows
-        uses: vimtor/action-zip@v1
+      - name: download linux artifacts from build
+        uses: actions/download-artifact@v2
         with:
-          files: Fruit_Economy/
-          dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          name: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+
+      - name: download macos artifacts from build
+        uses: actions/download-artifact@v2
+        with:
+          name: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+
+      - name: download windows artifacts from build
+        uses: actions/download-artifact@v2
+        with:
+          name: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: release artifacts for itch.io on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
