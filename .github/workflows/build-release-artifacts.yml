@@ -10,7 +10,7 @@ on:
 #    types:
 #      - completed
 jobs:
-  build-deb:
+  build:
     strategy:
       matrix:
         os: [
