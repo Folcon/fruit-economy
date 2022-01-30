@@ -188,6 +188,27 @@ jobs:
 #          /usr/bin/codesign -vvv --deep --strict Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 #          /usr/bin/codesign -dvv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
+      - name: upload artifacts on linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+          path: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+
+      - name: upload artifacts on macos
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          path: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+
+      - name: upload artifacts on windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          path: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
@@ -227,11 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: download artifacts from build
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build-release-artifacts.yml
-          workflow_conclusion: success
-          run_id: ${{ github.run_id }}
+        uses: actions/download-artifact@v2
 
       - name: Display structure of downloaded files
         run: ls -R
