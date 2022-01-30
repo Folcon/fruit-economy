@@ -25,14 +25,6 @@
 
 (defn debug? [] (= (env :debug?) "true"))
 
-;; Ensure this is available for debug,
-;;   but not prod otherwise we get compile errors
-(if (debug?)
-  (do
-    (require '[nrepl.cmdline :refer [-main] :rename {-main -nrepl-main}])
-    (resolve 'nrepl.cmdline))
-  (declare -nrepl-main))
-
 (set! *warn-on-reflection* true)
 
 (defonce font-mgr (FontMgr/getDefault))
@@ -515,7 +507,8 @@
   ;; TODO: Display somewhere in the UI
   (println (str "VERSION: " (env :game-version) (when (debug?) "\nDEBUG BUILD")))
   (when (debug?)
-    (future (apply -nrepl-main args)))
+    ;; Swap to require and resolve in one step!
+    (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
   (hui/init)
   (reset! *window (make-window))
   (hui/start))
