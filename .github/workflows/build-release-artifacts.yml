@@ -150,7 +150,7 @@ jobs:
           echo "=> Codesign App"
           /usr/bin/codesign -vvv --force --options runtime --timestamp --deep -s $MACOS_IDENTITY --entitlements build/entitlement.plist Fruit\ Economy.app -v
           echo "=> Copy App into DMG Data Directory"
-          cp -r Fruit\ Economy.app dmg_dir/
+          cp -r Fruit\ Economy.app dmg_dir/Fruit\ Economy.app
           echo "=> Create Writable DMG File"
           hdiutil create /tmp/tmp.dmg -ov -volname "Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg" -fs HFS+ -srcfolder "dmg_dir/"
           echo "=> Move Old DMG Version"
