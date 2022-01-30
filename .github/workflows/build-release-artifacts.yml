@@ -186,39 +186,6 @@ jobs:
           /usr/bin/codesign -vvv --deep --strict Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
           /usr/bin/codesign -dvv Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
 
-      - name: release artifacts for itch.io on linux
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: linux
-          ITCH_GAME: fruit-economy
-          PACKAGE: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
-          VERSION: ${{ env.RELEASE_VERSION }}
-
-      - name: release artifacts for itch.io on macos
-        if: ${{ matrix.os == 'macos-latest' }}
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: osx
-          ITCH_GAME: fruit-economy
-          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-          VERSION: ${{ env.RELEASE_VERSION }}
-
-      - name: release artifacts for itch.io on windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: windows
-          ITCH_GAME: fruit-economy
-          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
-          VERSION: ${{ env.RELEASE_VERSION }}
-
       - name: release artifacts on linux
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: softprops/action-gh-release@v1
@@ -252,3 +219,12 @@ jobs:
           #asset_path: fruit-economy-${{ github.ref_name }}.exe
           #asset_name: fruit-economy-${{ github.ref_name }}.exe
           #asset_content_type: application/vnd.microsoft.portable-executable
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+
+      - name: Display structure of downloaded files
+        run: ls -R
