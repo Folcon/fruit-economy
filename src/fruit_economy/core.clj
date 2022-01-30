@@ -161,6 +161,8 @@
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
+    #_(println :panel tick)
+
     ;; walk cells eq to window size
     (doseq [x (range (quot window-width cell))
             y (range (quot window-height cell))
@@ -201,11 +203,12 @@
         (swap! *state assoc :hovering {:world [(+ (quot x cell) camera-x) (+ (quot y cell) camera-y)] :screen [x y]})))
 
     (when (= event-type :hui/mouse-button)
-      (println event))
+      (println :panel event)
+      (println (:hovering state)))
 
     ;; keyboard
     (when (and (= event-type :hui/key) pressed?)
-      (println key)
+      (println :panel key)
       (println (:peep @*state))
       (condp contains? key
         #{:key/d :key/right}
@@ -228,7 +231,7 @@
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
-        ;; (println key)
+        ;; (println :panel key)
         nil))))
 
 (defn draw-mini-panel-impl
@@ -267,14 +270,14 @@
 
     ;; mouse
     (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
-      (println event))
+      (println :mini-panel event))
 
     (when (= event-type :hui/mouse-button)
-      (println event))
+      (println :mini-panel event))
 
     ;; keyboard
     (when (and (= event-type :hui/key) pressed?)
-      (println key)
+      (println :mini-panel key)
       (println (:peep @*state))
       (condp contains? key
         #{:key/q}
@@ -332,7 +335,7 @@
         #{:key/r}
         (reset! *state (new-state))
 
-        ;; (println key)
+        ;; (println :mini-panel key)
         nil))))
 
 (defn on-key-pressed-svg-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
