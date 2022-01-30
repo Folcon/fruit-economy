@@ -43,7 +43,7 @@
   [width height {:keys [on-paint on-event]}]
   (UICanvas. width height on-paint on-event))
 
-(defrecord SVGCanvas [width height svg-path svg-str]
+(defrecord SVGCanvas [width height svg-path svg-str on-event]
   IComponent
   (-layout [_ ctx cs]
     (IPoint. width height))
@@ -67,10 +67,17 @@
               (stacktrace/print-stack-trace (stacktrace/root-cause e))))
           (finally
             (.restoreToCount canvas layer))))))
-  (-event [_ event]))
+  (-event [_ event]
+    (when on-event
+      (try
+        (when-not @*broken
+          (on-event event))
+        (catch Exception e
+          (reset! *broken true)
+          (stacktrace/print-stack-trace (stacktrace/root-cause e)))))))
 
 (defn svg-canvas
   "(svg-canvas 400 300 {:svg-path \"<path in resource>\"})"
-  [width height {:keys [svg-path svg-str]}]
-  (SVGCanvas. width height svg-path svg-str))
+  [width height {:keys [svg-path svg-str on-event]}]
+  (SVGCanvas. width height svg-path svg-str on-event))
 ;; END Should be in io.github.humbleui.ui
