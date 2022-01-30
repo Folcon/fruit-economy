@@ -234,3 +234,46 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -R
+
+      - name: create version number for app
+        shell: bash
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+
+      - name: rezip + rename file on windows
+        uses: vimtor/action-zip@v1
+        with:
+          files: Fruit_Economy/
+          dest: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+
+      - name: release artifacts for itch.io on linux
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
+        env:
+          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: linux
+          ITCH_GAME: fruit-economy
+          PACKAGE: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+          VERSION: ${{ env.RELEASE_VERSION }}
+
+      - name: release artifacts for itch.io on macos
+        if: ${{ matrix.os == 'macos-latest' }}
+        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
+        env:
+          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: osx
+          ITCH_GAME: fruit-economy
+          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          VERSION: ${{ env.RELEASE_VERSION }}
+
+      - name: release artifacts for itch.io on windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
+        env:
+          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: windows
+          ITCH_GAME: fruit-economy
+          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          VERSION: ${{ env.RELEASE_VERSION }}
