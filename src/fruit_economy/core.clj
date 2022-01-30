@@ -51,7 +51,7 @@
 
      :world (-> (land/make-land "World" width height)
               (land/gen-land)
-              (land/populate 100)
+              (land/populate 50 #_100)
               (economy/add-resources)
               (civ/try-spawn-new-civs 10))
      :history-index 0
