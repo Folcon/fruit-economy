@@ -418,22 +418,38 @@
     (when changed?
       (window/request-frame window))))
 
+(defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
+  (let [window-width  width
+        window-height height
+        window-left   (- right window-width)
+        window-top    (-> y
+                        (+ height)
+                        (- (/ window-height 2)))]
+    (doto window
+      (window/set-window-size window-width window-height)
+      (window/set-window-position window-left window-top))))
+
+(defn small-window [window {:keys [width height right y] :as _work-area}]
+  (let [window-width  (/ width 2)
+        window-height (/ height 2)
+        window-left   (- right window-width)
+        window-top    (-> y
+                        (+ (/ height 2))
+                        (- (/ window-height 2)))]
+    (doto window
+      (window/set-window-size window-width window-height)
+      (window/set-window-position window-left window-top))))
+
 (defn make-window []
   (let [{:keys [work-area]} (hui/primary-screen)
-        window-width  (/ (:width work-area) 2)
-        window-height (/ (:height work-area) 2)
-        window-left   (- (:right work-area) window-width)
-        window-top    (-> (:y work-area)
-                        (+ (/ (:height work-area) 2))
-                        (- (/ window-height 2)))]
+        window-size-fn (if (debug?) small-window screen-sized-window)]
     (doto
       (window/make
         {:on-close (if (debug?) #(reset! *window nil) #(System/exit 0))
          :on-paint #'on-paint
          :on-event #'on-event})
       (window/set-title "Fruit Economy 👋")
-      (window/set-window-size window-width window-height)
-      (window/set-window-position window-left window-top)
+      (window-size-fn work-area)
       (window/set-visible true)
       (window/set-z-order :floating))))
 
