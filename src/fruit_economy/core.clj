@@ -47,6 +47,8 @@
      :peep [5 5]
      :cell 20
 
+     :svg-xyz [0 0 0.]
+
      :world (-> (land/make-land "World" width height)
               (land/gen-land)
               (land/populate 100)
@@ -333,16 +335,64 @@
         ;; (println key)
         nil))))
 
+(defn on-key-pressed-svg-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+  (let [state @*state]
+
+    ;; mouse
+    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
+      (println :tech-ui-panel event))
+
+    (when (= event-type :hui/mouse-button)
+      (println :tech-ui-panel event))
+
+    ;; keyboard
+    (when (and (= event-type :hui/key) pressed?)
+      (println :tech-ui-panel key)
+      (condp contains? key
+        #{:key/d :key/right}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 0] + 20))
+
+        #{:key/a :key/left}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 0] - 20))
+
+        #{:key/s :key/down}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 1] + 20))
+
+        #{:key/w :key/up}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 1] - 20))
+
+        #{:key/minus}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 2] - 0.1))
+
+        #{:key/equals}
+        (let [svg-xyz (get state :svg-xyz)]
+          (println :svg-xyz svg-xyz)
+          (swap! *state update-in [:svg-xyz 2] + 0.1))
+
+        ;; (println :tech-ui-panel key)
+        nil))))
+
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
-                   {:keys [camera tick history-index civ-index economy?]} @*state
+                   {:keys [camera tick history-index civ-index economy? svg-xyz]} @*state
                    history (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 18 scale)))
           font-small          (Font. face-default (float (* 12 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
           {::land/keys [civ-name->civ economy]} (get @*state :world)
-          controlling (nth (keys civ-name->civ) civ-index)]
+          controlling (nth (keys civ-name->civ) civ-index)
+          [svg-x svg-y svg-z] svg-xyz]
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
@@ -357,7 +407,9 @@
               (if (and (graph? economy) economy?)
                 (ui/valign 0.5
                   (ui/halign 0.5
-                    (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)})))
+                    (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
+                      (custom-ui/svg-canvas 1200 800 {:svg-str (economy/->svg economy)
+                                                      :on-event #'on-key-pressed-svg-impl}))))
                 (custom-ui/ui-canvas 1200 800 {:on-paint #'draw-impl
                                                :on-event #'on-key-pressed-impl}))
               (ui/padding 10
