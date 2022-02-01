@@ -29,8 +29,8 @@
 
 (defonce font-mgr (FontMgr/getDefault))
 
-(defonce *canvas-width* 2400)
-(defonce *canvas-height* 1200)
+(defonce ^:dynamic *canvas-width* 2400)
+(defonce ^:dynamic *canvas-height* 1200)
 
 ;; GAME STATE
 (defn new-state []
