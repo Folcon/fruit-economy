@@ -32,12 +32,13 @@
 ;; GAME STATE
 (defn new-state []
   (let [width  60
-        height 40]
+        height 40
+        cell 30]
     {:width width
      :height height
      :camera [0 0]
      :peep [5 5]
-     :cell 20
+     :cell cell
 
      :svg-xyz [0 0 0.]
 
