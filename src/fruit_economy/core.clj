@@ -381,7 +381,7 @@
         nil))))
 
 (def app
-  (ui/dynamic ctx [scale (:scale ctx)
+  (ui/dynamic ctx [{:keys [scale bounds x-scale y-scale xy-scale]} ctx
                    {:keys [camera tick history-index civ-index economy? svg-xyz]} @*state
                    history (get-in @*state [:world ::land/history])]
     (let [font-default        (Font. face-default (float (* 18 scale)))
@@ -423,7 +423,11 @@
 (defn on-paint [window ^Canvas canvas]
   (.clear canvas (unchecked-int 0xFFF0F0F0))
   (let [bounds (window/content-rect window)
-        ctx    {:bounds bounds :scale (window/scale window)}
+        {screen :work-area} (hui/primary-screen)
+        x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
+        y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
+        xy-scale (max x-scale y-scale)
+        ctx    {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
         app    app]
     (ui/-layout app ctx (IPoint. (:width bounds) (:height bounds)))
     (ui/-draw app ctx canvas)
