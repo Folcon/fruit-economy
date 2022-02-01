@@ -19,7 +19,7 @@
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
    [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
-   [io.github.humbleui.types IPoint Rect])
+   [io.github.humbleui.types IPoint IRect Rect])
   (:gen-class))
 
 
@@ -468,6 +468,11 @@
     (when changed?
       (window/request-frame window))))
 
+(defn on-resize [window]
+  (let [[min-width min-height] [600 400]
+        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))]
+    (window/set-window-size window (max width min-width) (max height min-height))))
+
 (defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
   (let [window-width  width
         window-height height
@@ -497,7 +502,8 @@
       (window/make
         {:on-close (if (debug?) #(reset! *window nil) #(System/exit 0))
          :on-paint #'on-paint
-         :on-event #'on-event})
+         :on-event #'on-event
+         :on-resize #'on-resize})
       (window/set-title "Fruit Economy 👋")
       (window-size-fn work-area)
       (window/set-visible true)
