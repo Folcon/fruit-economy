@@ -241,7 +241,7 @@
         cell-y (/ window-height 2)
 
         ;; Rendering emoji
-        emoji-font (Font. emoji-face (float 48))
+        emoji-font (Font. emoji-face (float 72))
         emoji-bounds (.measureText emoji-font emoji-glyph)
         emoji-offset-x (-> (- (.getLeft emoji-bounds))
                          (- (/ (- (.getWidth emoji-bounds) cell-x) 2)))
@@ -393,7 +393,7 @@
           [svg-x svg-y svg-z] svg-xyz]
       (ui/row
         (ui/column
-          (custom-ui/ui-canvas 100 100 {:on-paint #'draw-mini-panel-impl
+          (custom-ui/ui-canvas 150 150 {:on-paint #'draw-mini-panel-impl
                                         :on-event #'on-key-pressed-mini-panel-impl}))
         (ui/valign 0.5
           (ui/halign 0.5
