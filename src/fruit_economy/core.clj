@@ -402,16 +402,18 @@
                 (ui/gap 0 0)
                 (ui/padding 10
                   (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) font-default fill-text)))
-              (if (and (graph? economy) economy?)
-                (ui/valign 0.5
-                  (ui/halign 0.5
-                    (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                      (custom-ui/svg-canvas (* x-scale 2400) (* y-scale 1200)
-                        {:svg-str (economy/->svg economy)
-                         :on-event #'on-key-pressed-svg-impl}))))
-                (custom-ui/ui-canvas (* x-scale 2400) (* y-scale 1200)
-                  {:on-paint #'draw-impl
-                   :on-event #'on-key-pressed-impl}))
+              (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF)))
+                (ui/padding 3
+                  (if (and (graph? economy) economy?)
+                    (ui/valign 0.5
+                      (ui/halign 0.5
+                        (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
+                          (custom-ui/svg-canvas (* x-scale 2400) (* y-scale 1200)
+                            {:svg-str (economy/->svg economy)
+                             :on-event #'on-key-pressed-svg-impl}))))
+                    (custom-ui/ui-canvas (* x-scale 2400) (* y-scale 1200)
+                      {:on-paint #'draw-impl
+                       :on-event #'on-key-pressed-impl}))))
               (ui/padding 10
                 (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling (str " controlling " controlling))) font-default fill-text))
               (ui/padding 10
