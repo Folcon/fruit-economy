@@ -33,12 +33,17 @@
 (defn new-state []
   (let [width  60
         height 40
-        cell 30]
+        canvas-width 2400
+        canvas-height 1200
+        init-cell 30]
     {:width width
      :height height
+     :canvas-width canvas-width
+     :canvas-height canvas-height
      :camera [0 0]
      :peep [5 5]
-     :cell cell
+     :init-cell init-cell
+     :cell init-cell
 
      :svg-xyz [0 0 0.]
 
@@ -479,7 +484,10 @@
 
 (defn on-resize [window]
   (let [[min-width min-height] [600 400]
-        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))]
+        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
+        {:keys [canvas-width canvas-height init-cell]} @*state
+        scale (max (float (/ canvas-width width)) (float (/ canvas-height height)))]
+    (swap! *state assoc :cell (int (/ init-cell scale)))
     (window/set-window-size window (max width min-width) (max height min-height))))
 
 (defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
