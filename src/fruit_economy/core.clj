@@ -421,10 +421,10 @@
                     (ui/valign 0.5
                       (ui/halign 0.5
                         (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                          (custom-ui/svg-canvas (* x-scale 2400) (* y-scale 1200)
+                          (custom-ui/svg-canvas (* x-scale *canvas-width*) (* y-scale *canvas-height*)
                             {:svg-str (economy/->svg economy)
                              :on-event #'on-key-pressed-svg-impl}))))
-                    (custom-ui/ui-canvas (* x-scale 2400) (* y-scale 1200)
+                    (custom-ui/ui-canvas (* x-scale *canvas-width*) (* y-scale *canvas-height*)
                       {:on-paint #'draw-impl
                        :on-event #'on-key-pressed-impl}))))
               (ui/padding 10
