@@ -147,7 +147,7 @@
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
 
         ;; Rendering text
-        font-bounds (.measureText font-default "@")
+        font-bounds (.measureText font-default "X")
         font-offset-x (-> (- (.getLeft font-bounds))
                         (- (/ (- (.getWidth font-bounds) cell) 2)))
         font-offset-y (-> (- (.getTop font-bounds))
