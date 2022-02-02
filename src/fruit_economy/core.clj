@@ -44,6 +44,7 @@
      :init-cell init-cell
      :cell init-cell
 
+     :zoom 1.
      :svg-xyz [0 0 0.]
 
      :world (-> (land/make-land "World" width height)
@@ -142,8 +143,9 @@
   ,)
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [camera peep world cell hovering tick paused? tick-ms last-tick] :as state} @*state
-        font-default (Font. face-default (float 24))
+  (let [{:keys [camera peep world zoom cell hovering tick paused? tick-ms last-tick] :as state} @*state
+
+        font-default (Font. face-default (float (* 24 zoom)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
 
         ;; Rendering text
@@ -155,7 +157,7 @@
 
 
         ;; Rendering emoji
-        emoji-font (Font. emoji-face (float 20))
+        emoji-font (Font. emoji-face (float (* 20 zoom)))
         emoji-bounds (.measureText emoji-font emoji-glyph)
         emoji-offset-x (-> (- (.getLeft emoji-bounds))
                          (- (/ (- (.getWidth emoji-bounds) cell) 2)))
