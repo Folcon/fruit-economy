@@ -481,8 +481,7 @@
         xy-scale (max x-scale y-scale)
         ctx    {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
         app    app]
-    (ui/-layout app ctx (IPoint. (:width bounds) (:height bounds)))
-    (ui/-draw app ctx canvas)
+    (ui/draw app ctx bounds canvas)
     (window/request-frame window)))
 
 (defn on-event [window event]
@@ -492,19 +491,21 @@
                    (let [pos   (IPoint. (.getX ^EventMouseMove event) (.getY ^EventMouseMove event))
                          event {:hui/event :hui/mouse-move
                                 :hui.event/pos pos}]
-                     (ui/-event app event))
+                     (ui/event app event))
 
                    EventMouseButton
-                   (let [event {:hui/event :hui/mouse-button
+                   (let [pressed? (.isPressed ^EventMouseButton event)
+                         event {:hui/event :hui/mouse-button
                                 :hui.event.mouse-button/raw-event event
                                 :hui.event.mouse-button/modifiers {:key/alt (.isModifierDown ^EventMouseButton event KeyModifier/ALT)
                                                                    :key/control (.isModifierDown ^EventMouseButton event KeyModifier/CONTROL)}
-                                :hui.event.mouse-button/pressed? (.isPressed ^EventMouseButton event)
+                                :hui.event.mouse-button/pressed? pressed?
+                                :hui.event.mouse-button/is-pressed pressed?
                                 :hui.event.mouse-button/button (mouse-button->kw (.getButton ^EventMouseButton event))}]
-                     (ui/-event app event))
+                     (ui/event app event))
 
                    EventMouseScroll
-                   (ui/-event app
+                   (ui/event app
                      {:hui/event :hui/mouse-scroll
                       :hui.event.mouse-scroll/dx (.getDeltaX ^EventMouseScroll event)
                       :hui.event.mouse-scroll/dy (.getDeltaY ^EventMouseScroll event)})
@@ -518,7 +519,7 @@
                                 :hui.event.key/key-mask (._mask raw-key)
                                 :hui.event.key/key (key->kw raw-key)
                                 :hui.event.key/pressed? (.isPressed ^EventKey event)}]
-                     (ui/-event app event))
+                     (ui/event app event))
 
                    nil)]
     (when changed?

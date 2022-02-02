@@ -1,6 +1,6 @@
 (ns fruit-economy.humble-ui
   (:require [clojure.stacktrace :as stacktrace]
-            [io.github.humbleui.ui :refer [IComponent]]
+            [io.github.humbleui.protocols :refer [IComponent -measure -draw -event]]
             [fruit-economy.utils :refer [resource-file->byte-array]])
   (:import [io.github.humbleui.skija Canvas Data ClipMode]
            [io.github.humbleui.types IPoint Point Rect]
@@ -11,11 +11,12 @@
 
 (defrecord UICanvas [width height on-paint on-event]
   IComponent
-  (-layout [_ ctx cs]
+  (-measure [_ ctx cs]
     (IPoint. width height))
-  (-draw [_ ctx canvas]
+  (-draw [_ ctx cs canvas]
     (when on-paint
       (let [canvas ^Canvas canvas
+            {:keys [width height]} cs
             layer  (.save canvas)
             rect  (Rect/makeXYWH 0 0 width height)]
         (try
@@ -45,11 +46,11 @@
 
 (defrecord SVGCanvas [width height svg-path svg-str on-event]
   IComponent
-  (-layout [_ ctx cs]
+  (-measure [_ ctx cs]
     (IPoint. width height))
-  (-draw [_ ctx canvas]
+  (-draw [_ ctx cs canvas]
     (when (or svg-path svg-str)
-      (let [canvas ^Canvas canvas
+      (let [^Canvas canvas canvas
             layer  (.save canvas)
             rect  (Rect/makeXYWH 0 0 width height)
             bounds (Point. (- width 50) (- height 50))
