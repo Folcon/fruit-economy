@@ -241,6 +241,16 @@
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
+        #{:key/minus}
+        (let [{:keys [zoom]} state
+              zoom' (max 0.2 (- zoom 0.2))]
+          (swap! *state assoc :zoom zoom'))
+
+        #{:key/equals}
+        (let [{:keys [zoom]} state
+              zoom' (min 5 (+ zoom 0.2))]
+          (swap! *state assoc :zoom zoom'))
+
         ;; (println :panel key)
         nil))))
 
