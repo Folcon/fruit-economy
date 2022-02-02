@@ -491,11 +491,11 @@
 
 (defn on-resize [window]
   (let [[min-width min-height] [600 400]
-        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
+        [window-width window-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
         {:keys [init-cell]} @*state
-        scale (max (float (/ *canvas-width* width)) (float (/ *canvas-height* height)))]
+        scale (max (float (/ *canvas-width* window-width)) (float (/ *canvas-height* window-height)))]
     (swap! *state assoc :cell (int (/ init-cell scale)))
-    (window/set-window-size window (max width min-width) (max height min-height))))
+    (window/set-window-size window (max window-width min-width) (max window-height min-height))))
 
 (defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
   (let [window-width  width
