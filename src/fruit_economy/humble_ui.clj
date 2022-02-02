@@ -108,23 +108,28 @@
         data-bytes (.getBytes svg-str)
         data (Data/makeFromBytes data-bytes)
         svg-dom (SVGDOM. data)
-        surface (Surface/makeRasterN32Premul 640 360)
-        canvas (.getCanvas surface)
+        front-buffer (Surface/makeRasterN32Premul 640 360)
+        back-buffer (Surface/makeRasterN32Premul 640 360)
+        front-canvas (.getCanvas front-buffer)
+        back-canvas (.getCanvas back-buffer)
 
         render-svg? true]
     ;; clear canvas
-    (doto canvas
+    (doto back-canvas
       (.clear (unchecked-int 0xFFFFFFFF)))
 
     (if render-svg?
       ;; render svg
-      (.render svg-dom canvas)
+      (.render svg-dom back-canvas)
 
       ;; draw stuff
-      (.drawCircle canvas 320 217 16 (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))))
+      (.drawCircle back-canvas 320 217 16 (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))))
+
+    ;; copy across
+    (.drawImage front-canvas (.makeImageSnapshot back-buffer) 0 0)
 
     (io/copy
-      (-> surface
+      (-> front-buffer
         (.makeImageSnapshot)
         (.encodeToData)
         (.getBytes))
