@@ -39,7 +39,7 @@
         init-cell 30]
     {:width width
      :height height
-     :camera [0 0]
+     :camera [(/ width 2) (/ height 2)]
      :peep [5 5]
      :init-cell init-cell
      :cell init-cell
