@@ -96,3 +96,36 @@
   [width height {:keys [svg-path svg-str on-event]}]
   (SVGCanvas. width height svg-path svg-str on-event))
 ;; END Should be in io.github.humbleui.ui
+
+
+(comment
+  (do
+    (require '[clojure.java.io :as io])
+    (import '[io.github.humbleui.skija Surface Paint]))
+
+  ;; Testing
+  (let [svg-str "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"620\" height=\"472\"><text font-family=\"DejaVu Sans\" stroke-width=\"4\" x=\"310\" y=\"174.47\" font-size=\"180\">TEST</text></svg>"
+        data-bytes (.getBytes svg-str)
+        data (Data/makeFromBytes data-bytes)
+        svg-dom (SVGDOM. data)
+        surface (Surface/makeRasterN32Premul 640 360)
+        canvas (.getCanvas surface)
+
+        render-svg? true]
+    ;; clear canvas
+    (doto canvas
+      (.clear (unchecked-int 0xFFFFFFFF)))
+
+    (if render-svg?
+      ;; render svg
+      (.render svg-dom canvas)
+
+      ;; draw stuff
+      (.drawCircle canvas 320 217 16 (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))))
+
+    (io/copy
+      (-> surface
+        (.makeImageSnapshot)
+        (.encodeToData)
+        (.getBytes))
+      (io/file "resources/data.png"))))
