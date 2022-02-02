@@ -129,7 +129,7 @@
   (let [[x y] loc dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
         x' (+ x dir-x) y' (+ y dir-y) loc' [x' y']
         target (get-in land-data [::terrain y' x'])]
-    (if (not= target :ocean)
+    (if (and target (not= target :ocean))
       [loc' (assoc unit :loc loc')]
       [loc unit])))
 
