@@ -504,9 +504,29 @@
 (defn on-resize [window]
   (let [[min-width min-height] [600 400]
         [window-width window-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
-        {:keys [init-cell]} @*state
-        scale (max (float (/ *canvas-width* window-width)) (float (/ *canvas-height* window-height)))]
-    (swap! *state assoc :cell (int (/ init-cell scale)))
+        bounds (window/content-rect window)
+        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
+        {:keys [init-cell zoom]} @*state
+        *canvas-width* (/ *canvas-width* 2)
+        *canvas-height* (/ *canvas-height* 2)
+        scale (max (float (/ *canvas-width* width)) (float (/ *canvas-height* height)))
+        {screen :work-area} (hui/primary-screen)
+        x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
+        y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
+
+        ;; we're calling long because drawRect appears to draw at whole numbers so if we want no gaps,
+        ;;   we should pass it whole numbers
+        ;; TODO: need better names here, we want to be able to disambiguate the size of the tile, whether it's scaled or not and what those things depend on.
+        cell' (long (/ (* init-cell zoom) scale))
+        canvas-width' (* x-scale *canvas-width*)
+        canvas-height' (* y-scale *canvas-height*)
+        viewport-width' (inc (quot canvas-width' cell'))
+        viewport-height' (inc (quot canvas-height' cell'))
+        half-vw' (quot viewport-width' 2)
+        half-vh' (quot viewport-height' 2)]
+    (swap! *state assoc
+      :scale scale :cell cell' :canvas-width canvas-width' :canvas-height canvas-height'
+      :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh')
     (window/set-window-size window (max window-width min-width) (max window-height min-height))))
 
 (defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
