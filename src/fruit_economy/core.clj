@@ -285,6 +285,8 @@
     (.clear canvas (unchecked-int 0xFFFFFBBB))
     (.drawString canvas game-glyph emoji-offset-x (+ emoji-offset-y (/ cell-y 2)) emoji-font fill-text)))
 
+(declare on-resize)
+
 (defn on-key-pressed-mini-panel-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
   (let [state @*state]
 
@@ -353,7 +355,9 @@
             (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
 
         #{:key/r}
-        (reset! *state (new-state))
+        (do
+          (reset! *state (new-state))
+          (on-resize @*window))
 
         ;; (println :mini-panel key)
         nil))))
