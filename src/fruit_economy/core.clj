@@ -214,10 +214,12 @@
 
     ;; mouse
     (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
-      (let [{:keys [camera cell]} state
+      (let [{:keys [camera cell half-vw half-vh]} state
             [camera-x camera-y] camera
-            [x y] ((juxt :x :y) (:hui.event/pos event))]
-        (swap! *state assoc :hovering {:world [(+ (quot x cell) camera-x) (+ (quot y cell) camera-y)] :screen [x y]})))
+            [screen-x screen-y] ((juxt :x :y) (:hui.event/pos event))
+            loc-x (+ (int (- (quot screen-x cell) half-vw)) camera-x)
+            loc-y (+ (int (- (quot screen-y cell) half-vh)) camera-y)]
+        (swap! *state assoc :hovering {:world [loc-x loc-y] :screen [screen-x screen-y]})))
 
     (when (= event-type :hui/mouse-button)
       (println :panel event)
