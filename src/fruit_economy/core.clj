@@ -143,7 +143,7 @@
   ,)
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [camera peep world zoom cell hovering tick paused? tick-ms last-tick] :as state} @*state
+  (let [{:keys [camera peep world zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick] :as state} @*state
 
         font-default (Font. face-default (float (* 24 zoom)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
@@ -172,11 +172,17 @@
     #_(println :panel tick)
 
     ;; walk cells eq to window size
-    (doseq [x (range (quot window-width cell))
-            y (range (quot window-height cell))
-            :let [;; offset by camera position
-                  loc [(+ camera-x x) (+ camera-y y)]
-                  path [(+ camera-y y) (+ camera-x x)]
+    (doseq [x (range viewport-width)
+            y (range viewport-height)
+            :let [;; so we need to first have the center of the area we're scaling be [0 0],
+                  ;;   so we subtract each side by half it's length,
+                  ;;   then we scale it by its zoom,r
+                  ;;   remove any remainder by calling int
+                  ;;   and then finally we offset by camera position
+                  loc-x (+ (int (- x half-vw)) camera-x)
+                  loc-y (+ (int (- y half-vh)) camera-y)
+                  loc [loc-x loc-y]
+                  path [loc-y loc-x]
                   tile (get-in terrain path)
                   resource (get-in area->resources [loc :glyph])
                   unit (get-in area->units [loc :glyph])
@@ -190,6 +196,7 @@
                                                    :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default font-offset-x font-offset-y])
                   tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
                   fill (doto (Paint.) (.setColor tile-colour))]]
+      ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
       (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) cell cell) fill)
       (.drawString canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default))
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
@@ -242,14 +249,24 @@
           (swap! update :camera (move [0 -1])))
 
         #{:key/minus}
-        (let [{:keys [zoom]} state
-              zoom' (max 0.2 (- zoom 0.2))]
-          (swap! *state assoc :zoom zoom'))
+        (let [{:keys [scale zoom init-cell canvas-width canvas-height]} state
+              zoom' (max 0.2 (- zoom 0.2))
+              cell' (long (/ (* init-cell zoom') scale))
+              viewport-width' (inc (quot canvas-width cell'))
+              viewport-height' (inc (quot canvas-height cell'))
+              half-vw' (quot viewport-width' 2)
+              half-vh' (quot viewport-height' 2)]
+          (swap! *state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
 
         #{:key/equals}
-        (let [{:keys [zoom]} state
-              zoom' (min 5 (+ zoom 0.2))]
-          (swap! *state assoc :zoom zoom'))
+        (let [{:keys [scale zoom init-cell canvas-width canvas-height]} state
+              zoom' (min 5 (+ zoom 0.2))
+              cell' (long (/ (* init-cell zoom') scale))
+              viewport-width' (inc (quot canvas-width cell'))
+              viewport-height' (inc (quot canvas-height cell'))
+              half-vw' (quot viewport-width' 2)
+              half-vh' (quot viewport-height' 2)]
+          (swap! *state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
 
         ;; (println :panel key)
         nil))))
