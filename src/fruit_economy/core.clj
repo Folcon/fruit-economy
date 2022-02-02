@@ -530,8 +530,6 @@
         bounds (window/content-rect window)
         [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
         {:keys [init-cell zoom]} @*state
-        *canvas-width* (/ *canvas-width* 2)
-        *canvas-height* (/ *canvas-height* 2)
         scale (max (float (/ *canvas-width* width)) (float (/ *canvas-height* height)))
         {screen :work-area} (hui/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
