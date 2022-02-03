@@ -541,8 +541,8 @@
         ;;   we should pass it whole numbers
         ;; TODO: need better names here, we want to be able to disambiguate the size of the tile, whether it's scaled or not and what those things depend on.
         cell' (long (/ (* init-cell zoom) scale))
-        canvas-width' (* x-scale *canvas-width*)
-        canvas-height' (* y-scale *canvas-height*)
+        canvas-width' (long (* x-scale *canvas-width*))
+        canvas-height' (long (* y-scale *canvas-height*))
         viewport-width' (inc (quot canvas-width' cell'))
         viewport-height' (inc (quot canvas-height' cell'))
         half-vw' (quot viewport-width' 2)
