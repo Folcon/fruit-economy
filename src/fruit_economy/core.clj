@@ -439,7 +439,9 @@
           history-size (count history)
           {::land/keys [civ-name->civ economy]} (get @*state :world)
           controlling (nth (keys civ-name->civ) civ-index)
-          [svg-x svg-y svg-z] svg-xyz]
+          [svg-x svg-y svg-z] svg-xyz
+          canvas-width (long (* x-scale *canvas-width*))
+          canvas-height (long (* y-scale *canvas-height*))]
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 150 150 {:on-paint #'draw-mini-panel-impl
@@ -457,10 +459,10 @@
                     (ui/valign 0.5
                       (ui/halign 0.5
                         (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                          (custom-ui/svg-canvas (* x-scale *canvas-width*) (* y-scale *canvas-height*)
+                          (custom-ui/svg-canvas canvas-width canvas-height
                             {:svg-str (economy/->svg economy)
                              :on-event #'on-key-pressed-svg-impl}))))
-                    (custom-ui/ui-canvas (* x-scale *canvas-width*) (* y-scale *canvas-height*)
+                    (custom-ui/ui-canvas canvas-width canvas-height
                       {:on-paint #'draw-impl
                        :on-event #'on-key-pressed-impl}))))
               (ui/padding 10
