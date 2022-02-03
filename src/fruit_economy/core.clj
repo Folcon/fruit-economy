@@ -195,9 +195,10 @@
                                                    territory? ["" #_(land/render-tile-str tile) tint font-default font-offset-x font-offset-y]
                                                    :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default font-offset-x font-offset-y])
                   tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
-                  fill (doto (Paint.) (.setColor tile-colour))]]
+                  fill (doto (Paint.) (.setColor tile-colour))
+                  padded-cell (+ 0.5 cell)]]
       ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
-      (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) cell cell) fill)
+      (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
       (.drawString canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default))
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
