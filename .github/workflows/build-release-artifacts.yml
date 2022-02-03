@@ -270,31 +270,28 @@ jobs:
         run: ls -R
 
       - name: release artifacts for itch.io on linux
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.3
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: linux
-          ITCH_GAME: fruit-economy
-          PACKAGE: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
-          VERSION: ${{ env.RELEASE_VERSION }}
+        uses: robpc/itchio-upload-action@v1
+        with:
+          path: fruit-economy_${{ env.RELEASE_VERSION }}_amd64.deb
+          project: ${{ secrets.BUTLER_USERNAME }}/fruit-economy
+          channel: linux
+          version: ${{ env.RELEASE_VERSION }}
+          api-key: ${{ secrets.BUTLER_CREDENTIALS }}
 
       - name: release artifacts for itch.io on macos
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: osx
-          ITCH_GAME: fruit-economy
-          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
-          VERSION: ${{ env.RELEASE_VERSION }}
+        uses: robpc/itchio-upload-action@v1
+        with:
+          path: Fruit_Economy-${{ env.RELEASE_VERSION }}.dmg
+          project: ${{ secrets.BUTLER_USERNAME }}/fruit-economy
+          channel: osx
+          version: ${{ env.RELEASE_VERSION }}
+          api-key: ${{ secrets.BUTLER_CREDENTIALS }}
 
       - name: release artifacts for itch.io on windows
-        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
-        env:
-          ITCH_USER: ${{ secrets.BUTLER_USERNAME }}
-          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: windows
-          ITCH_GAME: fruit-economy
-          PACKAGE: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
-          VERSION: ${{ env.RELEASE_VERSION }}
+        uses: robpc/itchio-upload-action@v1
+        with:
+          path: Fruit_Economy-${{ env.RELEASE_VERSION }}.zip
+          project: ${{ secrets.BUTLER_USERNAME }}/fruit-economy
+          channel: windows
+          version: ${{ env.RELEASE_VERSION }}
+          api-key: ${{ secrets.BUTLER_CREDENTIALS }}
