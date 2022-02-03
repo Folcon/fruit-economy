@@ -440,8 +440,8 @@
           {::land/keys [civ-name->civ economy]} (get @*state :world)
           controlling (nth (keys civ-name->civ) civ-index)
           [svg-x svg-y svg-z] svg-xyz
-          canvas-width (long (* x-scale *canvas-width*))
-          canvas-height (long (* y-scale *canvas-height*))]
+          canvas-width (* x-scale *canvas-width*)
+          canvas-height (* y-scale *canvas-height*)]
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 150 150 {:on-paint #'draw-mini-panel-impl
