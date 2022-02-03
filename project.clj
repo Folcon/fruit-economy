@@ -10,7 +10,7 @@
                  ;[org.jetbrains/annotations "20.1.0"]
                  [environ "1.2.0"]
                  [io.github.humbleui/types "0.1.2" :classifier "clojure"]
-                 [io.github.humbleui/jwm "b3fecb126a" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/jwm "09a13996ee" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-shared "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-windows "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-linux "0.98.0" :exclusions [io.github.humbleui/types]]
