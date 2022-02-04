@@ -172,7 +172,9 @@
     #_(println :panel tick)
 
     ;; walk cells eq to window size
-    (doseq [x (range viewport-width)
+    (doseq [;; TODO: Figure out why this viewport-width fixed the tile rendering bug,
+            ;;   it's almost certainly a scaling value thing.
+            x (range (long (* viewport-width 1.5)))
             y (range viewport-height)
             :let [;; so we need to first have the center of the area we're scaling be [0 0],
                   ;;   so we subtract each side by half it's length,
@@ -196,6 +198,7 @@
                                                    :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default font-offset-x font-offset-y])
                   tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
                   fill (doto (Paint.) (.setColor tile-colour))
+                  ;; TODO: Temp fix for needing to overdraw tiles to stop the gap.
                   padded-cell (+ 0.5 cell)]]
       ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
       (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
