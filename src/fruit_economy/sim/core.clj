@@ -22,7 +22,7 @@
 (defn choose
   "Decides the details of the decision given, these sub-decisions won't necessarily be made by the same peep who made
    the decision."
-  [{::land/keys [terrain] :as land-data} {civ-name :civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
+  [{::land/keys [terrain] :as land-data} {civ-name ::civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
   (let [territory (get-in land-data [::land/civ-name->civ civ-name ::civ/territory])
         _ (println :territory territory)]
     (condp = decision-action
@@ -68,8 +68,8 @@
         biome (get-in terrain [y x])
         first-name (lang/make-word lang)
         last-name (lang/make-word lang)
-        new-peep {:civ/id curr-civ-id
-                  :civ/name civ-name
+        new-peep {::civ/id curr-civ-id
+                  ::civ/name civ-name
                   :name (str first-name " " last-name)
                   :first-name first-name
                   :last-name last-name
