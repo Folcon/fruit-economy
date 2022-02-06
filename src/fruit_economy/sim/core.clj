@@ -18,7 +18,7 @@
         first-name (lang/make-word lang)
         last-name (lang/make-word lang)
         new-peep {:civ/id curr-civ-id
-                  :civ/name name
+                  :civ/name civ-name
                   :name (str first-name " " last-name)
                   :first-name first-name
                   :last-name last-name
