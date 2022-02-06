@@ -56,6 +56,34 @@
       ;; no real sub-decision to be made here, we just have the pop grow
       :grow decision)))
 
+(defn process-decision
+  "Take a decision and do it"
+  [{::land/keys [area->civ-name civ-name->civ area->resources] :as land-data} {decision-action :decision :keys [target] civ-name ::civ/name :as decision}]
+  (condp = decision-action
+    :nonviable (land/log-history land-data (pr-str decision))
+    :claim (let [existing-claim (get area->civ-name target)
+                 claim-development (get-in civ-name->civ [existing-claim ::civ/territory->development target])]
+             (-> land-data
+               (land/log-history (pr-str decision))
+               (assoc-in [::land/area->civ-name target] civ-name)
+               (update-in [::land/civ-name->civ civ-name ::civ/territory] conj target)
+               (cond->
+                 (not existing-claim)
+                 (assoc-in [::land/civ-name->civ civ-name ::civ/territory->development target] 0)
+
+                 existing-claim
+                 (update-in [::land/civ-name->civ civ-name ::civ/territory->development target] claim-development))))
+    :develop (-> land-data
+               (land/log-history (pr-str decision))
+               (update-in [::land/civ-name->civ civ-name ::civ/territory->development target] inc))
+    :gather (let [resource (get area->resources target)]
+              (-> land-data
+                (land/log-history (pr-str decision))
+                (update-in [::land/civ-name->civ civ-name ::civ/store resource] (fnil inc 0))))
+    :grow (-> land-data
+            (land/log-history (pr-str decision))
+            (update-in [::land/civ-name->civ civ-name ::civ/power] inc))))
+
 (comment
   (let [width 3 height 3
         top-left-x 0 top-left-y 0
