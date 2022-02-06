@@ -118,6 +118,10 @@
       ;;   say we're claiming an adjacent territory, someone has to decide which adjacent territory, and this could be the leader,
       ;;   but doesn't *have* to be, maybe it's the head explorer for example.
       (as-> $
+        (let [decision (assoc (decide $ new-peep) :decision :claim)
+              decision (choose $ new-peep decision)]
+          (process-decision $ decision))
+        #_
         (condp = decide-action
           :claim (let [candidates (coords/get-territory-borders $ (get-in $ [::land/civ-name->civ civ-name ::civ/territory]))
                        ;; remove invalid, locations TODO: can we turn this into a xf and pass optionally pass it into get-territory-borders?
