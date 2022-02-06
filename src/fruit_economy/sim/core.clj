@@ -112,5 +112,5 @@
                   (update-in [::land/civ-name->civ civ-name ::civ/power] inc)
                   ;; also, if our pop hits a threshold (fibonacci number) we gain a new worker!
                   ,)))
-      (get ::land/civ-name->civ civ-name)))
+      (get-in [::land/civ-name->civ civ-name])))
   ,)
