@@ -61,7 +61,8 @@
         top-left-x 0 top-left-y 0
         bottom-right-x (dec width) bottom-right-y (dec height)
         x 2 y 2 parent nil
-        land-data (land/make-land "World" width height)
+        land-data (-> (land/make-land "World" width height)
+                    (land/gen-land))
         {::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} land-data
         symbol (first civ-letters)
         civ-name (lang/make-word lang)
