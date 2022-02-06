@@ -30,23 +30,29 @@
                    ;; remove invalid, locations TODO: can we turn this into a xf and pass optionally pass it into get-territory-borders?
                    _ (println :claim :pre-candidates candidates terrain)
                    candidates (into [] (remove (fn [[x y]] (= (get-in terrain [y x]) :ocean))) candidates)
-                   _ (println :claim :candidates candidates)
-                   target (rand-nth candidates)]
+                   _ (println :claim :candidates candidates)]
                ;; we get a sub-decision to attempt to claim target!
-               (assoc decision :target target :chooser name))
+               (if (seq candidates)
+                 (let [target (rand-nth candidates)]
+                   (assoc decision :target target :chooser name))
+                 (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
       :develop (let [candidates (vec territory)
-                     _ (println :develop :candidates candidates)
-                     target (rand-nth candidates)]
+                     _ (println :develop :candidates candidates)]
                  ;; we get a sub-decision to attempt to develop (reduce the wildness of the tile or make the tile more
                  ;;   hospitable to the civ, so maybe wild races make the tiles wilder?) target!
-                 (assoc decision :target target :chooser name))
+                 (if (seq candidates)
+                   (let [target (rand-nth candidates)]
+                     (assoc decision :target target :chooser name))
+                   (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
       :gather (let [;; This one may need a precondition that the civ has a claimed resource?
                     area->resources (get land-data ::land/area->resources)
                     candidates (into [] (filter area->resources) territory)
-                    _ (println :gather :candidates candidates)
-                    target (rand-nth candidates)]
+                    _ (println :gather :candidates candidates)]
                 ;; we get a sub-decision to attempt to gather target resource!
-                (assoc decision :target target :chooser name))
+                (if (seq candidates)
+                  (let [target (rand-nth candidates)]
+                    (assoc decision :target target :chooser name))
+                  (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
       ;; no real sub-decision to be made here, we just have the pop grow
       :grow decision)))
 
