@@ -151,7 +151,7 @@
   ,)
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [camera peep world zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick] :as state} @*state
+  (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick] :as state} @*state
 
         font-default (Font. face-default (float (* 24 zoom)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
@@ -172,7 +172,7 @@
         emoji-offset-y (-> (- (.getTop emoji-bounds))
                          (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
-        {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} world
+        {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (db/q '[:find (pull ?e [*]) . :where [?e ::land/terrain]] world-db)
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
