@@ -20,6 +20,7 @@
 
        ;; peeps
        ::peeps peeps
+       :civ/peeps peeps
 
        ;; stats
        ::instability -10  ;; low starting instability to ensure early expansion/survival
@@ -64,6 +65,7 @@
         (log-history (str "Spawning new civ at " x " " y " on " biome))
         (assoc-in [::land/area->civ-name [x y]] civ-name)
         (update ::land/civ-name->civ assoc civ-name new-civ)
+        (update :land/civs (fnil conj []) new-civ)
         (update ::land/civ-letters disj symbol)
         (update ::land/curr-civ-id inc)
         (economy/init-civ-economy new-civ)))

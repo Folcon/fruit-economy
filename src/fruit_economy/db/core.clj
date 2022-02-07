@@ -65,6 +65,8 @@
 
 (defn init-db []
   (d/empty-db {:land/civs {:db/valueType :db.type/ref
+                           :db/cardinality :db.cardinality/many}
+               :civ/peeps {:db/valueType :db.type/ref
                            :db/cardinality :db.cardinality/many}}))
 
 (defn db-bulk-insert [db entities]
