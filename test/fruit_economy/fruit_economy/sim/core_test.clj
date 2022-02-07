@@ -85,7 +85,11 @@
                (q '[:find ?value
                     :where [?e ::civ/home-biome ?value]]
                  db))
-            biome)))))
+            biome))
+      (is (= (q '[:find [?e ?value]
+                  :where [?e :land/civs ?value]]
+               db)
+            [1 2])))))
 
 
 (comment
