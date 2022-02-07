@@ -1,5 +1,6 @@
 (ns fruit-economy.data.core
-  (:require [fruit-economy.db.core :as db]))
+  (:require [fruit-economy.db.core :as db]
+            [fruit-economy.economy :as economy]))
 
 
 
@@ -26,4 +27,9 @@
 
 (defn civ-count [world-db]
   (db/q '[:find (count ?value) . :where [?e :land/civs ?value]] world-db))
+
+(defn step-economy [world-db]
+  (let [[id economy] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/economy ?value]] world-db)
+        economy' (economy/step-economy economy)]
+    (db/db-bulk-insert world-db [{:db/id id :fruit-economy.land/economy economy'}])))
 

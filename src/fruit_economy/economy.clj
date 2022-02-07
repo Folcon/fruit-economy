@@ -248,9 +248,9 @@
         cat)
       categories)))
 
-(defn step-economy [land-data]
+(defn step-economy [economy-data]
   (let [rules (generate-rules)]
-    (update-in land-data [::land/economy :ubergraph] apply-rules rules)))
+    (update economy-data :ubergraph apply-rules rules)))
 
 (comment
   (let [;; Extending the matching rules?

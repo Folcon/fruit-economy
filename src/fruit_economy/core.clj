@@ -347,7 +347,7 @@
         (swap! *state update :economy? not)
 
         #{:key/y}
-        (swap! *state update :world economy/step-economy)
+        (swap! *state update :world-db data/step-economy)
 
         #{:key/p}
         (swap! *state update :paused? not)
