@@ -7,6 +7,11 @@
 (defn land-data [world-db]
   (db/q '[:find (pull ?e [*]) . :where [?e :fruit-economy.land/terrain]] world-db))
 
+(defn update-land-data [world-db attrs]
+  (let [ent (db/q '[:find (pull ?e ?attrs) . :where [?e :fruit-economy.land/terrain] :in $ ?attrs] world-db (into [:db/id] (keys attrs)))]
+    (db/db-bulk-insert world-db
+      [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
+
 (defn log-history [world-db message]
   (let [[id history] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/history ?value]] world-db)]
     (db/db-bulk-insert world-db
