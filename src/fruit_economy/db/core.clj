@@ -51,6 +51,18 @@
     db
     ops))
 
+(def q
+  "[query & inputs]
+   Executes a datalog query. See [docs.datomic.com/on-prem/query.html](https://docs.datomic.com/on-prem/query.html).
+   Usage:
+   ```
+   (q '[:find ?value
+        :where [_ :likes ?value]]
+      db)
+   ; => #{[\"fries\"] [\"candy\"] [\"pie\"] [\"pizza\"]}
+   ```"
+  d/q)
+
 (defn init-db []
   (d/empty-db))
 

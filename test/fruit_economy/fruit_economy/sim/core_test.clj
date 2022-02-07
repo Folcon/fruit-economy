@@ -1,6 +1,6 @@
 (ns fruit-economy.fruit-economy.sim.core-test
   (:require [clojure.test :refer :all]
-            [fruit-economy.db.core :refer [query init-db db-bulk-insert]]
+            [fruit-economy.db.core :refer [q query init-db db-bulk-insert]]
             [fruit-economy.land :as land]))
 
 
