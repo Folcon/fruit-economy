@@ -14,6 +14,7 @@
        ::symbol symbol
        ::tint (colour (rand-int 256) (rand-int 256) (rand-int 256))
        ::territory #{origin}
+       ::territory->development {origin 0}
        ::home-world home-world-name
        ::home-biome terrain
 
