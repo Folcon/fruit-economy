@@ -1,4 +1,5 @@
-(ns fruit-economy.db.core)
+(ns fruit-economy.db.core
+  (:require [datascript.core :as d]))
 
 
 ;;; CRUD thing using reduce to take a list of changes
@@ -51,7 +52,10 @@
     ops))
 
 (defn init-db []
-  {})
+  (d/empty-db))
+
+(defn db-bulk-insert [db entities]
+  (d/db-with db entities))
 
 (comment
   (let [ops [[:insert :civ 1 {:name "Civ 1" :peeps [:peep 2] :power 10}]
