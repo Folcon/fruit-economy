@@ -15,14 +15,19 @@
 (defn db-update [db [_op kind id attr f & args]]
   (apply update-in db [kind id attr] f args))
 
+(defn db-delete [db [_op kind id]]
+  (update db kind dissoc id))
+
 (comment
   (let [ops [[:insert :civ 1 {:name "Civ 1" :peeps [:peep 2] :power 10}]
              [:insert :peep 2 {:name "Peep 1" :civ [:civ 1]}]
-             [:update :civ 1 :power inc]]]
+             [:update :civ 1 :power inc]
+             [:delete :peep 2]]]
     (reduce
       (fn [db op]
         (condp = (first op)
           :insert (db-insert db op)
-          :update (db-update db op)))
+          :update (db-update db op)
+          :delete (db-delete db op)))
       {}
       ops)))
