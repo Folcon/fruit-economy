@@ -24,3 +24,6 @@
     (db/db-bulk-insert world-db
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
 
+(defn civ-count [world-db]
+  (db/q '[:find (count ?value) . :where [?e :land/civs ?value]] world-db))
+
