@@ -20,7 +20,7 @@
       [(assoc attrs :db/id civ-id)])))
 
 (defn update-civ [world-db civ-name attrs]
-  (let [ent (db/q '[:find (pull ?e ?attrs) . :where [?e ::civ/name ?civ-name] :in $ ?civ-name ?attrs] world-db civ-name (into [:db/id] (keys attrs)))]
+  (let [ent (db/q '[:find (pull ?e ?attrs) . :where [?e :fruit-economy.civ/name ?civ-name] :in $ ?civ-name ?attrs] world-db civ-name (into [:db/id] (keys attrs)))]
     (db/db-bulk-insert world-db
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
 
