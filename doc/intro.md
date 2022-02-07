@@ -3,7 +3,7 @@
 TODO: write [great documentation](http://jacobian.org/writing/what-to-write/)
 
 # Next Steps
-There's clearly a bunch of stuff that needs to be done first before I can pull the changes started at `HASH` into the system.
+There's clearly a bunch of stuff that needs to be done first before I can pull the changes started at `7a72fb5` into the system.
 
 For a start the current sim data structure is beginning to get unwieldy, which means some approach for either navigating it or denormalising it.
 Which means reaching for a tools like, [`specter`](https://github.com/redplanetlabs/specter), [`pathom`](https://github.com/wilkerlucio/pathom) or [`datascript`](https://github.com/tonsky/datascript/).
