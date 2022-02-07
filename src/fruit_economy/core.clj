@@ -11,6 +11,7 @@
    [fruit-economy.colour :refer [colour]]
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.graph :refer [graph?]]
+   [fruit-economy.db.core :as db]
    [fruit-economy.land :as land]
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
@@ -35,6 +36,7 @@
 (defn init-world [world-name width height]
   (-> (land/make-land world-name width height)
     (land/gen-land)
+    #_#_#_
     (land/populate 50 #_100)
     (land/spawn-units 10)
     (economy/add-resources)
@@ -58,6 +60,7 @@
      :svg-xyz [0 0 0.]
 
      :world world
+     :world-db (db/db-bulk-insert (db/init-db) world)
      :history-index 0
      :civ-index 0
 
