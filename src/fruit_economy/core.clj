@@ -12,6 +12,7 @@
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.graph :refer [graph?]]
    [fruit-economy.db.core :as db]
+   [fruit-economy.data.core :as data]
    [fruit-economy.land :as land]
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
@@ -33,21 +34,13 @@
 (defonce ^:dynamic *canvas-width* 2400)
 (defonce ^:dynamic *canvas-height* 1200)
 
-(defn init-world [world-name width height]
-  (-> (land/make-land world-name width height)
-    (land/gen-land)
-    (land/populate 50 #_100)
-    (land/spawn-units 10)
-    (economy/add-resources)
-    (civ/try-spawn-new-civs 10)))
-
 
 ;; GAME STATE
 (defn new-state []
   (let [width  60
         height 40
         init-cell 30
-        world (init-world "World" width height)]
+        world (data/init-world "World" width height)]
     {:width width
      :height height
      :camera [(/ width 2) (/ height 2)]
