@@ -1,9 +1,11 @@
-(ns fruit-economy.unit)
+(ns fruit-economy.unit
+  (:require [fruit-economy.data.core :as data]))
 
 
-(defn unit-on-tick [{:keys [loc] :as unit} land-data]
+(defn unit-on-tick [{:keys [loc] :as unit} world-db]
   (let [[x y] loc dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
         x' (+ x dir-x) y' (+ y dir-y) loc' [x' y']
+        land-data (data/land-data world-db)
         target (get-in land-data [::terrain y' x'])]
     (if (and target (not= target :ocean))
       [loc' (assoc unit :loc loc')]
