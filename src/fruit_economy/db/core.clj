@@ -38,6 +38,17 @@
 (defn db-select [db [_op kind id]]
   (get-in db [:data kind id]))
 
+(defn query [db ops]
+  (reduce
+    (fn [db op]
+      (condp = (first op)
+        :insert (db-insert db op)
+        :update (db-update db op)
+        :delete (db-delete db op)
+                ;; force stopping on a select
+        :select (reduced (db-select db op))))
+    db
+    ops))
 
 (comment
   (let [ops [[:insert :civ 1 {:name "Civ 1" :peeps [:peep 2] :power 10}]
