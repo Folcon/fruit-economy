@@ -35,17 +35,23 @@
           $
           refs)))))
 
+(defn db-select [db [_op kind id]]
+  (get-in db [:data kind id]))
+
 
 (comment
   (let [ops [[:insert :civ 1 {:name "Civ 1" :peeps [:peep 2] :power 10}]
              [:insert :peep 2 {:name "Peep 1" :civ [:civ 1]}]
              [:update :civ 1 :power inc]
-             [:delete :peep 2]]]
+             [:delete :peep 2]
+             [:select :civ 1]]]
     (reduce
       (fn [db op]
         (condp = (first op)
           :insert (db-insert db op)
           :update (db-update db op)
-          :delete (db-delete db op)))
+          :delete (db-delete db op)
+                  ;; force stopping on a select
+          :select (reduced (db-select db op))))
       {}
       ops)))
