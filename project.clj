@@ -17,6 +17,7 @@
                  [io.github.humbleui/skija-macos-x64 "0.98.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-macos-arm64 "0.98.0" :exclusions [io.github.humbleui/types]]
                  [humbleui "e66ac2c5970eadce3302c32f24ccf7ba5a707328"]
+                 [datascript "1.3.9"]
 
                  [net.mikera/clisk "0.11.0"]
                  [ubergraph "0.8.2"]
