@@ -164,7 +164,7 @@
         emoji-offset-y (-> (- (.getTop emoji-bounds))
                          (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
-        {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (db/q '[:find (pull ?e [*]) . :where [?e ::land/terrain]] world-db)
+        {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (data/land-data world-db)
         territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
@@ -327,7 +327,7 @@
       (condp contains? key
         #{:key/q}
         (let [history-index (get state :history-index)
-              history (get-in state [:world ::land/history])
+              history (data/history-log-entries (:world-db state))
               history-size (count history)]
           (swap! *state assoc :history-index (min (dec history-size) (inc history-index))))
 
@@ -435,12 +435,12 @@
 (def app
   (ui/dynamic ctx [{:keys [scale bounds x-scale y-scale xy-scale]} ctx
                    {:keys [camera tick history-index civ-index economy? svg-xyz]} @*state
-                   history (get-in @*state [:world ::land/history])]
+                   history (data/history-log-entries (get @*state :world-db))]
     (let [font-default        (Font. face-default (float (* 18 scale)))
           font-small          (Font. face-default (float (* 12 scale)))
           fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
           history-size (count history)
-          {::land/keys [civ-name->civ economy]} (get @*state :world)
+          {::land/keys [civ-name->civ economy]} (data/land-data (get @*state :world-db))
           controlling (nth (keys civ-name->civ) civ-index)
           [svg-x svg-y svg-z] svg-xyz
           canvas-width (* x-scale *canvas-width*)
