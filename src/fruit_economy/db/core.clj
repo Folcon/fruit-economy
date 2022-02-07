@@ -50,6 +50,9 @@
     db
     ops))
 
+(defn init-db []
+  {})
+
 (comment
   (let [ops [[:insert :civ 1 {:name "Civ 1" :peeps [:peep 2] :power 10}]
              [:insert :peep 2 {:name "Peep 1" :civ [:civ 1]}]
@@ -64,5 +67,5 @@
           :delete (db-delete db op)
                   ;; force stopping on a select
           :select (reduced (db-select db op))))
-      {}
+      (init-db)
       ops)))
