@@ -6,7 +6,7 @@
             [fruit-economy.economy :as economy]))
 
 
-(defn make-civ [id name symbol origin home-world-name terrain ancestor]
+(defn make-civ [id name symbol origin home-world-name terrain ancestor peeps]
   (let [[x y] origin]
     (merge
       {::id id
@@ -16,6 +16,9 @@
        ::territory #{origin}
        ::home-world home-world-name
        ::home-biome terrain
+
+       ;; peeps
+       ::peeps peeps
 
        ;; stats
        ::instability -10  ;; low starting instability to ensure early expansion/survival
@@ -36,12 +39,26 @@
       (when ancestor
         {::ancestor ancestor}))))
 
+(defn peep-on-tick [{:keys [loc task] :as peep} land-data]
+  (let [[x y] loc dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
+        x' (+ x dir-x) y' (+ y dir-y) loc' [x' y']
+        target (get-in land-data [::terrain y' x'])]
+    (if (and target (not= target :ocean))
+      [loc' (assoc peep :loc loc')]
+      [loc peep])))
+
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
     (let [symbol (first civ-letters)
           civ-name (make-word lang)
           biome (get-in terrain [y x])
-          new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent)]
+          new-peep {::id curr-civ-id
+                    ::name name
+                    :name (str "Peep " (inc (rand-int 1000)))
+                    :kind :peep
+                    :glyph "🧑"
+                    :on-tick peep-on-tick}
+          new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent [new-peep])]
       (-> land-data
         (log-history (str "Spawning new civ at " x " " y " on " biome))
         (assoc-in [::land/area->civ-name [x y]] civ-name)
