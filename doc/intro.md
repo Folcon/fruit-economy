@@ -1,6 +1,6 @@
 # Introduction to fruit-economy
 
-TODO: write [great documentation](http://jacobian.org/writing/what-to-write/)
+TODO: write [great documentation](http://jacobian.org/writing/what-to-write/). I always feel like [this should come alongside](https://stevelosh.com/blog/2013/09/teach-dont-tell/) the other link.
 
 # Next Steps
 There's clearly a bunch of stuff that needs to be done first before I can pull the changes started at `7a72fb5` into the system.
