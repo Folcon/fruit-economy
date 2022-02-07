@@ -60,7 +60,7 @@
      :svg-xyz [0 0 0.]
 
      :world world
-     :world-db (db/db-bulk-insert (db/init-db) world)
+     :world-db (db/db-bulk-insert (db/init-db) [world])
      :history-index 0
      :civ-index 0
 
