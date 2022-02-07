@@ -36,7 +36,6 @@
 (defn init-world [world-name width height]
   (-> (land/make-land world-name width height)
     (land/gen-land)
-    #_#_#_
     (land/populate 50 #_100)
     (land/spawn-units 10)
     (economy/add-resources)
