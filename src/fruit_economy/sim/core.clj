@@ -84,6 +84,25 @@
             (land/log-history (pr-str decision))
             (update-in [::land/civ-name->civ civ-name ::civ/power] inc))))
 
+(defn leader-tick
+  "Make a decision for each peep"
+  [{::land/keys [civ-name->civ] :as land-data} {civ-name ::civ/name :keys [plan] :as peep}]
+  (let [{::civ/keys [peeps] :as civ} (get civ-name->civ civ-name)]
+    (reduce-kv
+      (fn [land peep-name peep]
+        (let [decision (decide land-data peep)]
+          (assoc-in land [::land/civ-name->civ civ-name ::civ/peeps peep-name :planned-decision] decision)))
+      land-data
+      peeps)))
+
+(defn subordinate-tick
+  "Take the planned decision given to the peep and execute it"
+  [land-data {:keys [planned-decision] :as peep}]
+  (if planned-decision
+    (let [subordinate-choose (choose land-data peep planned-decision)]
+      (process-decision land-data subordinate-choose))
+    land-data))
+
 (comment
   (let [width 3 height 3
         top-left-x 0 top-left-y 0
@@ -144,5 +163,15 @@
                   (update-in [::land/civ-name->civ civ-name ::civ/power] inc)
                   ;; also, if our pop hits a threshold (fibonacci number) we gain a new worker!
                   ,)))
+
+      ;; Let's start with a situation when no action is planned
+      (subordinate-tick new-peep) ;; nothing should happen
+
+      ;; Now let's do a leader tick, followed by a subordinate-tick
+      (leader-tick new-peep) ;; all the civ peeps have a new :planned-decision
+      (as-> $
+        (let [peep (get-in $ [::land/civ-name->civ civ-name ::civ/peeps 0])]
+          (subordinate-tick $ peep))) ;; this peep executes their decision
+
       (get-in [::land/civ-name->civ civ-name])))
   ,)
