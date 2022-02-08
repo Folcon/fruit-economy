@@ -59,6 +59,7 @@
                     :name (str "Peep " (inc (rand-int 1000)))
                     :kind :peep
                     :glyph "🧑"
+                    :area [x y]
                     :on-tick peep-on-tick}
           new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent [new-peep])]
       (-> land-data
