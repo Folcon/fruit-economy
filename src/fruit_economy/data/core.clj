@@ -7,6 +7,9 @@
 (defn land-data [world-db]
   (db/q '[:find (pull ?e [*]) . :where [?e :fruit-economy.land/terrain]] world-db))
 
+(defn land-area [world-db area]
+  (db/q '[:find [(pull ?e [*]) ...] :where [?e :area ?a] :in $ ?a] world-db area))
+
 (defn upsert-land-data [world-db attrs]
   (let [civ-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
     (db/db-bulk-insert world-db
