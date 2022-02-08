@@ -2,14 +2,13 @@
   (:require [fruit-economy.data.core :as data]))
 
 
-(defn unit-on-tick [{:keys [loc] :as unit} world-db]
-  (let [[x y] loc dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
-        x' (+ x dir-x) y' (+ y dir-y) loc' [x' y']
+(defn unit-on-tick [{id :db/id :keys [area] :as unit} world-db]
+  (let [[x y] area dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
+        x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
         land-data (data/land-data world-db)
         target (get-in land-data [:fruit-economy.land/terrain y' x'])]
-    (if (and target (not= target :ocean))
-      [loc' (assoc unit :loc loc')]
-      [loc unit])))
+    (when (and target (not= target :ocean))
+      {:db/id id :area area'})))
 
 (defn spawn-units [{:fruit-economy.land/keys [width height] :as land-data} n]
   (reduce
