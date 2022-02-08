@@ -38,6 +38,9 @@
 (defn civ-count [world-db]
   (db/q '[:find (count ?value) . :where [?e :land/civs ?value]] world-db))
 
+(defn on-tick [world-db]
+  (db/q '[:find [(pull ?e [*]) ...] :where [?e :on-tick]] world-db))
+
 (defn step-economy [world-db]
   (let [[id economy] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/economy ?value]] world-db)
         economy' (economy/step-economy economy)]
