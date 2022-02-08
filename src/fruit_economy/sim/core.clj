@@ -1,7 +1,8 @@
 (ns fruit-economy.sim.core
   (:require [fruit-economy.land :as land]
             [fruit-economy.language :as lang]
-            [fruit-economy.sim.coords :as coords]))
+            [fruit-economy.sim.coords :as coords]
+            [fruit-economy.data.core :as data]))
 
 
 ;; The decision system, basically actions are broken down into decisions and choices, at the decision stage we're
@@ -85,13 +86,13 @@
 
 (defn leader-tick
   "Make a decision for each peep"
-  [{::land/keys [civ-name->civ] :as land-data} {civ-name ::civ/name :keys [plan] :as peep}]
-  (let [{::civ/keys [peeps] :as civ} (get civ-name->civ civ-name)]
-    (reduce-kv
-      (fn [land peep-name peep]
-        (let [decision (decide land-data peep)]
-          (assoc-in land [::land/civ-name->civ civ-name ::civ/peeps peep-name :planned-decision] decision)))
-      land-data
+  [world-db {id :db/id :as leader}]
+  (let [{:civ/keys [peeps]} (data/peep->civ-peeps world-db id)]
+    (println :peeps peeps)
+    (reduce
+      (fn [v peep]
+        (conj v {:db/id (:db/id peep) :planned-decision (decide world-db leader)}))
+      []
       peeps)))
 
 (defn subordinate-tick
