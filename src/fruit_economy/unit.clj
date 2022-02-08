@@ -30,7 +30,9 @@
                                          [:dragon :monster "🐉"]
                                          [:spider :monster "🕷️"]])]
             (println sub-kind kind glyph)
-            (assoc-in land [:fruit-economy.land/area->units [x y]] {:name (str (name target) "-" (name sub-kind)) :kind kind :glyph glyph :loc [x y] :on-tick unit-on-tick}))
+            (-> land
+              ;(assoc-in [:fruit-economy.land/area->units [x y]] {:name (str (name target) "-" (name sub-kind)) :kind kind :glyph glyph :loc [x y] :on-tick unit-on-tick})
+              (update :land/units conj {:name (str (name target) "-" (name sub-kind)) :kind kind :glyph glyph :area [x y] :on-tick unit-on-tick})))
 
           :else
           land)))

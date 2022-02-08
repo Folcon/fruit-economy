@@ -20,7 +20,9 @@
       ::base-biome base-biome
       ::terrain (vec (repeat height (vec (repeat width base-biome))))
       ::area->units {}
+      :land/units []
       ::area->resources {}
+      :land/resources []
       ::area->civ-name {}
       ::area->manor {}
       ::area->ruin {}
@@ -117,7 +119,10 @@
 
           (not= target :ocean)
           (let [kind (rand-nth (into [] (remove #{:growing-plant :dying-plant}) (keys kind->name)))]
-            (assoc-in land [::area->resources [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)}))
+            (-> land
+              ;; TODO: Remove this by pulling out the call in economy/init-civ-economy
+              (assoc-in [::area->resources [x y]] {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind)})
+              (update :land/resources conj {:name (str (name target) "-" (name kind)) :kind kind :glyph (kind->name kind) :area [x y]})))
 
           :else
           land)))
