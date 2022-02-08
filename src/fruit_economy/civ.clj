@@ -20,7 +20,6 @@
        ::home-biome terrain
 
        ;; peeps
-       ::peeps peeps
        :civ/peeps peeps
 
        ;; stats
