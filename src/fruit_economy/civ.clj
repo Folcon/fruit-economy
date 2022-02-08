@@ -42,7 +42,7 @@
       (when ancestor
         {::ancestor ancestor}))))
 
-(defn peep-on-tick [{id :db/id :keys [area task] :as peep} world-db]
+(defn peep-on-tick [{id :db/id :keys [area decisions] :as peep} world-db]
   (let [[x y] area dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
         x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
         land-data (data/land-data world-db)
@@ -61,7 +61,8 @@
                     :kind :peep
                     :glyph "🧑"
                     :area [x y]
-                    :on-tick peep-on-tick}
+                    :on-tick peep-on-tick
+                    :decisions [:claim :develop :gather :grow]}
           new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent [new-peep])]
       (-> land-data
         (log-history (str "Spawning new civ at " x " " y " on " biome))
