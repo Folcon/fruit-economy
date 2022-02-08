@@ -3,7 +3,8 @@
             [fruit-economy.colour :refer [colour]]
             [fruit-economy.language :refer [make-word]]
             [fruit-economy.land :as land :refer [log-history]]
-            [fruit-economy.economy :as economy]))
+            [fruit-economy.economy :as economy]
+            [fruit-economy.data.core :as data]))
 
 
 (defn make-civ [id name symbol origin home-world-name terrain ancestor peeps]
@@ -41,13 +42,13 @@
       (when ancestor
         {::ancestor ancestor}))))
 
-(defn peep-on-tick [{:keys [loc task] :as peep} land-data]
-  (let [[x y] loc dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
-        x' (+ x dir-x) y' (+ y dir-y) loc' [x' y']
-        target (get-in land-data [::terrain y' x'])]
-    (if (and target (not= target :ocean))
-      [loc' (assoc peep :loc loc')]
-      [loc peep])))
+(defn peep-on-tick [{id :db/id :keys [area task] :as peep} world-db]
+  (let [[x y] area dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
+        x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
+        land-data (data/land-data world-db)
+        target (get-in land-data [::land/terrain y' x'])]
+    (when (and target (not= target :ocean))
+      {:db/id id :area area'})))
 
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
