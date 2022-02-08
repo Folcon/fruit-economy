@@ -56,7 +56,7 @@
           civ-name (make-word lang)
           biome (get-in terrain [y x])
           new-peep {::id curr-civ-id
-                    ::name name
+                    ::name civ-name
                     :name (str "Peep " (inc (rand-int 1000)))
                     :kind :peep
                     :glyph "🧑"
