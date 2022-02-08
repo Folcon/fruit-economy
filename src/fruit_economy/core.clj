@@ -14,6 +14,7 @@
    [fruit-economy.db.core :as db]
    [fruit-economy.data.core :as data]
    [fruit-economy.land :as land]
+   [fruit-economy.unit :as unit]
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
    [fruit-economy.economy :as economy]
@@ -39,7 +40,7 @@
   (-> (land/make-land world-name width height)
     (land/gen-land)
     (land/populate 50 #_100)
-    (land/spawn-units 10)
+    (unit/spawn-units 10)
     (economy/add-resources)
     (civ/try-spawn-new-civs 10)))
 
