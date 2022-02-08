@@ -4,7 +4,8 @@
             [fruit-economy.language :refer [make-word]]
             [fruit-economy.land :as land :refer [log-history]]
             [fruit-economy.economy :as economy]
-            [fruit-economy.data.core :as data]))
+            [fruit-economy.data.core :as data]
+            [fruit-economy.sim.core :as sim]))
 
 
 (defn make-civ [id name symbol origin home-world-name terrain ancestor peeps]
@@ -47,8 +48,10 @@
         x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
         land-data (data/land-data world-db)
         target (get-in land-data [::land/terrain y' x'])]
-    (when (and target (not= target :ocean))
-      {:db/id id :area area'})))
+    (into [(when (and target (not= target :ocean))
+             {:db/id id :area area'})]
+      (when (seq decisions)
+        (sim/leader-tick world-db peep)))))
 
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)

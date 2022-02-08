@@ -7,8 +7,8 @@
         x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
         land-data (data/land-data world-db)
         target (get-in land-data [:fruit-economy.land/terrain y' x'])]
-    (when (and target (not= target :ocean))
-      {:db/id id :area area'})))
+    [(when (and target (not= target :ocean))
+       {:db/id id :area area'})]))
 
 (defn spawn-units [{:fruit-economy.land/keys [width height] :as land-data} n]
   (reduce
