@@ -11,9 +11,9 @@
   (db/q '[:find [(pull ?e [*]) ...] :where [?e :area ?a] :in $ ?a] world-db area))
 
 (defn upsert-land-data [world-db attrs]
-  (let [civ-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
+  (let [land-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
     (db/db-bulk-insert world-db
-      [(assoc attrs :db/id civ-id)])))
+      [(assoc attrs :db/id land-id)])))
 
 (defn update-land-data [world-db attrs]
   (let [ent (db/q '[:find (pull ?e ?attrs) . :where [?e :fruit-economy.land/terrain] :in $ ?attrs] world-db (into [:db/id] (keys attrs)))]
