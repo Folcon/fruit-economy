@@ -174,7 +174,7 @@
                          (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
         {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (data/land-data world-db)
-        territory (into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civ-name->civ)
+        territory (into #{} (map :area) (data/land-claims world-db))
         [camera-x camera-y] camera]
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 

@@ -47,7 +47,7 @@
                 (update-in [::land/economy :ubergraph] graph/add-directed-edge name (:name resource) {:label (str "at " area)}))
               land))
           $
-          (:fruit-economy.civ/territory civ))))))
+          (mapv :area (:civ/territory civ)))))))
 
 (defn add-resources [{::land/keys [area->resources] :as land-data}]
   (reduce
