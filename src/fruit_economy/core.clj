@@ -197,7 +197,7 @@
                   tile (get-in terrain path)
                   things (data/land-area world-db loc)
                   size (count things)
-                  thing (when-not (zero? size) (println :THING! (nth things (rem tick size))) (:glyph (nth things (rem tick size))))
+                  thing (when-not (zero? size) (:glyph (nth things (rem tick size))))
                   territory? (contains? territory loc)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour font dx dy] (cond
