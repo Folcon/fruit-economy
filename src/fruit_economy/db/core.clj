@@ -70,6 +70,8 @@
                             :db/cardinality :db.cardinality/many}
                :land/civs {:db/valueType :db.type/ref
                            :db/cardinality :db.cardinality/many}
+               :civ/territory {:db/valueType :db.type/ref
+                               :db/cardinality :db.cardinality/many}
                :civ/peeps {:db/valueType :db.type/ref
                            :db/cardinality :db.cardinality/many}}))
 
