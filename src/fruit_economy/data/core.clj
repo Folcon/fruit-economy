@@ -41,6 +41,9 @@
 (defn on-tick [world-db]
   (db/q '[:find [(pull ?e [*]) ...] :where [?e :on-tick]] world-db))
 
+(defn update-ticked [world-db ticked]
+  (db/db-bulk-insert world-db ticked))
+
 (defn step-economy [world-db]
   (let [[id economy] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/economy ?value]] world-db)
         economy' (economy/step-economy economy)]
