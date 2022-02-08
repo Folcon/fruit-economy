@@ -195,13 +195,13 @@
                   loc [loc-x loc-y]
                   path [loc-y loc-x]
                   tile (get-in terrain path)
-                  resource (get-in area->resources [loc :glyph])
-                  unit (get-in area->units [loc :glyph])
+                  things (data/land-area world-db loc)
+                  size (count things)
+                  thing (when-not (zero? size) (println :THING! (nth things (rem tick size))) (:glyph (nth things (rem tick size))))
                   territory? (contains? territory loc)
                   {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
                   [glyph tile-colour font dx dy] (cond
-                                                   unit [unit (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
-                                                   resource [resource (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
+                                                   thing [thing (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
                                                    civ [symbol tint font-default font-offset-x font-offset-y]
                                                    territory? ["" #_(land/render-tile-str tile) tint font-default font-offset-x font-offset-y]
                                                    :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default font-offset-x font-offset-y])
