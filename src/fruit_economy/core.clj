@@ -133,11 +133,11 @@
             (ui/label "Bottom Bar" font-default fill-text)))))))
 
 (defn on-tick [state now]
-  (let [{:keys [tick world]} state
-        world' (game/on-tick world)
+  (let [{:keys [tick world-db]} state
+        world-db' (game/on-tick world-db)
         tick' (inc tick)]
     (assoc state
-      :world world'
+      :world-db world-db'
       :tick tick'
       :last-tick now)))
 
