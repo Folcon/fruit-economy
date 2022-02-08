@@ -1,7 +1,6 @@
 (ns fruit-economy.sim.core
   (:require [fruit-economy.land :as land]
             [fruit-economy.language :as lang]
-            [fruit-economy.civ :as civ]
             [fruit-economy.sim.coords :as coords]))
 
 
@@ -13,17 +12,17 @@
 ;;   the choice would be which one?
 (defn decide
   "Makes a high level decision, basically what will be done"
-  [land-data {civ-name ::civ/name :keys [decisions name] :as peep}]
+  [world-db {civ-name :fruit-economy.civ/name :keys [decisions name] :as peep}]
   ;; Eliminate options, for example are there valid territories to claim? If not we shouldn't choose it,
   ;;   there's scope in the future when we weight decisions based on the peep where if they can't choose their favourite
   ;;   decision it annoys them or makes them brood for a turn etc...
-  {:decision (rand-nth decisions) :decider name ::civ/name civ-name})
+  {:decision (rand-nth decisions) :decider name :fruit-economy.civ/name civ-name})
 
 (defn choose
   "Decides the details of the decision given, these sub-decisions won't necessarily be made by the same peep who made
    the decision."
-  [{::land/keys [terrain] :as land-data} {civ-name ::civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
-  (let [territory (get-in land-data [::land/civ-name->civ civ-name ::civ/territory])
+  [{::land/keys [terrain] :as land-data} {civ-name :fruit-economy.civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
+  (let [territory (get-in land-data [::land/civ-name->civ civ-name :fruit-economy.civ/territory])
         _ (println :territory territory)]
     (condp = decision-action
       :claim (let [candidates (coords/get-territory-borders land-data territory)
@@ -58,31 +57,31 @@
 
 (defn process-decision
   "Take a decision and do it"
-  [{::land/keys [area->civ-name civ-name->civ area->resources] :as land-data} {decision-action :decision :keys [target] civ-name ::civ/name :as decision}]
+  [{::land/keys [area->civ-name civ-name->civ area->resources] :as land-data} {decision-action :decision :keys [target] civ-name :fruit-economy.civ/name :as decision}]
   (condp = decision-action
     :nonviable (land/log-history land-data (pr-str decision))
     :claim (let [existing-claim (get area->civ-name target)
-                 claim-development (get-in civ-name->civ [existing-claim ::civ/territory->development target])]
+                 claim-development (get-in civ-name->civ [existing-claim :fruit-economy.civ/territory->development target])]
              (-> land-data
                (land/log-history (pr-str decision))
                (assoc-in [::land/area->civ-name target] civ-name)
-               (update-in [::land/civ-name->civ civ-name ::civ/territory] conj target)
+               (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/territory] conj target)
                (cond->
                  (not existing-claim)
-                 (assoc-in [::land/civ-name->civ civ-name ::civ/territory->development target] 0)
+                 (assoc-in [::land/civ-name->civ civ-name :fruit-economy.civ/territory->development target] 0)
 
                  existing-claim
-                 (update-in [::land/civ-name->civ civ-name ::civ/territory->development target] claim-development))))
+                 (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/territory->development target] claim-development))))
     :develop (-> land-data
                (land/log-history (pr-str decision))
-               (update-in [::land/civ-name->civ civ-name ::civ/territory->development target] inc))
+               (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/territory->development target] inc))
     :gather (let [resource (get area->resources target)]
               (-> land-data
                 (land/log-history (pr-str decision))
-                (update-in [::land/civ-name->civ civ-name ::civ/store resource] (fnil inc 0))))
+                (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/store resource] (fnil inc 0))))
     :grow (-> land-data
             (land/log-history (pr-str decision))
-            (update-in [::land/civ-name->civ civ-name ::civ/power] inc))))
+            (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/power] inc))))
 
 (defn leader-tick
   "Make a decision for each peep"
@@ -116,8 +115,8 @@
         biome (get-in terrain [y x])
         first-name (lang/make-word lang)
         last-name (lang/make-word lang)
-        new-peep {::civ/id curr-civ-id
-                  ::civ/name civ-name
+        new-peep {:fruit-economy.civ/id curr-civ-id
+                  :fruit-economy.civ/name civ-name
                   :name (str first-name " " last-name)
                   :first-name first-name
                   :last-name last-name
@@ -142,25 +141,25 @@
           (process-decision $ decision))
         #_
         (condp = decide-action
-          :claim (let [candidates (coords/get-territory-borders $ (get-in $ [::land/civ-name->civ civ-name ::civ/territory]))
+          :claim (let [candidates (coords/get-territory-borders $ (get-in $ [::land/civ-name->civ civ-name :fruit-economy.civ/territory]))
                        ;; remove invalid, locations TODO: can we turn this into a xf and pass optionally pass it into get-territory-borders?
-                       candidates (into [] (remove (fn [[x y]] (= (get-in $ [::land/civ-name->civ civ-name ::civ/terrain y x]) :ocean))) candidates)
+                       candidates (into [] (remove (fn [[x y]] (= (get-in $ [::land/civ-name->civ civ-name :fruit-economy.civ/terrain y x]) :ocean))) candidates)
                        target (rand-nth candidates)]
                    ;; we get a sub-decision to attempt to claim target!
                    ,)
-          :develop (let [candidates (get-in $ [::land/civ-name->civ civ-name ::civ/territory])
+          :develop (let [candidates (get-in $ [::land/civ-name->civ civ-name :fruit-economy.civ/territory])
                          target (rand-nth candidates)]
                      ;; we get a sub-decision to attempt to develop (reduce the wildness of the tile or make the tile more
                      ;;   hospitable to the civ, so maybe wild races make the tiles wilder?) target!
                      ,)
           :gather (let [;; This one may need a precondition that the civ has a claimed resource?
                         area->resources (get $ ::land/area->resources)
-                        candidates (into [] (filter area->resources) (get-in $ [::land/civ-name->civ civ-name ::civ/territory]))
+                        candidates (into [] (filter area->resources) (get-in $ [::land/civ-name->civ civ-name :fruit-economy.civ/territory]))
                         target (rand-nth candidates)]
                     ;; we get a sub-decision to attempt to gather target resource!
                     ,)
           :grow (-> $
-                  (update-in [::land/civ-name->civ civ-name ::civ/power] inc)
+                  (update-in [::land/civ-name->civ civ-name :fruit-economy.civ/power] inc)
                   ;; also, if our pop hits a threshold (fibonacci number) we gain a new worker!
                   ,)))
 
@@ -170,7 +169,7 @@
       ;; Now let's do a leader tick, followed by a subordinate-tick
       (leader-tick new-peep) ;; all the civ peeps have a new :planned-decision
       (as-> $
-        (let [peep (get-in $ [::land/civ-name->civ civ-name ::civ/peeps 0])]
+        (let [peep (get-in $ [::land/civ-name->civ civ-name :fruit-economy.civ/peeps 0])]
           (subordinate-tick $ peep))) ;; this peep executes their decision
 
       (get-in [::land/civ-name->civ civ-name])))
