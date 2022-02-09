@@ -3,8 +3,10 @@
             [fruit-economy.economy :as economy]))
 
 
-(defn entity [world-db id]
-  (ffirst (db/q '[:find (pull ?e [*]) :in $ ?e] world-db id)))
+(defn entity
+  ([world-db id] (entity world-db '[*] id))
+  ([world-db attrs id]
+   (ffirst (db/q '[:find (pull ?e ?attrs) :in $ ?e ?attrs] world-db id attrs))))
 
 (defn land-data [world-db]
   (db/q '[:find (pull ?e [*]) . :where [?e :fruit-economy.land/terrain]] world-db))
