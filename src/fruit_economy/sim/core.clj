@@ -101,12 +101,10 @@
       peeps)))
 
 (defn subordinate-tick
-  "Take the planned decision given to the peep and execute it"
-  [land-data {:keys [planned-decision] :as peep}]
-  (if planned-decision
-    (let [subordinate-choose (choose land-data peep planned-decision)]
-      (process-decision land-data subordinate-choose))
-    land-data))
+  "Take the planned decision given to the peep and generate the changes"
+  [world-db {:keys [planned-decision] :as peep}]
+  (let [subordinate-choose (choose world-db peep planned-decision)]
+    (process-decision world-db subordinate-choose)))
 
 (comment
   (let [width 3 height 3
