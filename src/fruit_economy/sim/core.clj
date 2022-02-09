@@ -22,7 +22,7 @@
 (defn choose
   "Decides the details of the decision given, these sub-decisions won't necessarily be made by the same peep who made
    the decision."
-  [world-db {civ-name :fruit-economy.civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
+  [world-db {chooser-id :db/id civ-name :fruit-economy.civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
   (let [territory (->> (data/civ-name->civ world-db civ-name '[{:civ/territory [:area]}])
                     :civ/territory
                     (mapv :area))
@@ -38,16 +38,16 @@
                ;; we get a sub-decision to attempt to claim target!
                (if (seq candidates)
                  (let [target (rand-nth candidates)]
-                   (assoc decision :target target :chooser name))
-                 (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
+                   (assoc decision :target target :chooser name :chooser-id chooser-id))
+                 (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name :chooser-id chooser-id)))
       :develop (let [candidates (vec territory)
                      _ (println :develop :candidates candidates)]
                  ;; we get a sub-decision to attempt to develop (reduce the wildness of the tile or make the tile more
                  ;;   hospitable to the civ, so maybe wild races make the tiles wilder?) target!
                  (if (seq candidates)
                    (let [target (rand-nth candidates)]
-                     (assoc decision :target target :chooser name))
-                   (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
+                     (assoc decision :target target :chooser name :chooser-id chooser-id))
+                   (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name :chooser-id chooser-id)))
       :gather (let [;; This one may need a precondition that the civ has a claimed resource?
                     resource-areas (into #{} (map :area) (data/land-resources world-db))
                     candidates (into [] (filter (partial contains? resource-areas)) territory)
@@ -55,10 +55,11 @@
                 ;; we get a sub-decision to attempt to gather target resource!
                 (if (seq candidates)
                   (let [target (rand-nth candidates)]
-                    (assoc decision :target target :chooser name))
-                  (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
+                    (assoc decision :target target :chooser name :chooser-id chooser-id))
+                  (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name :chooser-id chooser-id)))
       ;; no real sub-decision to be made here, we just have the pop grow
-      :grow decision)))
+      ;;   we're adding the :chooser and :chooser-id, because they could choose to block in future
+      :grow (assoc decision :chooser name :chooser-id chooser-id))))
 
 (defn process-decision
   "Take a decision and do it"
