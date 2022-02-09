@@ -37,12 +37,10 @@
     [{:db/id id :fruit-economy.land/history (conj history message)}]))
 
 (defn log-history [world-db message]
-  (let [[id history] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/history ?value]] world-db)]
-    (db/db-bulk-insert world-db
-      [{:db/id id :fruit-economy.land/history (conj history message)}])))
+  [{:db/ident :history :land/history [{:history/entry message}]}])
 
 (defn history-log-entries [world-db]
-  (db/q '[:find ?value . :where [?e :fruit-economy.land/history ?value]] world-db))
+  (into [] (map :history) (sort-by :id (db/q '[:find [(pull ?v [[:db/id :as :id] [:history/entry :as :history]]) ...] :where [?e :land/history ?v]] world-db))))
 
 (defn civ-name->civ
   ([world-db civ-name] (civ-name->civ world-db civ-name '[*]))

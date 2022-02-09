@@ -31,7 +31,8 @@
       ::civ-name->civ (sorted-map)
       ::civ-missives []
       ::civ-letters allowed-civ-letters
-      ::history []
+      :db/ident :history
+      :land/history []
       ::lang (make-lang)
       ::economy (let [nodes (into
                               [{:id :source :kind :source :color "green"
@@ -168,4 +169,4 @@
 (defn log-history [land-data message]
   (do
     (println message)
-    (update land-data ::history conj message)))
+    (update land-data :land/history conj {:history/entry message})))
