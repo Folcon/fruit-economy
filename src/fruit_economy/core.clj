@@ -199,7 +199,7 @@
                   size (count things)
                   thing (when-not (zero? size) (:glyph (nth things (rem tick size))))
                   territory? (contains? territory loc)
-                  {::civ/keys [symbol tint] :as civ} (get civ-name->civ (get area->civ-name loc))
+                  {::civ/keys [symbol tint] :as civ} (data/land-area->civ world-db loc)
                   [glyph tile-colour font dx dy] (cond
                                                    thing [thing (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
                                                    civ [symbol tint font-default font-offset-x font-offset-y]
