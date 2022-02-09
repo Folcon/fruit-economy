@@ -3,9 +3,14 @@
             [fruit-economy.economy :as economy]))
 
 
+(defn entity [world-db id]
+  (ffirst (db/q '[:find (pull ?e [*]) :in $ ?e] world-db id)))
 
 (defn land-data [world-db]
   (db/q '[:find (pull ?e [*]) . :where [?e :fruit-economy.land/terrain]] world-db))
+
+(defn land-resources [world-db]
+  (db/q '[:find [(pull ?v [:area *]) ...] :where [?e :land/resources ?v]] world-db))
 
 (defn land-area [world-db area]
   (db/q '[:find [(pull ?e [*]) ...] :where [?e :area ?a] :in $ ?a] world-db area))
@@ -13,6 +18,9 @@
 (defn land-claims [world-db]
   (db/q '[:find [(pull ?v [*]) ...] :where [?e :civ/territory ?v]] world-db)
   #_(db/q '[:find ?value . :where [?e :fruit-economy.land/area->civ-name ?value]] world-db))
+
+(defn land-claims->civ [world-db claim-id]
+  (db/q '[:find (pull ?e [*]) . :where [?e :civ/territory ?claim-id] :in $ ?claim-id] world-db claim-id))
 
 (defn upsert-land-data [world-db attrs]
   (let [land-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
@@ -24,6 +32,10 @@
     (db/db-bulk-insert world-db
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
 
+(defn gen-log-history-entry [world-db message]
+  (let [[id history] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/history ?value]] world-db)]
+    [{:db/id id :fruit-economy.land/history (conj history message)}]))
+
 (defn log-history [world-db message]
   (let [[id history] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/history ?value]] world-db)]
     (db/db-bulk-insert world-db
@@ -31,6 +43,11 @@
 
 (defn history-log-entries [world-db]
   (db/q '[:find ?value . :where [?e :fruit-economy.land/history ?value]] world-db))
+
+(defn civ-name->civ
+  ([world-db civ-name] (civ-name->civ world-db civ-name '[*]))
+  ([world-db civ-name attrs]
+   (db/q '[:find (pull ?e ?attrs) . :where [?e :fruit-economy.civ/power] [?e :fruit-economy.civ/name ?civ-name] :in $ ?civ-name ?attrs] world-db civ-name (conj attrs :db/id))))
 
 (defn upsert-civ [world-db civ-name attrs]
   (let [civ-id (db/q '[:find ?e . :where [?e :fruit-economy.civ/name ?civ-name] :in $ ?civ-name] world-db civ-name)]
@@ -41,6 +58,9 @@
   (let [ent (db/q '[:find (pull ?e ?attrs) . :where [?e :fruit-economy.civ/name ?civ-name] :in $ ?civ-name ?attrs] world-db civ-name (into [:db/id] (keys attrs)))]
     (db/db-bulk-insert world-db
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
+
+(defn peep->civ-peeps [world-db peep-id]
+  (db/q '[:find (pull ?e [{:civ/peeps [*]}]) . :where [?e :civ/peeps ?peep-id] :in $ ?peep-id] world-db peep-id))
 
 (defn civ-count [world-db]
   (db/q '[:find (count ?value) . :where [?e :land/civs ?value]] world-db))
