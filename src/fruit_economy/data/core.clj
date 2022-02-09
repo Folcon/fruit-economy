@@ -24,6 +24,9 @@
 (defn land-claims->civ [world-db claim-id]
   (db/q '[:find (pull ?e [*]) . :where [?e :civ/territory ?claim-id] :in $ ?claim-id] world-db claim-id))
 
+(defn land-area->civ [world-db area]
+  (db/q '[:find (pull ?c [* {:civ/territory [*] :civ/peeps [*]}]) . :where [?e :area ?a] [?c :civ/territory ?e] :in $ ?a] world-db area))
+
 (defn upsert-land-data [world-db attrs]
   (let [land-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
     (db/db-bulk-insert world-db
