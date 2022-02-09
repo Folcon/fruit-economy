@@ -38,7 +38,7 @@
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
 
 (defn log-history [message]
-  [{:db/ident :history :land/history [{:history/entry message}]}])
+  [{:db/ident :land :land/history [{:history/entry message}]}])
 
 (defn history-log-entries [world-db]
   (into [] (map :history) (sort-by :id (db/q '[:find [(pull ?v [[:db/id :as :id] [:history/entry :as :history]]) ...] :where [?e :land/history ?v]] world-db))))

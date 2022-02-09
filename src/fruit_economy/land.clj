@@ -13,7 +13,8 @@
   ([name width height {:keys [temp-mod elev-mod temp-noise elev-noise base-biome] :or {temp-mod 0.1 elev-mod 0 base-biome :ocean}}]
    (let [temp-noise (or temp-noise (make-temp-noise-map width height))
          elev-noise (or elev-noise (make-elev-noise-map width height))]
-     {::name name
+     {:db/ident :land
+      ::name name
       ::temp-noise temp-noise ::elev-noise elev-noise
       ::temp (process-noise-map temp-noise temp-mod)
       ::elev (process-noise-map elev-noise elev-mod)
@@ -31,7 +32,6 @@
       ::civ-name->civ (sorted-map)
       ::civ-missives []
       ::civ-letters allowed-civ-letters
-      :db/ident :history
       :land/history []
       ::lang (make-lang)
       ::economy (let [nodes (into
