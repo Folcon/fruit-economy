@@ -16,8 +16,9 @@
   "Given a set of coords, generates the coords that are in bounds that are adjacent to the territory but don't contain it"
   [{::land/keys [width height] :as _land-data} territory]
   (let [dec-width (dec width)
-        dec-height (dec height)]
-    (into [] (comp (map neighbours) cat (distinct) (remove (fn [[x y]] (or ((complement <=) 0 x dec-width) ((complement <=) 0 y dec-height) (contains? territory [x y]))))) territory)))
+        dec-height (dec height)
+        territory-set (set territory)]
+    (into [] (comp (map neighbours) cat (distinct) (remove (fn [[x y]] (or ((complement <=) 0 x dec-width) ((complement <=) 0 y dec-height) (contains? territory-set [x y]))))) territory)))
 
 (comment
   (let [width 3 height 3
