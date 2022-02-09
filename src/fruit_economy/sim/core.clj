@@ -13,11 +13,11 @@
 ;;   the choice would be which one?
 (defn decide
   "Makes a high level decision, basically what will be done"
-  [world-db {civ-name :fruit-economy.civ/name :keys [decisions name] :as peep}]
+  [world-db {decider-id :db/id civ-name :fruit-economy.civ/name :keys [decisions name] :as peep}]
   ;; Eliminate options, for example are there valid territories to claim? If not we shouldn't choose it,
   ;;   there's scope in the future when we weight decisions based on the peep where if they can't choose their favourite
   ;;   decision it annoys them or makes them brood for a turn etc...
-  {:decision (rand-nth decisions) :decider name :fruit-economy.civ/name civ-name})
+  {:decision (rand-nth decisions) :decider name :decider-id decider-id :fruit-economy.civ/name civ-name})
 
 (defn choose
   "Decides the details of the decision given, these sub-decisions won't necessarily be made by the same peep who made
