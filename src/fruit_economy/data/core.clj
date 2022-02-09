@@ -11,7 +11,8 @@
   (db/q '[:find [(pull ?e [*]) ...] :where [?e :area ?a] :in $ ?a] world-db area))
 
 (defn land-claims [world-db]
-  (db/q '[:find ?value . :where [?e ::land/area->civ-name ?value]] world-db))
+  (db/q '[:find [(pull ?v [*]) ...] :where [?e :civ/territory ?v]] world-db)
+  #_(db/q '[:find ?value . :where [?e :fruit-economy.land/area->civ-name ?value]] world-db))
 
 (defn upsert-land-data [world-db attrs]
   (let [land-id (db/q '[:find ?e . :where [?e :fruit-economy.land/terrain]] world-db)]
