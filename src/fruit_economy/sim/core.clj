@@ -102,9 +102,11 @@
 
 (defn subordinate-tick
   "Take the planned decision given to the peep and generate the changes"
-  [world-db {:keys [planned-decision] :as peep}]
-  (let [subordinate-choose (choose world-db peep planned-decision)]
-    (process-decision world-db subordinate-choose)))
+  [world-db {worker-id :db/id :keys [name planned-decision] :as peep}]
+  (let [subordinate-choose (choose world-db peep planned-decision)
+        ;; Just in case I want to split it further, it should be easy to add in a separate worker.
+        worker-execute (assoc subordinate-choose :worker-name name :worker-id worker-id)]
+    (process-decision world-db worker-execute)))
 
 (comment
   (let [width 3 height 3
