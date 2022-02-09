@@ -22,8 +22,12 @@
 (defn choose
   "Decides the details of the decision given, these sub-decisions won't necessarily be made by the same peep who made
    the decision."
-  [{::land/keys [terrain] :as land-data} {civ-name :fruit-economy.civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
-  (let [territory (get-in land-data [::land/civ-name->civ civ-name :fruit-economy.civ/territory])
+  [world-db {civ-name :fruit-economy.civ/name :keys [name] :as peep} {decision-action :decision :as decision}]
+  (let [territory (->> (data/civ-name->civ world-db civ-name '[{:civ/territory [:area]}])
+                    :civ/territory
+                    (mapv :area))
+        land-data (data/land-data world-db)
+        terrain (::land/terrain land-data)
         _ (println :territory territory)]
     (condp = decision-action
       :claim (let [candidates (coords/get-territory-borders land-data territory)
@@ -45,9 +49,9 @@
                      (assoc decision :target target :chooser name))
                    (assoc decision :decision :nonviable :initial-decision (:decision decision) :chooser name)))
       :gather (let [;; This one may need a precondition that the civ has a claimed resource?
-                    area->resources (get land-data ::land/area->resources)
-                    candidates (into [] (filter area->resources) territory)
-                    _ (println :gather :candidates candidates)]
+                    resource-areas (into #{} (map :area) (data/land-resources world-db))
+                    candidates (into [] (filter (partial contains? resource-areas)) territory)
+                    _ (println :gather :candidates candidates :resource-areas resource-areas)]
                 ;; we get a sub-decision to attempt to gather target resource!
                 (if (seq candidates)
                   (let [target (rand-nth candidates)]
