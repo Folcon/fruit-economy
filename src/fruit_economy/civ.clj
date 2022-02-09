@@ -62,7 +62,7 @@
                     :kind :peep
                     :glyph "🧑"
                     :area [x y]
-                    :on-tick peep-on-tick
+                    :on-tick #'peep-on-tick
                     :decisions [:claim :develop :gather :grow]}
           new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent [new-peep])]
       (-> land-data
