@@ -64,7 +64,9 @@
   d/q)
 
 (defn init-db []
-  (d/empty-db {:land/resources {:db/valueType :db.type/ref
+  (d/empty-db {:land/history {:db/valueType :db.type/ref
+                              :db/cardinality :db.cardinality/many}
+               :land/resources {:db/valueType :db.type/ref
                                 :db/cardinality :db.cardinality/many}
                :land/units {:db/valueType :db.type/ref
                             :db/cardinality :db.cardinality/many}

@@ -66,14 +66,14 @@
   [world-db {decision-action :decision :keys [target chooser-id] civ-name :fruit-economy.civ/name :as decision}]
   (let [{::land/keys [area->civ-name civ-name->civ] :as land-data} (data/land-data world-db)]
     (condp = decision-action
-      :nonviable (data/gen-log-history-entry world-db (pr-str decision))
+      :nonviable (data/log-history (pr-str decision))
       :claim (let [{new-civ-id :db/id :as new-civ} (data/civ-name->civ world-db civ-name [{:civ/territory '[*]}])
                    area->claim-ids (into {} (map (juxt :area :db/id)) (data/land-claims world-db))
                    existing-claim-id (get area->claim-ids target)]
                (println :target target :area->civ-name area->civ-name)
                (println :new-civ civ-name (pr-str new-civ))
                (into
-                 (data/gen-log-history-entry world-db (pr-str decision))
+                 (data/log-history (pr-str decision))
                  ;; Is there an existing claim?
                  (if existing-claim-id
                    (let [{old-civ-id :db/id :as old-civ} (data/land-claims->civ world-db existing-claim-id)]
@@ -88,19 +88,19 @@
                     [:db/retract chooser-id :planned-decision]])))
       :develop (let [{civ-id :db/id territory->development :fruit-economy.civ/territory->development} (data/civ-name->civ world-db civ-name [:fruit-economy.civ/territory->development])]
                  (into
-                   (data/gen-log-history-entry world-db (pr-str decision))
+                   (data/log-history (pr-str decision))
                    [{:fruit-economy.civ/territory->development (update territory->development target (fnil inc 0)) :db/id civ-id}
                     [:db/retract chooser-id :planned-decision]]))
       :gather (let [area->resources (into {} (map (juxt :area #(select-keys % [:name :kind :glyph])) (data/land-resources world-db)))
                     resource (get area->resources target)
                     {civ-id :db/id store :fruit-economy.civ/store} (data/civ-name->civ world-db civ-name [:fruit-economy.civ/store])]
                 (into
-                  (data/gen-log-history-entry world-db (pr-str decision))
+                  (data/log-history (pr-str decision))
                   [{:fruit-economy.civ/store (update store resource (fnil inc 0)) :db/id civ-id}
                    [:db/retract chooser-id :planned-decision]]))
       :grow (let [{civ-id :db/id power :fruit-economy.civ/power} (data/civ-name->civ world-db civ-name [:fruit-economy.civ/power])]
               (into
-                (data/gen-log-history-entry world-db (pr-str decision))
+                (data/log-history (pr-str decision))
                 [{:fruit-economy.civ/power (inc power) :db/id civ-id}
                  [:db/retract chooser-id :planned-decision]])))))
 

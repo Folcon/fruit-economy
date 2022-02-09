@@ -32,11 +32,7 @@
     (db/db-bulk-insert world-db
       [(reduce-kv (fn [e k f] (update e k f)) ent attrs)])))
 
-(defn gen-log-history-entry [world-db message]
-  (let [[id history] (db/q '[:find [?e ?value] :where [?e :fruit-economy.land/history ?value]] world-db)]
-    [{:db/id id :fruit-economy.land/history (conj history message)}]))
-
-(defn log-history [world-db message]
+(defn log-history [message]
   [{:db/ident :history :land/history [{:history/entry message}]}])
 
 (defn history-log-entries [world-db]
