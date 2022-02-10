@@ -7,7 +7,7 @@
 
 (defn unit-tick [world-db]
   (println :unit-tick)
-  (let [tickable (data/on-tick world-db)
+  (let [tickable (data/tickable world-db)
         ticked (into [] (comp (map (fn [{:keys [on-tick] :as unit}] (on-tick unit world-db))) cat) tickable)]
     (data/update-ticked world-db ticked)))
 

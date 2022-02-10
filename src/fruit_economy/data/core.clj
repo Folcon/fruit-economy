@@ -64,7 +64,8 @@
 (defn civ-count [world-db]
   (db/q '[:find (count ?value) . :where [?e :land/civs ?value]] world-db))
 
-(defn on-tick [world-db]
+;; TODO: Need to think of better names
+(defn tickable [world-db]
   (db/q '[:find [(pull ?e [*]) ...] :where [?e :on-tick]] world-db))
 
 (defn update-ticked [world-db ticked]
