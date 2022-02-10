@@ -22,6 +22,9 @@
        ;; peeps
        :civ/peeps peeps
 
+       ;; market
+       ::store {}
+
        ;; stats
        ::instability -10  ;; low starting instability to ensure early expansion/survival
        ::power (reduce + (repeatedly 3 #(roll 10)))
