@@ -18,6 +18,7 @@
 
 (defn on-tick [world-db]
   (println :on-tick)
-  (cond-> (land-tick world-db)
-    (= (rand/roll 20) 20)
-    (data/upsert-land-data (civ/try-spawn-new-civs (data/land-data world-db) (rand/roll 6)))))
+  (let [world-db' (land-tick world-db)]
+    (cond-> world-db'
+      (= (rand/roll 20) 20)
+      (data/update-ticked (civ/try-spawn-new-civs-tx world-db' (rand/roll 6))))))

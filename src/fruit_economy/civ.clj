@@ -90,3 +90,36 @@
           land)))
     land-data
     (range n-attempts)))
+
+(defn try-spawn-new-civs-tx [world-db n-attempts]
+  (let [{::land/keys [name width height civ-letters terrain lang curr-civ-id]} (data/entity world-db [:db/ident :land])
+        existing-claims (into #{} (map :area) (data/land-claims world-db))
+        candidates (into [] (distinct) (repeatedly n-attempts #(vector (rand-int width) (rand-int height))))]
+    (reduce
+      (fn [v [x y]]
+        (let [target (get-in terrain [y x])
+              occupied? (contains? existing-claims target)]
+          (println :try-spawn-civ target :occupied? occupied?)
+          (if (and (not= target :ocean)
+                (not occupied?))
+            (into v
+              (let [symbol (first civ-letters)
+                    civ-name (make-word lang)
+                    biome (get-in terrain [y x])
+                    new-peep {::id curr-civ-id
+                              ::name civ-name
+                              :name (str "Peep " (inc (rand-int 1000)))
+                              :kind :peep
+                              :glyph "🧑"
+                              :area [x y]
+                              :on-tick #'peep-on-tick
+                              :decisions [:claim :develop :gather :grow]}
+                    new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome nil [new-peep])]
+                (if (seq civ-letters)
+                  (into (data/log-history (str "Spawning new civ at " x " " y " on " biome))
+                    [new-civ
+                     {:db/ident :land ::land/civ-letters (disj civ-letters symbol) ::land/curr-civ-id (inc curr-civ-id)}])
+                  [(data/log-history (str "Tried to spawn new civ at " x " " y " ran out of letters"))])))
+            v)))
+      []
+      candidates)))
