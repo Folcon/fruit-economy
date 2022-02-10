@@ -70,6 +70,9 @@
     (= :nonviable decision)
     (str "In " civ-name " " decider " wanted to " initial-decision " @ " target ", but " (if (= chooser decider) "later realised it was inadvisable." (str chooser " realised it was not possible.")))
 
+    (= :grow decision)
+    (str "In " civ-name " " decider " chose to " decision)
+
     :else
     (str "In " civ-name " " decider " chose to " decision " @ " target)))
 
