@@ -71,7 +71,7 @@
      :tick 0
      :tick-ms 5000
      :last-tick (System/currentTimeMillis)
-     :render-ms 200
+     :render-ms 400
      :last-render (System/currentTimeMillis)}))
 
 (defonce *state (atom (new-state)))
