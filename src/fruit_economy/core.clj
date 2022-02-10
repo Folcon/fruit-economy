@@ -65,11 +65,14 @@
      :history-index 0
      :civ-index 0
 
-     :economy?  false
-     :paused?   false
-     :tick      0
-     :tick-ms   5000
-     :last-tick (System/currentTimeMillis)}))
+     :economy? false
+     :info? false
+     :paused? false
+     :tick 0
+     :tick-ms 5000
+     :last-tick (System/currentTimeMillis)
+     :render-ms 200
+     :last-render (System/currentTimeMillis)}))
 
 (defonce *state (atom (new-state)))
 ;; END GAME STATE
@@ -141,6 +144,9 @@
       :tick tick'
       :last-tick now)))
 
+(defn on-render [state now]
+  (assoc state :last-render now))
+
 (comment
   (let [[x y] [21 47]
         loc [x y]
@@ -175,7 +181,13 @@
 
         {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (data/land-data world-db)
         territory (into #{} (map :area) (data/land-claims world-db))
-        [camera-x camera-y] camera]
+        [camera-x camera-y] camera
+        now (System/currentTimeMillis)
+        render? (> (- now last-render) render-ms)]
+    ;; slowing render down
+    (when (> (- now last-render) render-ms)
+      (swap! *state on-render now))
+
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
     #_(println :panel tick)
