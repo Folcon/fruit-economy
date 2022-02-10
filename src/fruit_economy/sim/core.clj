@@ -65,10 +65,10 @@
 (defn decision-explanation [{:keys [chooser decider target decision initial-decision] civ-name :fruit-economy.civ/name}]
   (cond
     (and (= :nonviable decision) (= :gather initial-decision))
-    (str "In " civ-name " " decider " wanted to " initial-decision ", but " (if (= chooser decider) "later realised it was inadvisable" (str chooser " realised it was not possible")) " as there are no resources.")
+    (str "In " civ-name " " decider (if (= chooser decider) " 🤔🤯😞from " (str " 🤔🤯😞 after speaking to " chooser " from ")) initial-decision " as there are no resources.")
 
     (= :nonviable decision)
-    (str "In " civ-name " " decider " wanted to " initial-decision " @ " target ", but " (if (= chooser decider) "later realised it was inadvisable." (str chooser " realised it was not possible.")))
+    (str "In " civ-name " " decider (if (= chooser decider) " 🤔🤯😞from " (str " 🤔🤯😞 after speaking to " chooser " from ")) initial-decision " @ " target " as there are no resources.")
 
     (= :grow decision)
     (str "In " civ-name " " decider " chose to " decision)
