@@ -44,15 +44,20 @@
       (when ancestor
         {::ancestor ancestor}))))
 
-(defn peep-on-tick [{id :db/id :keys [area decisions] :as peep} world-db]
+(defn peep-on-tick [{id :db/id :keys [area decisions planned-decision] :as peep} world-db]
+  (println :peep-on-tick)
   (let [[x y] area dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
         x' (+ x dir-x) y' (+ y dir-y) area' [x' y']
         land-data (data/land-data world-db)
-        target (get-in land-data [::land/terrain y' x'])]
-    (into [(when (and target (not= target :ocean))
-             {:db/id id :area area'})]
-      (when (seq decisions)
-        (sim/leader-tick world-db peep)))))
+        target (get-in land-data [::land/terrain y' x'])
+        data (into [(when (and target (not= target :ocean))
+                      {:db/id id :area area'})]
+               cat
+               [(when (seq decisions)
+                  (sim/leader-tick world-db peep))
+                (when planned-decision
+                  (sim/subordinate-tick world-db peep))])]
+    data))
 
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
