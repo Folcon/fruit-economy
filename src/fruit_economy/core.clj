@@ -363,26 +363,39 @@
               size (data/civ-count (:world-db state))]
           (swap! *state assoc :civ-index (rem (+ (dec civ-index) size) size)))
 
-        #{:key/digit5}
-        (let [civ-index (get state :civ-index)
-              civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (when controlling-civ
-            (swap! *state update :world civ-actions/grow-pop controlling-civ)))
-
-        #{:key/digit6}
-        (let [civ-index (get state :civ-index)
-              civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (when controlling-civ
-            (swap! *state update :world civ-actions/expand-territory controlling-civ)))
-
-        #{:key/digit7}
-        (let [civ-index (get state :civ-index)
-              civ-name->civ (get-in state [:world ::land/civ-name->civ])
-              controlling-civ (nth (vals civ-name->civ) civ-index)]
-          (when controlling-civ
-            (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
+        ;#{:key/digit5}
+        ;(let [civ-index (get state :civ-index)
+        ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
+        ;      controlling-civ (nth (vals civ-name->civ) civ-index)
+        ;
+        ;      ordered-civs (data/ordered-civs (:world-db state))
+        ;      controlling-civ-id (nth ordered-civs civ-index)
+        ;      controlling-civ' (data/entity (:world-db state) controlling-civ-id)]
+        ;  (when controlling-civ
+        ;    (-> *state
+        ;      (swap! update :world civ-actions/grow-pop controlling-civ)
+        ;      (swap! update :world-db civ-actions/grow-pop' controlling-civ'))))
+        ;
+        ;#{:key/digit6}
+        ;(let [civ-index (get state :civ-index)
+        ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
+        ;      controlling-civ (nth (vals civ-name->civ) civ-index)
+        ;
+        ;      ordered-civs (data/ordered-civs (:world-db state))
+        ;      _ (println :ordered-civs ordered-civs)
+        ;      controlling-civ-id (nth ordered-civs civ-index)
+        ;      _ (println :controlling-civ-id controlling-civ-id)
+        ;      controlling-civ' (data/entity (:world-db state) controlling-civ-id)
+        ;      _ (println :controlling-civ controlling-civ)]
+        ;  (when controlling-civ
+        ;    (swap! *state update :world civ-actions/expand-territory controlling-civ)))
+        ;
+        ;#{:key/digit7}
+        ;(let [civ-index (get state :civ-index)
+        ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
+        ;      controlling-civ (nth (vals civ-name->civ) civ-index)]
+        ;  (when controlling-civ
+        ;    (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
 
         #{:key/r}
         (do
