@@ -158,7 +158,7 @@
   ,)
 
 (defn draw-impl [^Canvas canvas window-width window-height]
-  (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick] :as state} @*state
+  (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @*state
 
         font-default (Font. face-default (float (* 24 zoom)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
@@ -185,7 +185,7 @@
         now (System/currentTimeMillis)
         render? (> (- now last-render) render-ms)]
     ;; slowing render down
-    (when (> (- now last-render) render-ms)
+    (when render?
       (swap! *state on-render now))
 
     (.clear canvas (unchecked-int 0xFFFFFBBB))
