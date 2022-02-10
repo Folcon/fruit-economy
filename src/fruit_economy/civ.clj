@@ -44,6 +44,13 @@
       (when ancestor
         {::ancestor ancestor}))))
 
+(defn gen-peep-decisions []
+  (into []
+    (comp (map (fn [decision]
+                 (repeat (roll 8) decision)))
+      cat)
+    [:claim :develop :gather :grow]))
+
 (defn peep-on-tick [{id :db/id :keys [area decisions planned-decision] :as peep} world-db]
   (println :peep-on-tick)
   (let [[x y] area dir-x (rand-nth [-1 0 1]) dir-y (rand-nth [-1 0 1])
@@ -67,7 +74,7 @@
    :glyph "🧑"
    :area [x y]
    :on-tick #'peep-on-tick
-   :decisions [:claim :develop :gather :grow]})
+   :decisions (gen-peep-decisions)})
 
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
