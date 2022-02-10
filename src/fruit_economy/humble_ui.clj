@@ -2,7 +2,7 @@
   (:require [clojure.stacktrace :as stacktrace]
             [io.github.humbleui.protocols :refer [IComponent -measure -draw -event]]
             [fruit-economy.utils :refer [resource-file->byte-array]])
-  (:import [io.github.humbleui.skija Canvas Data ClipMode]
+  (:import [io.github.humbleui.skija Canvas Data ClipMode Surface]
            [io.github.humbleui.types IPoint Point Rect]
            [io.github.humbleui.skija.svg SVGDOM SVGLengthContext SVGLengthType]))
 
@@ -97,6 +97,28 @@
   (SVGCanvas. width height svg-path svg-str on-event))
 ;; END Should be in io.github.humbleui.ui
 
+(def render-buffer (atom {}))
+
+(defn make-named-buffer [name requested-width requested-height]
+  (let [{:keys [width height]} (get @render-buffer name)]
+    (when-not (and (= width requested-width) (= height requested-height))
+      (let [surface (Surface/makeRasterN32Premul requested-width requested-height)
+            canvas (.getCanvas surface)]
+        (swap! render-buffer assoc name {:width requested-width
+                                         :height requested-height
+                                         :surface surface
+                                         :canvas canvas
+                                         :image nil})))))
+
+(defn get-named-canvas [name]
+  (get-in @render-buffer [name :canvas]))
+
+(defn update-named-buffer [name]
+  (swap! render-buffer assoc-in [name :image] (.makeImageSnapshot (get-in @render-buffer [name :surface]))))
+
+(defn draw-named [name canvas]
+  (when-let [image (get-in @render-buffer [name :image])]
+    (.drawImage canvas image 0 0)))
 
 (comment
   (do
