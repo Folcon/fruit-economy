@@ -59,19 +59,22 @@
                   (sim/subordinate-tick world-db peep))])]
     data))
 
+(defn make-peep [civ-id civ-name x y]
+  {::id civ-id
+   ::name civ-name
+   :name (str "Peep " (inc (rand-int 1000)))
+   :kind :peep
+   :glyph "🧑"
+   :area [x y]
+   :on-tick #'peep-on-tick
+   :decisions [:claim :develop :gather :grow]})
+
 (defn spawn-civ [{::land/keys [name terrain curr-civ-id civ-letters lang] :as land-data} x y {:keys [parent]}]
   (if (seq civ-letters)
     (let [symbol (first civ-letters)
           civ-name (make-word lang)
           biome (get-in terrain [y x])
-          new-peep {::id curr-civ-id
-                    ::name civ-name
-                    :name (str "Peep " (inc (rand-int 1000)))
-                    :kind :peep
-                    :glyph "🧑"
-                    :area [x y]
-                    :on-tick #'peep-on-tick
-                    :decisions [:claim :develop :gather :grow]}
+          new-peep (make-peep curr-civ-id civ-name x y)
           new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome parent [new-peep])]
       (-> land-data
         (log-history (str "Spawning new civ at " x " " y " on " biome))
@@ -114,14 +117,7 @@
               (let [symbol (first civ-letters)
                     civ-name (make-word lang)
                     biome (get-in terrain [y x])
-                    new-peep {::id curr-civ-id
-                              ::name civ-name
-                              :name (str "Peep " (inc (rand-int 1000)))
-                              :kind :peep
-                              :glyph "🧑"
-                              :area [x y]
-                              :on-tick #'peep-on-tick
-                              :decisions [:claim :develop :gather :grow]}
+                    new-peep (make-peep curr-civ-id civ-name x y)
                     new-civ (make-civ curr-civ-id civ-name symbol [x y] name biome nil [new-peep])]
                 (if (seq civ-letters)
                   (into (data/log-history (str "Spawning new civ at " x " " y " on " biome))
