@@ -182,6 +182,7 @@
         {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (data/land-data world-db)
         territory (into #{} (map :area) (data/land-claims world-db))
         [camera-x camera-y] camera
+        land-canvas (custom-ui/get-named-canvas :land)
         now (System/currentTimeMillis)
         render? (> (- now last-render) render-ms)]
     ;; slowing render down
@@ -220,8 +221,13 @@
                     ;; TODO: Temp fix for needing to overdraw tiles to stop the gap.
                     padded-cell (+ 0.5 cell)]]
         ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
-        (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
-        (.drawString canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default)))
+        (.drawRect ^Canvas land-canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
+        (.drawString ^Canvas land-canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default))
+
+      (custom-ui/update-named-buffer :land))
+
+    ;; We do actual screen drawing here
+    (custom-ui/draw-named :land canvas)
 
     ;; draw things
     ;; walk cells eq to window size
@@ -501,7 +507,8 @@
           controlling (nth (keys civ-name->civ) civ-index)
           [svg-x svg-y svg-z] svg-xyz
           canvas-width (* x-scale *canvas-width*)
-          canvas-height (* y-scale *canvas-height*)]
+          canvas-height (* y-scale *canvas-height*)
+          _ (custom-ui/make-named-buffer :land canvas-width canvas-height)]
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 150 150 {:on-paint #'draw-mini-panel-impl
