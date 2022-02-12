@@ -130,7 +130,7 @@
                   (into (data/log-history (str "Spawning new civ at " x " " y " on " biome))
                     [new-civ
                      {:db/ident :land ::land/civ-letters (disj civ-letters symbol) ::land/curr-civ-id (inc curr-civ-id)}])
-                  [(data/log-history (str "Tried to spawn new civ at " x " " y " ran out of letters"))])))
+                  (data/log-history (str "Tried to spawn new civ at " x " " y " ran out of letters")))))
             v)))
       []
       candidates)))
