@@ -63,6 +63,13 @@
       (.drawRect canvas content-rect c-fill)
       (.drawRect canvas viewport-rect v-fill))
 
+    (doseq [x (range world-width)
+            y (range world-height)
+            :let [;; pixel-x and pixel-y
+                  px-x (* x cell) px-y (* y cell)]]
+      (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC33CC)))]
+        (.drawRect canvas (Rect/makeXYWH px-x px-y cell cell) fill)))
+
     (io/copy
       (-> buffer
         (.makeImageSnapshot)
