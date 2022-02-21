@@ -3,6 +3,7 @@
             [clojure.java.io :as io]
             [datascript.core :as d]
             [fruit-economy.db.core :as db]
+            [fruit-economy.land :as land]
             [fruit-economy.core :as core])
   (:import [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint])
   (:import [io.github.humbleui.types IPoint IRect Rect]))
@@ -55,8 +56,14 @@
 
         [min-width min-height] [600 400]
 
+        tile-color (unchecked-int 0xFFCC33CC)
+
+        world-db world-db
+        terrain (db/q '[:find ?v . :where [?e :fruit-economy.land/terrain ?v]] world-db)
+
         buffer (Surface/makeRasterN32Premul window-width window-height)
         canvas (.getCanvas buffer)]
+    (println (pr-str terrain))
     (.clear canvas (unchecked-int 0xFFFFFBBB))
     (with-open [w-fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC3333)))
                 c-fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))
@@ -68,8 +75,15 @@
     (doseq [x (range world-width)
             y (range world-height)
             :let [;; pixel-x and pixel-y
-                  px-x (+ (* x cell) viewport-offset) px-y (+ (* y cell) viewport-offset)]]
-      (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC33CC)))]
+                  px-x (+ (* x cell) viewport-offset) px-y (+ (* y cell) viewport-offset)
+
+                  loc-x x loc-y y
+                  loc [loc-x loc-y]
+                  path [loc-y loc-x]
+                  biome (get-in terrain path)
+
+                  tile-colour (land/render-tile-colour biome)]]
+      (with-open [fill (doto (Paint.) (.setColor tile-colour))]
         (.drawRect canvas (Rect/makeXYWH px-x px-y cell cell) fill)))
 
     (io/copy
