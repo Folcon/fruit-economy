@@ -63,7 +63,8 @@
         terrain (db/q '[:find ?v . :where [?e :fruit-economy.land/terrain ?v]] world-db)
 
         buffer (Surface/makeRasterN32Premul window-width window-height)
-        canvas (.getCanvas buffer)]
+        canvas (.getCanvas buffer)
+        [camera-x camera-y] [10 12]]
     (println (pr-str terrain))
     (.clear canvas (unchecked-int 0xFFFFFBBB))
     (with-open [w-fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC3333)))
