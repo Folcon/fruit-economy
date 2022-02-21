@@ -155,4 +155,4 @@
         (.makeImageSnapshot)
         (.encodeToData)
         (.getBytes))
-      (io/file "resources/data.png"))))
+      (io/file "resources/mock-screen.png"))))
