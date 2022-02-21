@@ -52,6 +52,7 @@
         viewport-offset 2
 
         world-width (quot viewport-width cell) world-height (quot viewport-height cell)
+        half-ww (quot world-width 2) half-wh (quot world-height 2)
 
 
         [min-width min-height] [600 400]
@@ -77,7 +78,8 @@
             :let [;; pixel-x and pixel-y
                   px-x (+ (* x cell) viewport-offset) px-y (+ (* y cell) viewport-offset)
 
-                  loc-x x loc-y y
+                  loc-x (+ (int (- x half-ww)) camera-x)
+                  loc-y (+ (int (- y half-wh)) camera-y)
                   loc [loc-x loc-y]
                   path [loc-y loc-x]
                   biome (get-in terrain path)
