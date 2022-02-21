@@ -45,8 +45,10 @@
         content-rect (Rect/makeXYWH 0 0 content-width content-height)
 
         ;; the size of the canvas within the window's content
-        viewport-width 600  viewport-height 400
+        viewport-width 604  viewport-height 404
         viewport-rect (Rect/makeXYWH 0 0 viewport-width viewport-height)
+
+        viewport-offset 2
 
         world-width (quot viewport-width cell) world-height (quot viewport-height cell)
 
@@ -66,7 +68,7 @@
     (doseq [x (range world-width)
             y (range world-height)
             :let [;; pixel-x and pixel-y
-                  px-x (* x cell) px-y (* y cell)]]
+                  px-x (+ (* x cell) viewport-offset) px-y (+ (* y cell) viewport-offset)]]
       (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFFCC33CC)))]
         (.drawRect canvas (Rect/makeXYWH px-x px-y cell cell) fill)))
 
