@@ -664,9 +664,7 @@
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
-  (hui/init)
-  (reset! *window (make-window))
-  (hui/start))
+  (hui/start #(reset! *window (make-window))))
 
 (comment
   (do

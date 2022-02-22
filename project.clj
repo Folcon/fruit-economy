@@ -3,20 +3,20 @@
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[org.clojure/clojure "1.11.0-alpha3"]
+  :dependencies [[org.clojure/clojure "1.11.0-rc1"]
                  [org.clojure/core.specs.alpha "0.2.62"]
                  [org.clojure/spec.alpha "0.3.218"]
                  ;[org.projectlombok/lombok "1.18.22" :scope "provided"]
                  ;[org.jetbrains/annotations "20.1.0"]
                  [environ "1.2.0"]
                  [io.github.humbleui/types "0.1.2" :classifier "clojure"]
-                 [io.github.humbleui/jwm "09a13996ee" :exclusions [io.github.humbleui/types]]
-                 [io.github.humbleui/skija-shared "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [io.github.humbleui/skija-windows "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [io.github.humbleui/skija-linux "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [io.github.humbleui/skija-macos-x64 "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [io.github.humbleui/skija-macos-arm64 "0.98.0" :exclusions [io.github.humbleui/types]]
-                 [humbleui "e66ac2c5970eadce3302c32f24ccf7ba5a707328"]
+                 [io.github.humbleui/jwm "0.4.0" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/skija-shared "0.98.1" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/skija-windows "0.98.1" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/skija-linux "0.98.1" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/skija-macos-x64 "0.98.1" :exclusions [io.github.humbleui/types]]
+                 [io.github.humbleui/skija-macos-arm64 "0.98.1" :exclusions [io.github.humbleui/types]]
+                 [humbleui "756d296f62098653b83bac66e023a47d98b7c9ec"]
                  [datascript "1.3.9"]
 
                  [net.mikera/clisk "0.11.0"]
