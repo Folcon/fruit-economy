@@ -600,9 +600,9 @@
   (let [[min-width min-height] [600 400]
         [window-width window-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
         bounds (window/content-rect window)
-        [width height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
+        [content-width content-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
         {:keys [init-cell zoom]} @*state
-        scale (max (float (/ *canvas-width* width)) (float (/ *canvas-height* height)))
+        scale (max (float (/ *canvas-width* content-width)) (float (/ *canvas-height* content-height)))
         {screen :work-area} (hui/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
         y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
