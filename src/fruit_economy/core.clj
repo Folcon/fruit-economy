@@ -21,7 +21,7 @@
    [fruit-economy.civ-actions :as civ-actions])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
-   [io.github.humbleui.skija Canvas Color4f FontMgr FontStyle Typeface Font Paint]
+   [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint]
    [io.github.humbleui.types IPoint IRect Rect])
   (:gen-class))
 
@@ -157,6 +157,14 @@
      #_keys))
   ,)
 
+(def *render-cache (atom {}))
+
+(defn make-rendered [cell]
+  (let [buffer (Surface/makeRasterN32Premul cell cell #_#_(* cell 10) (* cell 10))]
+    {:buffer buffer
+     :canvas (.getCanvas buffer)
+     :image (.makeImageSnapshot buffer)}))
+
 (defn draw-impl [^Canvas canvas window-width window-height]
   (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @*state
 
@@ -182,7 +190,6 @@
         {::land/keys [terrain area->civ-name civ-name->civ area->resources area->units]} (data/land-data world-db)
         territory (into #{} (map :area) (data/land-claims world-db))
         [camera-x camera-y] camera
-        land-canvas (custom-ui/get-named-canvas :land)
         now (System/currentTimeMillis)
         render? (> (- now last-render) render-ms)]
     ;; slowing render down
@@ -194,67 +201,51 @@
     #_(println :panel tick)
 
     ;; walk cells eq to window size
-    ;; draw land on buffer if even and then render buffer
-    (when render?
-      (doseq [;; TODO: Figure out why this viewport-width fixed the tile rendering bug,
-              ;;   it's almost certainly a scaling value thing.
-              x (range (long (* viewport-width 1.5)))
-              y (range viewport-height)
-              :let [;; so we need to first have the center of the area we're scaling be [0 0],
-                    ;;   so we subtract each side by half it's length,
-                    ;;   then we scale it by its zoom,r
-                    ;;   remove any remainder by calling int
-                    ;;   and then finally we offset by camera position
-                    loc-x (+ (int (- x half-vw)) camera-x)
-                    loc-y (+ (int (- y half-vh)) camera-y)
-                    loc [loc-x loc-y]
-                    path [loc-y loc-x]
-                    tile (get-in terrain path)
-                    territory? (contains? territory loc)
-                    {::civ/keys [symbol tint] :as civ} (data/land-area->civ world-db loc)
-                    [glyph tile-colour font dx dy] (cond
-                                                     civ [symbol tint font-default font-offset-x font-offset-y]
-                                                     territory? ["" #_(land/render-tile-str tile) tint font-default font-offset-x font-offset-y]
-                                                     :else ["" #_(land/render-tile-str tile) (land/render-tile-colour tile) font-default font-offset-x font-offset-y])
-                    tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
-                    fill (doto (Paint.) (.setColor tile-colour))
-                    ;; TODO: Temp fix for needing to overdraw tiles to stop the gap.
-                    padded-cell (+ 0.5 cell)]]
-        ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
-        (.drawRect ^Canvas land-canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
-        (.drawString ^Canvas land-canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default))
+    ;; TODO: This approach is workable, but not quite good enough, I need to be able to cache at multiple levels.
+    ;;   So for example if there's no civ or thing changes, don't re-render.
+    (doseq [x (range viewport-width)
+            y (range viewport-height)]
+      (let [;; args are the args captured in our memoize-last
+            args [world-db camera x y]
+            render-fn (fn [world-db camera x y]
+                        (let [rendered (get-in @*render-cache [args :rendered] (make-rendered cell))
+                              ;; pixel-x and pixel-y
+                              px-x (* x cell) px-y (* y cell)
 
-      (custom-ui/update-named-buffer :land))
+                              loc-x (+ (int (- x half-vw)) camera-x)
+                              loc-y (+ (int (- y half-vh)) camera-y)
+                              loc [loc-x loc-y]
+                              path [loc-y loc-x]
+                              biome (get-in terrain path)
 
-    ;; We do actual screen drawing here
-    (custom-ui/draw-named :land canvas)
+                              territory? (contains? territory loc)
+                              {::civ/keys [symbol tint] :as civ} (when territory? (data/land-area->civ world-db loc))
 
-    ;; draw things
-    ;; walk cells eq to window size
-    (when render?
-      (doseq [;; TODO: Figure out why this viewport-width fixed the tile rendering bug,
-              ;;   it's almost certainly a scaling value thing.
-              x (range (long (* viewport-width 1.5)))
-              y (range viewport-height)
-              :let [loc-x (+ (int (- x half-vw)) camera-x)
-                    loc-y (+ (int (- y half-vh)) camera-y)
-                    loc [loc-x loc-y]
-                    path [loc-y loc-x]
-                    things (data/land-area world-db loc)
-                    size (count things)
-                    thing (when-not (zero? size) (:glyph (nth things (rem tick size))))]
-              :when thing
-              :let [tile (get-in terrain path)
-                    territory? (contains? territory loc)
-                    {::civ/keys [symbol tint] :as civ} (data/land-area->civ world-db loc)
-                    [glyph tile-colour font dx dy] [thing (if territory? tint (land/render-tile-colour tile)) emoji-font emoji-offset-x emoji-offset-y]
-                    tile-colour (if (= (:world hovering) loc) (colour 255 255 255) tile-colour)
-                    fill (doto (Paint.) (.setColor tile-colour))
-                    ;; TODO: Temp fix for needing to overdraw tiles to stop the gap.
-                    padded-cell (+ 0.5 cell)]]
-        ;; To draw, we just take the current x or y we're on and simply multiply it by the cell size.
-        (.drawRect canvas (Rect/makeXYWH (* x cell) (* y cell) padded-cell padded-cell) fill)
-        (.drawString canvas glyph (+ dx (* x cell)) (+ dy (* y cell)) font fill-default)))
+                              things (data/land-area world-db loc)
+                              size (count things)
+                              thing (when-not (zero? size) (:glyph (nth things (rem tick size))))
+
+                              [glyph tile-colour font dx dy] (cond
+                                                               thing [thing (if territory? tint (land/render-tile-colour biome)) emoji-font emoji-offset-x emoji-offset-y]
+                                                               civ [symbol tint font-default font-offset-x font-offset-y]
+                                                               territory? ["" tint font-default font-offset-x font-offset-y]
+                                                               :else ["" (land/render-tile-colour biome) font-default font-offset-x font-offset-y])]
+                          (with-open [fill (doto (Paint.) (.setColor tile-colour))]
+                            (.drawRect ^Canvas (:canvas rendered) (Rect/makeXYWH 0 0 cell cell) fill)
+                            (.drawString ^Canvas (:canvas rendered) glyph dx dy font fill-default))
+                          (assoc rendered :px-x px-x :px-y px-y :image (.makeImageSnapshot ^Surface (:buffer rendered)))))
+            inputs-fn (get-in @*render-cache [args :fn] (hui/memoize-last render-fn))
+            rendered' (apply inputs-fn args)
+            rendered (get-in @*render-cache [args :rendered])]
+        (when-not (identical? rendered rendered')
+          (swap! *render-cache assoc args {:fn inputs-fn
+                                           :rendered rendered'}))
+        (.drawImage canvas (:image rendered') (:px-x rendered') (:px-y rendered'))))
+
+    (when hovering
+      (with-open [fill (doto (Paint.) (.setColor (colour 255 255 255)))]
+        (.drawRect canvas (Rect/makeXYWH ((comp #(* (quot % cell) cell) first :screen) hovering) ((comp #(* (quot % cell) cell) second :screen) hovering) cell cell) fill)))
+
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
 
@@ -507,8 +498,7 @@
           controlling (nth (keys civ-name->civ) civ-index)
           [svg-x svg-y svg-z] svg-xyz
           canvas-width (* x-scale *canvas-width*)
-          canvas-height (* y-scale *canvas-height*)
-          _ (custom-ui/make-named-buffer :land canvas-width canvas-height)]
+          canvas-height (* y-scale *canvas-height*)]
       (ui/row
         (ui/column
           (custom-ui/ui-canvas 150 150 {:on-paint #'draw-mini-panel-impl
