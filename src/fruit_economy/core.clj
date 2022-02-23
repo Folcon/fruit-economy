@@ -243,7 +243,7 @@
         (.drawImage canvas (:image rendered') (:px-x rendered') (:px-y rendered'))))
 
     (when hovering
-      (with-open [fill (doto (Paint.) (.setColor (colour 255 255 255)))]
+      (with-open [fill (doto (Paint.) (.setColor (colour 0x66FFD700)))]
         (.drawRect canvas (Rect/makeXYWH ((comp #(* (quot % cell) cell) first :screen) hovering) ((comp #(* (quot % cell) cell) second :screen) hovering) cell cell) fill)))
 
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
