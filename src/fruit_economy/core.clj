@@ -247,13 +247,7 @@
         (.drawRect canvas (Rect/makeXYWH ((comp #(* (quot % cell) cell) first :screen) hovering) ((comp #(* (quot % cell) cell) second :screen) hovering) cell cell) fill)))
 
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
-      (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))
-
-    #_(doseq [x (range 65) y (range 50)
-              :let [cell 5
-                    grey (int (* 256 (fruit-economy.noise/coord->noise fruit-economy.noise/simplex-noise-fn [x y] {:seed 1 :octaves 2 :lacunarity 1 :persistence 0.5 :scale [0.007 0.007] :normalise? true :low 0 :high 1})))]]
-        (with-open [fill (doto (Paint.) (.setColor (colour grey grey grey)))]
-          (.drawRect canvas (Rect/makeXYWH (+ (* x cell) 20) (+ (* y cell) 0) cell cell) fill)))))
+      (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
 
 (defn on-key-pressed-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
   (let [state @*state
