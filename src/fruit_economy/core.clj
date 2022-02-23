@@ -165,7 +165,7 @@
      :canvas (.getCanvas buffer)
      :image (.makeImageSnapshot buffer)}))
 
-(defn draw-impl [^Canvas canvas window-width window-height]
+(defn draw-impl [^Canvas canvas viewport-width viewport-height]
   (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @*state
 
         font-default (Font. face-default (float (* 24 zoom)))
