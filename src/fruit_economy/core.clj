@@ -639,8 +639,7 @@
          :on-resize #'on-resize})
       (window/set-title "Fruit Economy 👋")
       (window-size-fn work-area)
-      (window/set-visible true)
-      (window/set-z-order :floating))))
+      (window/set-visible true))))
 
 (defn -main [& args]
   ;; TODO: Display somewhere in the UI
