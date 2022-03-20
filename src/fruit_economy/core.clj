@@ -528,6 +528,23 @@
 
 (def padding 4)
 
+(def top-bar-ui
+  (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
+    (ui/column
+      [:stretch 1
+       (ui/padding 0 0 0 10
+         (ui/fill fill-yellow
+           (ui/row
+             (ui/padding 10 10
+               (ui/dynamic ctx [tick (:tick @*state)]
+                 (ui/label (str "Day " (inc tick)) font-small fill-black)))
+             [:stretch 1 nil]
+             (ui/fill fill-white
+               (ui/clickable
+                 #(reset! *state (new-state))
+                 (ui/padding 10 10
+                   (ui/label "↻ Restart" font-small fill-black)))))))])))
+
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
@@ -555,6 +572,7 @@
              :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
              :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
             (ui/column
+              top-bar-ui
               (ui/gap 0 padding)
               [:stretch 1 nil]
               (ui/valign 0.5
@@ -613,6 +631,7 @@
              :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
              :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
             (ui/column
+              top-bar-ui
               (ui/gap 0 padding)
               [:stretch 1 nil]
               world-map
