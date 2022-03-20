@@ -267,7 +267,7 @@
       (println (:hovering state)))
 
     ;; keyboard
-    (when (and (= event-type :hui/key) pressed?)
+    (when (and (= event-type :hui/key-down) pressed?)
       (println :panel key)
       (println (:peep @*state))
       (condp contains? key
@@ -358,7 +358,7 @@
       (println :mini-panel event))
 
     ;; keyboard
-    (when (and (= event-type :hui/key) pressed?)
+    (when (and (= event-type :hui/key-down) pressed?)
       (println :mini-panel key)
       (println (:peep @*state))
       (condp contains? key
@@ -444,7 +444,7 @@
       (println :tech-ui-panel event))
 
     ;; keyboard
-    (when (and (= event-type :hui/key) pressed?)
+    (when (and (= event-type :hui/key-down) pressed?)
       (println :tech-ui-panel key)
       (condp contains? key
         #{:key/d :key/right}
@@ -567,7 +567,7 @@
 
                    EventKey
                    (let [raw-key (.getKey ^EventKey event)
-                         event {:hui/event :hui/key
+                         event {:hui/event (if (.isPressed ^EventKey event) :hui/key-down :hui/key-up)
                                 :hui.event.key/raw-event event
                                 :hui.event.key/modifiers {:key/alt (.isModifierDown ^EventKey event KeyModifier/ALT)
                                                           :key/control (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
