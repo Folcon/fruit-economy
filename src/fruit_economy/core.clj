@@ -802,6 +802,9 @@
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
   (hui/start #(reset! *window (make-window))))
 
+;; Helps with REPL dev, on ns load forces a redraw
+(some-> @*window window/request-frame)
+
 (comment
   (do
     (hui/doui (some-> @*window window/close))
