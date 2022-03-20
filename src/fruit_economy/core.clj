@@ -5,9 +5,11 @@
    [environ.core :refer [env]]
    [clojure.stacktrace :as stacktrace]
    [io.github.humbleui.core :as hui]
+   [io.github.humbleui.paint :as paint]
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [fruit-economy.humble-ui :as custom-ui]
+   [fruit-economy.components :as cui]
    [fruit-economy.colour :refer [colour]]
    [fruit-economy.input :refer [mouse-button->kw key->kw]]
    [fruit-economy.graph :refer [graph?]]
@@ -480,6 +482,7 @@
         ;; (println :tech-ui-panel key)
         nil))))
 
+#_
 (def app
   (ui/dynamic ctx [{:keys [scale bounds x-scale y-scale xy-scale]} ctx
                    {:keys [camera tick history-index civ-index economy? svg-xyz]} @*state
@@ -523,6 +526,156 @@
               (ui/padding 10
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") font-small fill-text)))))))))
 
+(def padding 4)
+
+(def economy-ui-view
+  (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
+    (ui/padding padding padding
+      (ui/dynamic ctx [{:keys [scale face-ui x-scale y-scale ]} ctx
+                       {:keys [world-db camera tick svg-xyz]} @*state]
+        (let [font-default (Font. face-default (float (* 18 scale)))
+              font-large (Font. ^Typeface face-default (float (* scale 26)))
+              font-small (Font. ^Typeface face-default (float (* scale 13)))
+              fill-black (paint/fill 0xFF000000)
+              fill-light-gray (paint/fill 0xFFD4D6DA)
+              {::land/keys [economy]} (data/land-data world-db)
+              [svg-x svg-y svg-z] svg-xyz
+              canvas-width (* x-scale *canvas-width*)
+              canvas-height (* y-scale *canvas-height*)]
+          (ui/with-context
+            {:font-default    font-default
+             :font-large      font-large
+             :font-small      font-small
+             :fill-white      (paint/fill 0xFFFFFFFF)
+             :fill-black      fill-black
+             :fill-light-gray fill-light-gray
+             :fill-dark-gray  (paint/fill 0xFF777C7E)
+             :fill-green      (paint/fill 0xFF6AAA64)
+             :fill-yellow     (paint/fill 0xFFC9B457)
+             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
+             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
+            (ui/column
+              (ui/gap 0 padding)
+              [:stretch 1 nil]
+              (ui/valign 0.5
+                (ui/halign 0.5
+                  (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
+                    (custom-ui/svg-canvas canvas-width canvas-height
+                      {:svg-str (economy/->svg economy)
+                       :on-event #'on-key-pressed-svg-impl})))))))))))
+
+(def world-map
+  (ui/dynamic ctx [{:keys [font-large stroke-light-gray stroke-dark-gray fill-green fill-yellow fill-dark-gray fill-white fill-black]} ctx
+                   {:keys [world-db] :as state} @*state]
+    (let [{::land/keys [terrain units]} (data/land-data world-db)
+          fill (fn [tile]
+                 (paint/fill (land/render-tile-colour tile)))
+          unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))]
+      (ui/column
+        (interpose (ui/gap 0 0)
+          (for [[tile-row y-idx] (map vector terrain (range))]
+            (ui/row
+              (interpose (ui/gap 0 0)
+                (for [[tile x-idx] (map vector tile-row (range))]
+                  (ui/hoverable
+                    (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                      (let [_ (when hovered?
+                                (swap! *state assoc :hover-loc [x-idx y-idx]))]
+                        (ui/fill (if hovered?
+                                   (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
+                                   (fill tile))
+                          (ui/width 10
+                            (ui/halign 0.5
+                              (ui/height 10
+                                (ui/valign 0.5
+                                  (ui/label (unit-glyph tile x-idx y-idx) font-large fill-white))))))))))))))))))
+
+(def map-ui-view
+  (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
+    (ui/padding padding padding
+      (ui/dynamic ctx [{:keys [scale face-ui]} ctx
+                       {:keys [camera tick]} @*state]
+        (let [font-default (Font. face-default (float (* 18 scale)))
+              font-large (Font. ^Typeface face-default (float (* scale 26)))
+              font-small (Font. ^Typeface face-default (float (* scale 13)))
+              fill-black (paint/fill 0xFF000000)
+              fill-light-gray (paint/fill 0xFFD4D6DA)]
+          (ui/with-context
+            {:font-default    font-default
+             :font-large      font-large
+             :font-small      font-small
+             :fill-white      (paint/fill 0xFFFFFFFF)
+             :fill-black      fill-black
+             :fill-light-gray fill-light-gray
+             :fill-dark-gray  (paint/fill 0xFF777C7E)
+             :fill-green      (paint/fill 0xFF6AAA64)
+             :fill-yellow     (paint/fill 0xFFC9B457)
+             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
+             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
+            (ui/column
+              (ui/gap 0 padding)
+              [:stretch 1 nil]
+              world-map
+              (ui/padding 5
+                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick #_(when controlling (str " controlling " controlling))) font-small fill-black))
+              (ui/padding 5
+                (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") font-small fill-black))
+              (ui/padding 5
+                (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") font-small fill-black)))))))))
+
+(def ui-views
+  ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
+  (array-map
+    "Map" map-ui-view
+    "Economy" economy-ui-view))
+
+(def *selected-ui-view (atom (ffirst ui-views)))
+
+(defonce *floating (atom false))
+
+(add-watch *floating ::window
+  (fn [_ _ _ floating]
+    (when-some [window @*window]
+      (if floating
+        (window/set-z-order window :floating)
+        (window/set-z-order window :normal)))))
+
+
+(def app
+  (ui/dynamic ctx [scale (:scale ctx)
+                   player-hp (:player-hp @*state)]
+    (let [font-ui   (Font. face-default (float (* 13 scale)))
+          leading   (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
+          emoji-font (Font. emoji-face (float 72))
+          fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
+      (ui/with-context {:face-ui   face-default
+                        :font-ui   font-ui
+                        :leading   leading
+                        :fill-text fill-text}
+        (ui/row
+          (ui/column
+            (ui/padding 2 leading
+              (ui/label game-glyph emoji-font fill-text))
+            [:stretch 1
+             (ui/vscrollbar
+               (ui/vscroll
+                 (ui/column
+                   (for [[name _ui] ui-views]
+                     (ui/clickable
+                       #(reset! *selected-ui-view name)
+                       (ui/dynamic ctx [selected? (= name @*selected-ui-view)
+                                        hovered?  (:hui/hovered? ctx)]
+                         (let [label (ui/padding 20 leading
+                                       (ui/label name font-ui fill-text))]
+                           (cond
+                             selected? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
+                             hovered?  (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
+                             :else     label))))))))]
+            (ui/padding 10 10
+              (cui/atom-checkbox *floating "On top")))
+          [:stretch 1
+           (ui/dynamic _ [name @*selected-ui-view]
+             (ui-views name))])))))
 
 (comment
   (window/request-frame @*window))
