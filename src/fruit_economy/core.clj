@@ -642,12 +642,35 @@
                        :on-event #'on-key-pressed-svg-impl})))))))))))
 
 (def world-map
-  (ui/dynamic ctx [{:keys [font-large stroke-light-gray stroke-dark-gray fill-green fill-yellow fill-dark-gray fill-white fill-black]} ctx
-                   {:keys [world-db] :as state} @*state]
-    (let [{::land/keys [terrain units]} (data/land-data world-db)
+  (ui/dynamic ctx [{:keys [font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y stroke-light-gray stroke-dark-gray fill-green fill-yellow fill-dark-gray fill-white fill-black]} ctx
+                   {:keys [world-db tick] :as state} @*state]
+    (let [{::land/keys [terrain units area->units] :as d} (data/land-data world-db)
+          territory (into #{} (map :area) (data/land-claims world-db))
           fill (fn [tile]
                  (paint/fill (land/render-tile-colour tile)))
-          unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))]
+          unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))
+          unit-data (fn [_tile x y]
+                      (let [;half-vw (quot viewport-width 2)
+                            ;half-vh (quot viewport-height 2)
+                            ;; pixel-x and pixel-y
+                            loc-x x ;(+ (int (- x half-vw)) camera-x)
+                            loc-y y ;(+ (int (- y half-vh)) camera-y)
+                            loc [loc-x loc-y]
+                            path [loc-y loc-x]
+
+                            biome (get-in terrain path)
+
+                            territory? (contains? territory loc)
+                            {::civ/keys [symbol tint] :as civ} (when territory? (data/land-area->civ world-db loc))
+
+                            things (data/land-area world-db [x y])
+                            size (count things)
+                            thing (when-not (zero? size) (:glyph (nth things (rem tick size))))]
+                        (cond
+                          thing [thing (if territory? tint (land/render-tile-colour biome)) emoji-font emoji-offset-x emoji-offset-y]
+                          civ [symbol tint font-default font-offset-x font-offset-y]
+                          territory? ["" tint font-default font-offset-x font-offset-y]
+                          :else ["" (land/render-tile-colour biome) font-default font-offset-x font-offset-y])))]
       (ui/column
         (interpose (ui/gap 0 0)
           (for [[tile-row y-idx] (map vector terrain (range))]
@@ -657,15 +680,16 @@
                   (ui/hoverable
                     (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                       (let [_ (when hovered?
-                                (swap! *state assoc :hover-loc [x-idx y-idx]))]
+                                (swap! *state assoc :hover-loc [x-idx y-idx]))
+                            [glyph tile-colour font _dx _dy] (unit-data tile x-idx y-idx)]
                         (ui/fill (if hovered?
                                    (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
-                                   (fill tile))
+                                   (paint/fill tile-colour))
                           (ui/width 10
                             (ui/halign 0.5
                               (ui/height 10
                                 (ui/valign 0.5
-                                  (ui/label (unit-glyph tile x-idx y-idx) font-large fill-white))))))))))))))))))
+                                  (ui/label glyph font fill-white))))))))))))))))))
 
 (def map-ui-view
   (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
@@ -675,12 +699,33 @@
         (let [font-default (Font. face-default (float (* 18 scale)))
               font-large (Font. ^Typeface face-default (float (* scale 26)))
               font-small (Font. ^Typeface face-default (float (* scale 13)))
+              emoji-font (Font. emoji-face (float 20))
+
+              cell 30
+
+              font-bounds (.measureText font-default "X")
+              font-offset-x (-> (- (.getLeft font-bounds))
+                              (- (/ (- (.getWidth font-bounds) cell) 2)))
+              font-offset-y (-> (- (.getTop font-bounds))
+                              (- (/ (- (.getHeight font-bounds) cell) 2)))
+
+              emoji-bounds (.measureText font-default emoji-glyph)
+              emoji-offset-x (-> (- (.getLeft emoji-bounds))
+                               (- (/ (- (.getWidth emoji-bounds) cell) 2)))
+              emoji-offset-y (-> (- (.getTop emoji-bounds))
+                               (- (/ (- (.getHeight emoji-bounds) cell) 2)))
+
               fill-black (paint/fill 0xFF000000)
               fill-light-gray (paint/fill 0xFFD4D6DA)]
           (ui/with-context
             {:font-default    font-default
              :font-large      font-large
              :font-small      font-small
+             :emoji-font      emoji-font
+             :font-offset-x   font-offset-x
+             :font-offset-y   font-offset-y
+             :emoji-offset-x  emoji-offset-x
+             :emoji-offset-y  emoji-offset-y
              :fill-white      (paint/fill 0xFFFFFFFF)
              :fill-black      fill-black
              :fill-light-gray fill-light-gray
