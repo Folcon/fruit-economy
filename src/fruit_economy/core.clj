@@ -528,6 +528,65 @@
 
 (def padding 4)
 
+(defn nested-limit
+  ([coll limit] (nested-limit coll limit nil))
+  ([coll limit elide-str]
+   (let [cond-add-elide (fn [v] (if elide-str (conj v elide-str) v))]
+     (reduce
+       (fn [[rem v] item]
+         (let [size (count item)
+               rem' (- rem size)]
+           (cond
+             (< rem size) (reduced (conj v (cond-add-elide (into [] (take rem) item))))
+             (> rem' 0) [rem' (conj v item)]
+             (zero? rem') (reduced (conj v item)))))
+       [limit []]
+       coll))))
+
+(comment
+  ;; Can turn to tests later...
+  (let [;; 3 => [[1 2] [3]]
+        ;; 4 => [[1 2] [3 4]]
+        coll [[1 2] [3 4] [5 6]]
+        coll' [[1 2] [3 4 5 6 7 8 9 10]]]
+    (and
+      (= [[1 2] [3]]
+        (nested-limit coll 3))
+      (= [[1 2] [3 4]]
+        (nested-limit coll 4))
+      (= [[1 2] [3 4]]
+        (nested-limit coll' 4)))))
+
+(defn message-log-ui
+  ([] (message-log-ui nil))
+  ([limit]
+   (ui/dynamic ctx [{:keys [font-small fill-light-gray fill-black scale]} ctx
+                    {:keys [world-db]} @*state]
+     (let [message-log (data/history-log-entries world-db)
+           message-log' (if limit (take limit message-log) message-log)]
+       (ui/column
+         (ui/gap 0 padding)
+         (ui/halign 0.5
+           (ui/label "[ Message Log ]" font-small fill-black))
+         (ui/gap 0 (* padding 2))
+         (ui/halign 0.5
+           (ui/halign 0.5
+             (ui/column
+               [:stretch 1
+                (ui/column
+                  (interpose (ui/gap 2 padding)
+                    (map
+                      (fn [message]
+                        (let [border (doto (Paint.)
+                                       (.setColor (unchecked-int 0xFF000000))
+                                       (.setMode PaintMode/STROKE)
+                                       (.setStrokeWidth (* 1 scale)))]
+                          (ui/halign 0.5
+                            (ui/fill border
+                              (ui/padding 5 5
+                                (ui/label (str message) font-small fill-black))))))
+                      message-log')))]))))))))
+
 (def top-bar-ui
   (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
     (ui/column
@@ -642,11 +701,39 @@
               (ui/padding 5
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") font-small fill-black)))))))))
 
+(def messages-ui-view
+  (ui/on-key-down #(on-key-press (:hui.event.key/key %))
+    (ui/padding padding padding
+      (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
+        (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
+              fill-black (paint/fill 0xFF000000)
+              fill-yellow (paint/fill 0xFFC9B457)
+              fill-light-gray (paint/fill 0xFFD4D6DA)]
+          (ui/with-context
+            {:font-large      (Font. ^Typeface face-default (float (* scale 26)))
+             :font-small      font-small
+             :fill-white      (paint/fill 0xFFFFFFFF)
+             :fill-black      fill-black
+             :fill-light-gray fill-light-gray
+             :fill-dark-gray  (paint/fill 0xFF777C7E)
+             :fill-green      (paint/fill 0xFF6AAA64)
+             :fill-yellow     fill-yellow
+             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
+             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
+            (ui/column
+              top-bar-ui
+              [:stretch 1
+               (ui/vscrollbar
+                 (ui/vscroll
+                   (ui/column
+                     (message-log-ui))))])))))))
+
 (def ui-views
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
   (array-map
     "Map" map-ui-view
-    "Economy" economy-ui-view))
+    "Economy" economy-ui-view
+    "Log" messages-ui-view))
 
 (def *selected-ui-view (atom (ffirst ui-views)))
 
