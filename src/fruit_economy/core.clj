@@ -689,9 +689,9 @@
                             thing (when-not (zero? size) (:glyph (nth things (rem tick size))))]
                         (cond
                           thing [thing (if territory? tint (land/render-tile-colour biome)) emoji-font emoji-offset-x emoji-offset-y]
-                          civ [symbol tint font-default font-offset-x font-offset-y]
-                          territory? ["" tint font-default font-offset-x font-offset-y]
-                          :else ["" (land/render-tile-colour biome) font-default font-offset-x font-offset-y])))]
+                          civ [symbol tint map-font font-offset-x font-offset-y]
+                          territory? ["" tint map-font font-offset-x font-offset-y]
+                          :else ["" (land/render-tile-colour biome) map-font font-offset-x font-offset-y])))]
       (ui/column
         (interpose (ui/gap 0 0)
           (for [y-idx (range top bottom)]
