@@ -671,9 +671,7 @@
                  (paint/fill (land/render-tile-colour tile)))
           unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))
           unit-data (fn [_tile x y]
-                      (let [;half-vw (quot viewport-width 2)
-                            ;half-vh (quot viewport-height 2)
-                            ;; pixel-x and pixel-y
+                      (let [;; pixel-x and pixel-y
                             loc-x x ;(+ (int (- x half-vw)) camera-x)
                             loc-y y ;(+ (int (- y half-vh)) camera-y)
                             loc [loc-x loc-y]
