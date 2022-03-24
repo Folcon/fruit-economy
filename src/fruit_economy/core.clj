@@ -667,9 +667,6 @@
           map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
 
-          fill (fn [tile]
-                 (paint/fill (land/render-tile-colour tile)))
-          unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))
           unit-data (fn [_tile x y]
                       (let [;; pixel-x and pixel-y
                             loc-x x ;(+ (int (- x half-vw)) camera-x)
