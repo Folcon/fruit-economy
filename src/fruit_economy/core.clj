@@ -673,14 +673,15 @@
                           :else ["" (land/render-tile-colour biome) font-default font-offset-x font-offset-y])))]
       (ui/column
         (interpose (ui/gap 0 0)
-          (for [[tile-row y-idx] (map vector terrain (range))]
+          (for [y-idx (range top bottom)]
             (ui/row
               (interpose (ui/gap 0 0)
-                (for [[tile x-idx] (map vector tile-row (range))]
+                (for [x-idx (range left right)]
                   (ui/hoverable
                     (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                       (let [_ (when hovered?
                                 (swap! *state assoc :hover-loc [x-idx y-idx]))
+                            tile (get-in terrain [y-idx x-idx])
                             [glyph tile-colour font _dx _dy] (unit-data tile x-idx y-idx)]
                         (ui/fill (if hovered?
                                    (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
