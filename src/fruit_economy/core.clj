@@ -719,21 +719,6 @@
         (let [font-default (Font. face-default (float (* 18 scale)))
               font-large (Font. ^Typeface face-default (float (* scale 26)))
               font-small (Font. ^Typeface face-default (float (* scale 13)))
-              emoji-font (Font. emoji-face (float 20))
-
-              cell 30
-
-              font-bounds (.measureText font-default "X")
-              font-offset-x (-> (- (.getLeft font-bounds))
-                              (- (/ (- (.getWidth font-bounds) cell) 2)))
-              font-offset-y (-> (- (.getTop font-bounds))
-                              (- (/ (- (.getHeight font-bounds) cell) 2)))
-
-              emoji-bounds (.measureText font-default emoji-glyph)
-              emoji-offset-x (-> (- (.getLeft emoji-bounds))
-                               (- (/ (- (.getWidth emoji-bounds) cell) 2)))
-              emoji-offset-y (-> (- (.getTop emoji-bounds))
-                               (- (/ (- (.getHeight emoji-bounds) cell) 2)))
 
               fill-black (paint/fill 0xFF000000)
               fill-light-gray (paint/fill 0xFFD4D6DA)]
@@ -741,11 +726,6 @@
             {:font-default    font-default
              :font-large      font-large
              :font-small      font-small
-             :emoji-font      emoji-font
-             :font-offset-x   font-offset-x
-             :font-offset-y   font-offset-y
-             :emoji-offset-x  emoji-offset-x
-             :emoji-offset-y  emoji-offset-y
              :fill-white      (paint/fill 0xFFFFFFFF)
              :fill-black      fill-black
              :fill-light-gray fill-light-gray
