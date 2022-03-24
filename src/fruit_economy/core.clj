@@ -702,9 +702,9 @@
                         (ui/fill (if hovered?
                                    (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
                                    (paint/fill tile-colour))
-                          (ui/width 10
+                          (ui/width cell
                             (ui/halign 0.5
-                              (ui/height 10
+                              (ui/height cell
                                 (ui/valign 0.5
                                   (ui/label glyph font fill-white))))))))))))))))))
 
