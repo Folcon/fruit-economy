@@ -641,11 +641,27 @@
                       {:svg-str (economy/->svg economy)
                        :on-event #'on-key-pressed-svg-impl})))))))))))
 
+(defn camera->viewport [camera zoom content-width content-height]
+  (let [w content-width h content-height
+        vp 0.1 wv (* w vp zoom) hv (* h vp zoom)
+        cell (int (* 10 zoom))
+        width (quot content-width (* cell 2)) height (quot content-height (* cell 2)) #_(int (quot zoom 1.25))
+        half-x (quot width 2) half-y (quot height 2)]
+    {:w w :h h :wv wv :hv hv :cell cell :width width :height height :half-x half-x :half-y half-y :size [width height] :center [half-x half-y :+ camera] :lrtb [(- (first camera) half-x) (+ (first camera) half-x) (- (second camera) half-y) (+ (second camera) half-y)]}))
+
 (def world-map
-  (ui/dynamic ctx [{:keys [font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y stroke-light-gray stroke-dark-gray fill-green fill-yellow fill-dark-gray fill-white fill-black]} ctx
-                   {:keys [world-db tick] :as state} @*state]
+  (ui/dynamic ctx [{:keys [x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
+                   {:keys [world-db tick camera zoom] :as state} @*state]
     (let [{::land/keys [terrain units area->units] :as d} (data/land-data world-db)
           territory (into #{} (map :area) (data/land-claims world-db))
+
+          canvas-width (int (* x-scale *canvas-width*))
+          canvas-height (int (* y-scale *canvas-height*))
+
+          {:keys [cell lrtb]} (camera->viewport camera zoom canvas-width canvas-height)
+
+          [left right top bottom] lrtb
+
           fill (fn [tile]
                  (paint/fill (land/render-tile-colour tile)))
           unit-glyph (fn [_tile x y] (get-in units [[x y] :glyph] " "))
