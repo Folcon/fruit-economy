@@ -701,7 +701,7 @@
                       (let [_ (when hovered?
                                 (swap! *state assoc :hover-loc [x-idx y-idx]))
                             tile (get-in terrain [y-idx x-idx])
-                            [glyph tile-colour font _dx _dy] (unit-data tile x-idx y-idx)]
+                            [glyph tile-colour font] (unit-data tile x-idx y-idx)]
                         (ui/fill (if hovered?
                                    (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
                                    (paint/fill tile-colour))
