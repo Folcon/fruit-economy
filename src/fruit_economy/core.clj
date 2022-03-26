@@ -652,7 +652,7 @@
     {:w w :h h :wv wv :hv hv :cell cell :width width :height height :half-x half-x :half-y half-y :size [width height] :center [half-x half-y :+ camera] :lrtb [(- (first camera) half-x) (+ (first camera) half-x) (- (second camera) half-y) (+ (second camera) half-y)]}))
 
 (def world-map
-  (ui/dynamic ctx [{:keys [x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
+  (ui/dynamic ctx [{:keys [scale x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
                    {:keys [world-db tick camera zoom] :as state} @*state]
     (let [{::land/keys [terrain units area->units] :as d} (data/land-data world-db)
           territory (into #{} (map :area) (data/land-claims world-db))
