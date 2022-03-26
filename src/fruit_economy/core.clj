@@ -744,7 +744,7 @@
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") font-small fill-black)))))))))
 
 (def messages-ui-view
-  (ui/on-key-down #(on-key-press (:hui.event.key/key %))
+  (ui/on-key-down #(on-key-pressed-impl (:hui.event.key/key %))
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
         (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
