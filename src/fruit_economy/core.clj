@@ -23,7 +23,7 @@
    [fruit-economy.civ-actions :as civ-actions])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
-   [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint]
+   [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint PaintMode]
    [io.github.humbleui.types IPoint IRect Rect])
   (:gen-class))
 
