@@ -942,12 +942,33 @@
       (window-size-fn work-area)
       (window/set-visible true))))
 
+(defn set-interval [callback ms]
+  (future (while true (do (Thread/sleep ms) (callback)))))
+
+(def clock (atom nil))
+
+(defn tick-clock []
+  (let [{:keys [tick-ms last-tick paused?]} @*state
+        now (System/currentTimeMillis)]
+    (when (and
+            (not paused?)
+            (> (- now last-tick) tick-ms))
+      (swap! *state on-tick now))))
+
+(defn start-clock [ms]
+  (reset! clock (set-interval tick-clock ms)))
+
+(defn stop-clock []
+  (future-cancel @clock))
+
+
 (defn -main [& args]
   ;; TODO: Display somewhere in the UI
   (println (str "VERSION: " (env :game-version) (when (debug?) "\nDEBUG BUILD")))
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
+  (start-clock 1000)
   (hui/start #(reset! *window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
