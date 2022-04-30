@@ -9,10 +9,10 @@
 
 (defn loc+entity->entities-coll [loc+entity]
   (reduce
-    (fn [m [[loc entity] idx]]
-      (conj m (assoc entity :id idx :pos [:loc loc])))
+    (fn [m [loc entity]]
+      (conj m (assoc entity :pos [:loc loc])))
     []
-    (map vector loc+entity (range))))
+    loc+entity))
 
 (defn make-bug []
   {:glyph "🐞" :wealth 0 :vision (inc (rand-int 4)) :hunger (inc (rand-int 4))})
