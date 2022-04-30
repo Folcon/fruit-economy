@@ -112,3 +112,26 @@
       (is (= (set [[:db/retractEntity 2]])
             (set (basic/rewrite basic/remove-starving-rule db)))))))
 
+(deftest grow-food-test
+  (testing "Testing food will not grow if at init-food"
+    (let [world-data [{:food 1 :loc [0 0] :init-food 1}]
+          db (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
+                                     :loc {:db/unique :db.unique/identity}})
+               world-data)]
+      (is (= (set [])
+            (set (basic/rewrite basic/grow-food-rule db))))))
+  (testing "Testing food will grow if not at init-food"
+    (let [world-data [{:food 0 :loc [0 0] :init-food 1}]
+          db (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
+                                     :loc {:db/unique :db.unique/identity}})
+               world-data)]
+      (is (= (set [[:db/add 1 :food 1]])
+            (set (basic/rewrite basic/grow-food-rule db))))))
+  (testing "Testing food will not grow if greater then init-food"
+      (let [world-data [{:food 2 :loc [0 0] :init-food 1}]
+            db (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
+                                       :loc {:db/unique :db.unique/identity}})
+                 world-data)]
+        (is (= (set [])
+              (set (basic/rewrite basic/grow-food-rule db)))))))
+

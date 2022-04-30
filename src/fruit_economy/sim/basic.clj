@@ -142,6 +142,15 @@
            [(< ?wealth 0)]]
     :then [[:db/retractEntity ?e]]})
 
+(defn grow-food [food init-food] (min (inc food) init-food))
+
+(def grow-food-rule
+  (-> '{:when [[?e :food ?food]
+               [?e :init-food ?init-food]
+               [(< ?food ?init-food)]
+               [(grow-food ?food ?init-food) ?gain-food]]
+        :then [[:db/add ?e :food ?gain-food]]}
+    (merge {:args {'grow-food grow-food}})))
 
 (def rules
   [hunt-rule])
