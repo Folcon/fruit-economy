@@ -93,3 +93,22 @@
           (is (= (set [[:db/add 2 :wealth 0]
                        [:db/add 1 :food 0]])
                 (set (basic/rewrite basic/try-eat-rule db)))))))
+
+(deftest remove-starving-test
+  (testing "Testing that not hungry hunter will not be removed"
+    (let [world-data [{:food 0 :loc [0 0]}
+                      {:glyph "🐞", :wealth 0, :vision 2, :hunger 3, :pos [:loc [0 0]]}]
+          db (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
+                                     :loc {:db/unique :db.unique/identity}})
+               world-data)]
+      (is (= (set [])
+            (set (basic/rewrite basic/remove-starving-rule db))))))
+  (testing "Testing that hungry hunter will be removed"
+    (let [world-data [{:food 0 :loc [0 0]}
+                      {:glyph "🐞", :wealth -1, :vision 2, :hunger 3, :pos [:loc [0 0]]}]
+          db (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
+                                     :loc {:db/unique :db.unique/identity}})
+               world-data)]
+      (is (= (set [[:db/retractEntity 2]])
+            (set (basic/rewrite basic/remove-starving-rule db)))))))
+

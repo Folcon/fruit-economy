@@ -136,6 +136,11 @@
                [:db/add ?le :food ?rem-food]]}
     (merge {:args {'gathered gathered}})))
 
+(def remove-starving-rule
+  '{:when [[?e :wealth ?wealth]
+           [(< ?wealth 0)]]
+    :then [[:db/retractEntity ?e]]})
+
 
 (def rules
   [hunt-rule])
