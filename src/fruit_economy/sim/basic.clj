@@ -153,7 +153,10 @@
     (merge {:args {'grow-food grow-food}})))
 
 (def rules
-  [hunt-rule])
+  [hunt-rule
+   try-eat-rule
+   remove-starving-rule
+   grow-food-rule])
 
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
