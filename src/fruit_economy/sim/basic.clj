@@ -2,7 +2,8 @@
   (:require [io.github.humbleui.ui :as ui]
             [io.github.humbleui.paint :as paint]
             [datascript.core :as d]
-            [fruit-economy.colour :refer [colour]])
+            [fruit-economy.colour :refer [colour]]
+            [fruit-economy.data.core :refer [lookup-avet]])
   (:import [io.github.humbleui.skija Paint]))
 
 
@@ -38,22 +39,15 @@
 (def *world (atom {:world-db (reset-world)}))
 
 (defn loc-q [db loc]
-  (d/q '[:find (pull ?e [*]) .
-         :in $ ?loc
-         :where
-         [?e :loc ?loc]
-         [?e :food]]
-    db
-    loc))
+  (-> (lookup-avet db :loc loc)
+    first
+    d/touch))
 
 (defn units-q [db loc]
-  (d/q '[:find [(pull ?e [*])]
-         :in $ ?loc
-         :where
-         [?le :loc ?loc]
-         [?e :pos ?le]]
-    db
-    loc))
+  (->> (lookup-avet db :pos [:loc loc])
+    (mapv :db/id)
+    (d/pull-many db '[* {:pos [:loc]}])
+    (mapv #(update % :pos :loc))))
 
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
