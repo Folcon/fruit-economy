@@ -73,6 +73,53 @@
     (d/pull-many db '[* {:pos [:loc]}])
     (mapv #(update % :pos :loc))))
 
+(defn sees [loc vision]
+  (let [[x y] loc]
+    (into []
+      cat
+      [(for [x (range (- x vision) (inc (+ x vision)))
+             :when (not= [x y] loc)]
+         [x y])
+       (for [y (range (- y vision) (inc (+ y vision)))
+             :when (not= [x y] loc)]
+         [x y])])))
+
+(defn best-food [db loc sees]
+  (let [get-food (fn [loc]
+                   (-> (lookup-avet db :loc loc [:food])
+                     (first)
+                     (get :food 0)))]
+    (reduce
+      (fn [[loc food] target]
+        (let [target-food (get-food target)]
+          (if (> target-food food)
+            [target target-food]
+            [loc food])
+          (if (> target-food food)
+            [target target-food]
+            [loc food])))
+      [loc (get-food loc)]
+      sees)))
+
+(defn hunt [db loc vision]
+  (let [[best-food-loc _food] (best-food db loc (sees loc vision))]
+    best-food-loc))
+
+(def hunt-rule
+  (-> '{:when [[?e :pos ?le]
+               [?e :vision ?vision]
+               [?le :loc ?loc]
+               [?le :food ?food]
+               [(hunt $ ?loc ?vision) ?target]
+               [(not= ?target ?loc)]
+               [?te :loc ?target]]
+        :then [[:db/add ?e :pos ?te]]}
+    (merge {:args {'hunt hunt}})))
+
+
+(def rules
+  [hunt-rule])
+
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
                    {:keys [world-db]} @*world]
@@ -122,4 +169,11 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-green fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "RESET!" font-small fill-white))))))))))
+                  (ui/label "RESET!" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world update :world-db infer rules)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "Apply Rules" font-small fill-white))))))))))
