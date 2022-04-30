@@ -67,8 +67,12 @@
     first
     d/touch))
 
-(defn units-q [db loc]
-  (->> (lookup-avet db :pos [:loc loc])
+(defn units-q
+  "loc can be nil or [x y]"
+  [db loc]
+  (->> (when loc
+         [:loc loc])
+    (lookup-avet db :pos)
     (mapv :db/id)
     (d/pull-many db '[* {:pos [:loc]}])
     (mapv #(update % :pos :loc))))
