@@ -40,7 +40,7 @@
     loc+entity))
 
 (defn make-bug []
-  {:glyph "🐞" :wealth 0 :vision (inc (rand-int 4)) :hunger (inc (rand-int 4))})
+  {:glyph "🐞" :wealth 0 :vision (inc (rand-int 4)) :hunger (inc (rand-int 4)) :max-age (+ (rand-int 5) 20)})
 
 (defn gen-bug-world [size n-peeps]
   (into
@@ -48,7 +48,7 @@
       (for [x (range size)
             y (range size)]
         (let [food #_(inc (rand-int 4)) (- 5 (int (Math/sqrt (rand-int 32))))]
-          {:init-food food :food food :max-age (+ (rand-int 5) 20) :loc [x y]})))
+          {:init-food food :food food :loc [x y]})))
     (loc+entity->entities-coll
       (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)])))))
 
