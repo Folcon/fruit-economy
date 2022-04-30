@@ -120,6 +120,22 @@
         :then [[:db/add ?e :pos ?te]]}
     (merge {:args {'hunt hunt}})))
 
+(defn gathered [food] (min food (+ (quot food 2) 2)))
+
+(def try-eat-rule
+  (-> '{:when [[?e :pos ?le]
+               [?e :wealth ?wealth]
+               [?e :hunger ?hunger]
+               [?le :loc ?loc]
+               [?le :food ?food]
+               [(gathered ?food) ?gather]
+               [(- ?food ?gather) ?rem-food]
+               [(+ ?wealth ?gather) ?gain-wealth]
+               [(- ?gain-wealth ?hunger) ?rem-wealth]]
+        :then [[:db/add ?e :wealth ?rem-wealth]
+               [:db/add ?le :food ?rem-food]]}
+    (merge {:args {'gathered gathered}})))
+
 
 (def rules
   [hunt-rule])
