@@ -1,10 +1,34 @@
 (ns fruit-economy.sim.basic
-  (:require [io.github.humbleui.ui :as ui]
+  (:require [clojure.walk :as walk]
+            [io.github.humbleui.ui :as ui]
             [io.github.humbleui.paint :as paint]
             [datascript.core :as d]
             [fruit-economy.colour :refer [colour]]
             [fruit-economy.data.core :refer [lookup-avet]])
   (:import [io.github.humbleui.skija Paint]))
+
+
+(defn rewrite
+  "Tries to match rule against db
+  Returns tx-data or empty list if rule does not match"
+  [{:keys [when then args]} db]
+  (let [syms (for [row then el row :when (symbol? el)] el)
+        results (apply d/q {:find syms :in (cons '$ (keys args)) :where when} db (vals args))]
+    (for [match results tx then]
+      (let [swaps (zipmap syms match)
+            f (fn [x] (if (coll? x) x (get swaps x x)))]
+        (walk/postwalk f tx)))))
+
+(defn infer
+  "Returns a new db with all inferred facts and a list of tx-data.
+  Stops when no more rules apply or after 100 iterations"
+  [db rules]
+  (loop [db db max-iter 100]
+    (let [tx-data (for [rule rules tx (rewrite rule db)] tx)]
+      (cond
+        (empty? tx-data) db
+        (zero? max-iter) db
+        :else (recur (d/db-with db tx-data) (dec max-iter))))))
 
 
 (defn loc+entity->entities-coll [loc+entity]
