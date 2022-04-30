@@ -22,13 +22,14 @@
 (defn infer
   "Returns a new db with all inferred facts and a list of tx-data.
   Stops when no more rules apply or after 100 iterations"
-  [db rules]
-  (loop [db db max-iter 100]
-    (let [tx-data (for [rule rules tx (rewrite rule db)] tx)]
-      (cond
-        (empty? tx-data) db
-        (zero? max-iter) db
-        :else (recur (d/db-with db tx-data) (dec max-iter))))))
+  ([db rules] (infer db rules 100))
+  ([db rules max-iter]
+   (loop [db db max-iter max-iter]
+     (let [tx-data (for [rule rules tx (rewrite rule db)] tx)]
+       (cond
+         (empty? tx-data) db
+         (zero? max-iter) db
+         :else (recur (d/db-with db tx-data) (dec max-iter)))))))
 
 
 (defn loc+entity->entities-coll [loc+entity]
@@ -196,7 +197,7 @@
                 (ui/padding 10 10
                   (ui/label "RESET!" font-small fill-white))))))
         (ui/clickable
-          #(swap! *world update :world-db infer rules)
+          #(swap! *world update :world-db infer rules 1)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-green fill-dark-gray)
