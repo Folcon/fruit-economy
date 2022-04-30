@@ -32,12 +32,12 @@
          :else (recur (d/db-with db tx-data) (dec max-iter)))))))
 
 
-(defn loc+entity->entities-coll [loc+entity]
+(defn coord+entity->entities-coll [coord+entity]
   (reduce
-    (fn [m [loc entity]]
-      (conj m (assoc entity :pos [:loc loc])))
+    (fn [m [coord entity]]
+      (conj m (assoc entity :place [:coord coord])))
     []
-    loc+entity))
+    coord+entity))
 
 (defn make-bug []
   {:glyph "🐞" :wealth 0 :vision (inc (rand-int 4)) :hunger (inc (rand-int 4)) :max-age (+ (rand-int 5) 20)})
@@ -48,8 +48,8 @@
       (for [x (range size)
             y (range size)]
         (let [food #_(inc (rand-int 4)) (- 5 (int (Math/sqrt (rand-int 32))))]
-          {:init-food food :food food :loc [x y]})))
-    (loc+entity->entities-coll
+          {:init-food food :food food :coord [x y]})))
+    (coord+entity->entities-coll
       (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)])))))
 
 
@@ -57,84 +57,85 @@
 (def bug-count 200 #_2 #_200)
 
 (defn reset-world []
-  (d/db-with (d/empty-db {:pos {:db/valueType :db.type/ref}
-                          :loc {:db/unique :db.unique/identity}})
+  (d/db-with (d/empty-db {:place {:db/valueType :db.type/ref}
+                          :coord {:db/unique :db.unique/identity}})
     (gen-bug-world bug-world-size bug-count)))
 
 (def *world (atom {:world-db (reset-world)}))
 
-(defn loc-q [db loc]
-  (-> (lookup-avet db :loc loc)
+(defn coord-q [db coord]
+  (-> (lookup-avet db :coord coord)
     first
     d/touch))
 
 (defn units-q
-  "loc can be nil or [x y]"
-  [db loc]
-  (->> (when loc
-         [:loc loc])
-    (lookup-avet db :pos)
+  "coord can be nil or [x y]"
+  [db coord]
+  (->> (when coord
+         [:coord coord])
+    (lookup-avet db :place)
     (mapv :db/id)
-    (d/pull-many db '[* {:pos [:loc]}])
-    (mapv #(update % :pos :loc))))
+    (d/pull-many db '[* {:place [:coord]}])
+    (mapv #(update % :place :coord))))
 
-(defn sees [loc vision]
-  (let [[x y] loc]
+
+(defn sees [coord vision]
+  (let [[x y] coord]
     (into []
       cat
       [(for [x (range (- x vision) (inc (+ x vision)))
-             :when (not= [x y] loc)]
+             :when (not= [x y] coord)]
          [x y])
        (for [y (range (- y vision) (inc (+ y vision)))
-             :when (not= [x y] loc)]
+             :when (not= [x y] coord)]
          [x y])])))
 
-(defn best-food [db loc sees]
-  (let [get-food (fn [loc]
-                   (-> (lookup-avet db :loc loc [:food])
+(defn best-food [db coord sees]
+  (let [get-food (fn [coord]
+                   (-> (lookup-avet db :coord coord [:food])
                      (first)
                      (get :food 0)))]
     (reduce
-      (fn [[loc food] target]
+      (fn [[coord food] target]
         (let [target-food (get-food target)]
           (if (> target-food food)
             [target target-food]
-            [loc food])
+            [coord food])
           (if (> target-food food)
             [target target-food]
-            [loc food])))
-      [loc (get-food loc)]
+            [coord food])))
+      [coord (get-food coord)]
       sees)))
 
-(defn hunt [db loc vision]
-  (let [[best-food-loc _food] (best-food db loc (sees loc vision))]
-    best-food-loc))
+(defn hunt [db coord vision]
+  (let [[best-food-coord _food] (best-food db coord (sees coord vision))]
+    best-food-coord))
 
 (def hunt-rule
-  (-> '{:when [[?e :pos ?le]
+  (-> '{:when [[?e :place ?ce]
                [?e :vision ?vision]
-               [?le :loc ?loc]
-               [?le :food ?food]
-               [(hunt $ ?loc ?vision) ?target]
-               [(not= ?target ?loc)]
-               [?te :loc ?target]]
-        :then [[:db/add ?e :pos ?te]]}
+               [?ce :coord ?coord]
+               [?ce :food ?food]
+               [(hunt $ ?coord ?vision) ?target]
+               [(not= ?target ?coord)]
+               [?te :coord ?target]]
+        :then [[:db/add ?e :place ?te]]}
     (merge {:args {'hunt hunt}})))
 
 (defn gathered [food] (min food (+ (quot food 2) 2)))
 
 (def try-eat-rule
-  (-> '{:when [[?e :pos ?le]
+  (-> '{:when [[?e :place ?ce]
                [?e :wealth ?wealth]
                [?e :hunger ?hunger]
-               [?le :loc ?loc]
-               [?le :food ?food]
+               [?ce :coord ?coord]
+               [?ce :food ?food]
                [(gathered ?food) ?gather]
                [(- ?food ?gather) ?rem-food]
                [(+ ?wealth ?gather) ?gain-wealth]
                [(- ?gain-wealth ?hunger) ?rem-wealth]]
         :then [[:db/add ?e :wealth ?rem-wealth]
-               [:db/add ?le :food ?rem-food]]}
+               [:db/add ?ce :food ?rem-food]]}
     (merge {:args {'gathered gathered}})))
 
 (def remove-starving-rule
@@ -164,13 +165,13 @@
     (let [[left right top bottom] lrtb
           unit-data (fn [x y]
                       (let [;; pixel-x and pixel-y
-                            loc-x x
-                            loc-y y
-                            loc [loc-x loc-y]
+                            coord-x x
+                            coord-y y
+                            coord [coord-x coord-y]
 
-                            tile (loc-q world-db loc)
+                            tile (coord-q world-db coord)
 
-                            things (units-q world-db loc)
+                            things (units-q world-db coord)
                             size (count things)
                             {:keys [glyph] :as thing} (when-not (zero? size) (nth things (rem tick size)))]
                         (when thing
