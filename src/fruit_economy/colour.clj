@@ -11,3 +11,8 @@
        (bit-shift-left r 16)
        (bit-shift-left g 8)
        (bit-shift-left b 0)))))
+
+(defn colour-noise
+  "turns noise into an r, g, or b value for use with colour"
+  [noise]
+  (if noise (int (quot (* (+ noise 1) 255) 2)) 0))
