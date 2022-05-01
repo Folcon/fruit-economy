@@ -89,6 +89,11 @@
                           :coord {:db/unique :db.unique/identity}})
     (gen-bug-world bug-world-size bug-count)))
 
+(defn apply-rules [world-db decision-rules reaction-rules]
+  (-> world-db
+    (infer decision-rules 1)
+    (infer reaction-rules 1)))
+
 (def *world (atom {:world-db (reset-world) :map-view :default-view}))
 
 (defn touch [e]
@@ -186,11 +191,13 @@
         :then [[:db/add ?e :food ?gain-food]]}
     (merge {:args {'grow-food grow-food}})))
 
-(def rules
+(def decision-rules
   [hunt-rule
    try-eat-rule
-   remove-starving-rule
    grow-food-rule])
+
+(def reaction-rules
+  [remove-starving-rule])
 
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
@@ -251,7 +258,7 @@
                 (ui/padding 10 10
                   (ui/label "RESET!" font-small fill-white))))))
         (ui/clickable
-          #(swap! *world update :world-db infer rules 1)
+          #(swap! *world update :world-db apply-rules decision-rules reaction-rules)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
