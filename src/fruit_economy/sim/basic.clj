@@ -3,6 +3,7 @@
             [io.github.humbleui.ui :as ui]
             [io.github.humbleui.paint :as paint]
             [datascript.core :as d]
+            [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.colour :refer [colour]]
             [fruit-economy.data.core :refer [lookup-avet]])
   (:import [io.github.humbleui.skija Paint]))
@@ -42,15 +43,41 @@
 (defn make-bug []
   {:glyph "🐞" :wealth 0 :vision (inc (rand-int 4)) :hunger (inc (rand-int 4)) :max-age (+ (rand-int 5) 20)})
 
+(defn resource-fn [local-elev sea-level x] (if (>= local-elev sea-level) (int (* (/ (+ x 1) 2) 5)) 0))
+
+(defn decide-biome [local-temp local-elev sea-level]
+  (cond
+    (and (>= local-elev sea-level) (< local-elev 0.1)) :beach
+    (and (>= local-elev 0.4) (< local-temp -0.2)) :snow-mountain
+    (>= local-elev 0.4) :mountain
+    ;; temperate region
+    (> local-elev sea-level)
+    (cond
+      (< local-temp -0.2) :snow
+      (< local-temp 0) :tundra
+      (< local-temp 0.1) :grassland
+      (< local-temp 0.2) :forest
+      (< local-temp 0.3) :jungle
+      :else :desert)
+    :else :ocean))
+
 (defn gen-bug-world [size n-peeps]
-  (into
-    (vec
-      (for [x (range size)
-            y (range size)]
-        (let [food #_(inc (rand-int 4)) (- 5 (int (Math/sqrt (rand-int 32))))]
-          {:init-food food :food food :coord [x y]})))
-    (coord+entity->entities-coll
-      (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)])))))
+  (let [temp-noise (make-temp-noise-map size size)
+        elev-noise (make-elev-noise-map size size)
+        temp-mod 0.1 elev-mod 0
+        temp (process-noise-map temp-noise temp-mod)
+        elev (process-noise-map elev-noise elev-mod)
+        sea-level (rand-nth (range 0.001 0.009 0.001))]
+    (into
+      (vec
+        (for [x (range size)
+              y (range size)]
+          (let [local-temp (get-in temp [y x]) local-elev (get-in elev [y x])
+                food (resource-fn local-elev sea-level local-temp)
+                rock (resource-fn local-elev sea-level local-elev)]
+            {:init-food food :food food :rock rock :coord [x y] :temp local-temp :elev local-elev :biome (decide-biome local-temp local-elev sea-level)})))
+      (coord+entity->entities-coll
+        (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)]))))))
 
 
 (def bug-world-size 100 #_4 #_100)
