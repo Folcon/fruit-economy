@@ -91,10 +91,15 @@
 
 (def *world (atom {:world-db (reset-world) :map-view :default-view}))
 
+(defn touch [e]
+  (if e
+    (d/touch e)
+    e))
+
 (defn coord-q [db coord]
   (-> (lookup-avet db :coord coord)
     first
-    d/touch))
+    touch))
 
 (defn units-q
   "coord can be nil or [x y]"
