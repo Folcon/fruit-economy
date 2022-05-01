@@ -233,7 +233,8 @@
                                   (ui/label glyph font fill-white))))))))))))))))))
 
 (def ui-view
-  (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-dark-gray]} ctx]
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
+                   {:keys [world-db map-view]} @*world]
     (ui/column
       map-ui-view
       (ui/row
@@ -241,14 +242,14 @@
           #(reset! *world {:world-db (reset-world)})
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (if hovered? fill-yellow fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "RESET!" font-small fill-white))))))
         (ui/clickable
           #(swap! *world update :world-db infer rules 1)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (if hovered? fill-yellow fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "Apply Rules" font-small fill-white)))))))
       (ui/row
@@ -256,42 +257,42 @@
           #(swap! *world assoc :map-view :default-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🗺️" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :temp-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌡" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :elev-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "📏" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :climate-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌍" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :forage-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🚜" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :mine-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-green fill-dark-gray)
+              (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "⛏️" font-small fill-white))))))))))
 
