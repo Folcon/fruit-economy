@@ -4,6 +4,7 @@
             [io.github.humbleui.paint :as paint]
             [datascript.core :as d]
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
+            [fruit-economy.land :refer [render-tile-colour]]
             [fruit-economy.colour :refer [colour]]
             [fruit-economy.data.core :refer [lookup-avet]])
   (:import [io.github.humbleui.skija Paint]))
@@ -88,7 +89,7 @@
                           :coord {:db/unique :db.unique/identity}})
     (gen-bug-world bug-world-size bug-count)))
 
-(def *world (atom {:world-db (reset-world)}))
+(def *world (atom {:world-db (reset-world) :map-view :default-view}))
 
 (defn coord-q [db coord]
   (-> (lookup-avet db :coord coord)
@@ -188,8 +189,11 @@
 
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
-                   {:keys [world-db]} @*world]
+                   {:keys [world-db map-view]} @*world]
     (let [[left right top bottom] lrtb
+          terrain-tint (condp = map-view
+                         :forage-view (fn [tile] (colour 0 (* (get tile :food 0) 40) 0))
+                         (fn [tile] (render-tile-colour (get tile :biome))))
           unit-data (fn [x y]
                       (let [;; pixel-x and pixel-y
                             coord-x x
@@ -205,7 +209,7 @@
                           (println :wealth thing (get thing :wealth)))
                         (cond
                           thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
-                          :else ["" (colour 0 (* (get tile :food 0) 40) 0) map-font font-offset-x font-offset-y])))]
+                          :else ["" (terrain-tint tile) map-font font-offset-x font-offset-y])))]
       (ui/column
         (interpose (ui/gap 0 0)
           (for [y-idx (range top bottom)]
@@ -242,4 +246,19 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-green fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "Apply Rules" font-small fill-white))))))))))
+                  (ui/label "Apply Rules" font-small fill-white)))))))
+      (ui/row
+        (ui/clickable
+          #(swap! *world assoc :map-view :default-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🗺️" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world assoc :map-view :forage-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🚜" font-small fill-white))))))))))
