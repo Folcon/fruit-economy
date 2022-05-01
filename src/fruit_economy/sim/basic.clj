@@ -211,7 +211,7 @@
 
                             tile (coord-q world-db coord)
 
-                            things (units-q world-db coord)
+                            things (when tile (units-q world-db coord))
                             size (count things)
                             {:keys [glyph] :as thing} (when-not (zero? size) (nth things (rem tick size)))]
                         (when thing
