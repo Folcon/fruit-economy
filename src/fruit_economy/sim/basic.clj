@@ -196,6 +196,7 @@
                          :elev-view (fn [tile] (colour 0 (colour-noise (get tile :elev)) 0))
                          :climate-view (fn [tile] (colour (colour-noise (get tile :temp)) (colour-noise (get tile :elev)) 0))
                          :forage-view (fn [tile] (colour 0 (* (get tile :food 0) 40) 0))
+                         :mine-view (fn [tile] (colour 0 (* (get tile :rock 0) 40) 0))
                          (fn [tile] (render-tile-colour (get tile :biome))))
           unit-data (fn [x y]
                       (let [;; pixel-x and pixel-y
@@ -285,4 +286,12 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-green fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "🚜" font-small fill-white))))))))))
+                  (ui/label "🚜" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world assoc :map-view :mine-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "⛏️" font-small fill-white))))))))))
+
