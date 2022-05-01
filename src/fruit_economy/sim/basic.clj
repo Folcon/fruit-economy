@@ -150,31 +150,31 @@
     best-food-coord))
 
 (def hunt-rule
-  (-> '{:when [[?e :place ?ce]
-               [?e :vision ?vision]
-               [?ce :coord ?coord]
-               [?ce :food ?food]
-               [(hunt $ ?coord ?vision) ?target]
-               [(not= ?target ?coord)]
-               [?te :coord ?target]]
-        :then [[:db/add ?e :place ?te]]}
-    (merge {:args {'hunt hunt}})))
+  {:when '[[?e :place ?ce]
+           [?e :vision ?vision]
+           [?ce :coord ?coord]
+           [?ce :food ?food]
+           [(hunt $ ?coord ?vision) ?target]
+           [(not= ?target ?coord)]
+           [?te :coord ?target]]
+   :then '[[:db/add ?e :place ?te]]
+   :args {'hunt hunt}})
 
 (defn gathered [food] (min food (+ (quot food 2) 2)))
 
 (def try-eat-rule
-  (-> '{:when [[?e :place ?ce]
-               [?e :wealth ?wealth]
-               [?e :hunger ?hunger]
-               [?ce :coord ?coord]
-               [?ce :food ?food]
-               [(gathered ?food) ?gather]
-               [(- ?food ?gather) ?rem-food]
-               [(+ ?wealth ?gather) ?gain-wealth]
-               [(- ?gain-wealth ?hunger) ?rem-wealth]]
-        :then [[:db/add ?e :wealth ?rem-wealth]
-               [:db/add ?ce :food ?rem-food]]}
-    (merge {:args {'gathered gathered}})))
+  {:when '[[?e :place ?ce]
+           [?e :wealth ?wealth]
+           [?e :hunger ?hunger]
+           [?ce :coord ?coord]
+           [?ce :food ?food]
+           [(gathered ?food) ?gather]
+           [(- ?food ?gather) ?rem-food]
+           [(+ ?wealth ?gather) ?gain-wealth]
+           [(- ?gain-wealth ?hunger) ?rem-wealth]]
+   :then '[[:db/add ?e :wealth ?rem-wealth]
+           [:db/add ?ce :food ?rem-food]]
+   :args {'gathered gathered}})
 
 (def remove-starving-rule
   '{:when [[?e :wealth ?wealth]
@@ -184,12 +184,12 @@
 (defn grow-food [food init-food] (min (inc food) init-food))
 
 (def grow-food-rule
-  (-> '{:when [[?e :food ?food]
-               [?e :init-food ?init-food]
-               [(< ?food ?init-food)]
-               [(grow-food ?food ?init-food) ?gain-food]]
-        :then [[:db/add ?e :food ?gain-food]]}
-    (merge {:args {'grow-food grow-food}})))
+  {:when '[[?e :food ?food]
+           [?e :init-food ?init-food]
+           [(< ?food ?init-food)]
+           [(grow-food ?food ?init-food) ?gain-food]]
+   :then '[[:db/add ?e :food ?gain-food]]
+   :args {'grow-food grow-food}})
 
 (def decision-rules
   [hunt-rule
