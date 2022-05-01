@@ -5,7 +5,7 @@
             [datascript.core :as d]
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.land :refer [render-tile-colour]]
-            [fruit-economy.colour :refer [colour]]
+            [fruit-economy.colour :refer [colour colour-noise]]
             [fruit-economy.data.core :refer [lookup-avet]])
   (:import [io.github.humbleui.skija Paint]))
 
@@ -192,6 +192,9 @@
                    {:keys [world-db map-view]} @*world]
     (let [[left right top bottom] lrtb
           terrain-tint (condp = map-view
+                         :temp-view (fn [tile] (colour (colour-noise (get tile :temp)) 0 0))
+                         :elev-view (fn [tile] (colour 0 (colour-noise (get tile :elev)) 0))
+                         :climate-view (fn [tile] (colour (colour-noise (get tile :temp)) (colour-noise (get tile :elev)) 0))
                          :forage-view (fn [tile] (colour 0 (* (get tile :food 0) 40) 0))
                          (fn [tile] (render-tile-colour (get tile :biome))))
           unit-data (fn [x y]
@@ -255,6 +258,27 @@
               (ui/fill (if hovered? fill-green fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🗺️" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world assoc :map-view :temp-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🌡" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world assoc :map-view :elev-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "📏" font-small fill-white))))))
+        (ui/clickable
+          #(swap! *world assoc :map-view :climate-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-green fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🌍" font-small fill-white))))))
         (ui/clickable
           #(swap! *world assoc :map-view :forage-view)
           (ui/hoverable
