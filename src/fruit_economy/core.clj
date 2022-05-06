@@ -875,45 +875,8 @@
     (window/request-frame window)))
 
 (defn on-event [window event]
-  (let [app app
-        changed? (condp instance? event
-                   EventMouseMove
-                   (let [pos (IPoint. (.getX ^EventMouseMove event) (.getY ^EventMouseMove event))
-                         event {:hui/event :hui/mouse-move
-                                :hui.event/pos pos}]
-                     (ui/event app event))
-
-                   EventMouseButton
-                   (let [pressed? (.isPressed ^EventMouseButton event)
-                         event {:hui/event :hui/mouse-button
-                                :hui.event.mouse-button/raw-event event
-                                :hui.event.mouse-button/modifiers {:key/alt (.isModifierDown ^EventMouseButton event KeyModifier/ALT)
-                                                                   :key/control (.isModifierDown ^EventMouseButton event KeyModifier/CONTROL)}
-                                :hui.event.mouse-button/pressed? pressed?
-                                :hui.event.mouse-button/is-pressed pressed?
-                                :hui.event.mouse-button/button (mouse-button->kw (.getButton ^EventMouseButton event))}]
-                     (ui/event app event))
-
-                   EventMouseScroll
-                   (ui/event app
-                     {:hui/event :hui/mouse-scroll
-                      :hui.event.mouse-scroll/dx (.getDeltaX ^EventMouseScroll event)
-                      :hui.event.mouse-scroll/dy (.getDeltaY ^EventMouseScroll event)})
-
-                   EventKey
-                   (let [raw-key (.getKey ^EventKey event)
-                         event {:hui/event (if (.isPressed ^EventKey event) :hui/key-down :hui/key-up)
-                                :hui.event.key/raw-event event
-                                :hui.event.key/modifiers {:key/alt (.isModifierDown ^EventKey event KeyModifier/ALT)
-                                                          :key/control (.isModifierDown ^EventKey event KeyModifier/CONTROL)}
-                                :hui.event.key/key-mask (._mask raw-key)
-                                :hui.event.key/key (key->kw raw-key)
-                                :hui.event.key/pressed? (.isPressed ^EventKey event)}]
-                     (ui/event app event))
-
-                   nil)]
-    (when changed?
-      (window/request-frame window))))
+  (when-let [changed? (ui/event app event)]
+    (window/request-frame window)))
 
 (defn on-resize [window]
   (let [[min-width min-height] [600 400]
