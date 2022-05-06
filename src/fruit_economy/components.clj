@@ -20,4 +20,4 @@
                   (ui/gap (- leading 2) (- leading 2))))
               (ui/gap leading leading)))
           (ui/gap 5 0)
-          (ui/label text font-ui fill-text))))))
+          (ui/label text {:font font-ui :paint fill-text}))))))
