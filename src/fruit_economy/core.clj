@@ -871,7 +871,7 @@
         xy-scale (max x-scale y-scale)
         ctx {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
         app app]
-    (ui/draw app ctx bounds canvas)
+    (ui/draw app ctx (IRect/makeXYWH 0 0 (:width bounds) (:height bounds)) canvas)
     (window/request-frame window)))
 
 (defn on-event [window event]
