@@ -253,49 +253,50 @@
     (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
 
-(defn on-key-pressed-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+(defn on-key-pressed-impl [{:keys [key pressed? event] :as raw-event}]
   (let [state @*state
         move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
 
     ;; mouse
-    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
+    #_#_
+    (when (and (= event :hui/mouse-move) (:hui.event/pos raw-event))
       (let [{:keys [camera cell half-vw half-vh]} state
             [camera-x camera-y] camera
-            [screen-x screen-y] ((juxt :x :y) (:hui.event/pos event))
+            [screen-x screen-y] ((juxt :x :y) (:hui.event/pos raw-event))
             loc-x (+ (int (- (quot screen-x cell) half-vw)) camera-x)
             loc-y (+ (int (- (quot screen-y cell) half-vh)) camera-y)]
         (swap! *state assoc :hovering {:world [loc-x loc-y] :screen [screen-x screen-y]})))
 
-    (when (= event-type :hui/mouse-button)
-      (println :panel event)
+    (when (= event :hui/mouse-button)
+      (println :panel raw-event)
       (println (:hovering state)))
 
     ;; keyboard
-    (when (and (= event-type :hui/key-down) pressed?)
+    (when (and (= event :key) pressed?)
       (println :panel key)
       (println (:peep @*state))
       (condp contains? key
-        #{:key/d :key/right}
+        #{:d :right}
         (doto *state
           (swap! update :peep (move [1 0]))
           (swap! update :camera (move [1 0])))
 
-        #{:key/a :key/left}
+        #{:a :left}
         (doto *state
           (swap! update :peep (move [-1 0]))
           (swap! update :camera (move [-1 0])))
 
-        #{:key/s :key/down}
+        #{:s :down}
         (doto *state
           (swap! update :peep (move [0 1]))
           (swap! update :camera (move [0 1])))
 
-        #{:key/w :key/up}
+        #{:w :up}
         (doto *state
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
-        #{:key/minus}
+        #{:minus}
         (let [{:keys [scale zoom init-cell canvas-width canvas-height]} state
               zoom' (max 0.2 (- zoom 0.2))
               cell' (long (/ (* init-cell zoom') scale))
@@ -305,7 +306,7 @@
               half-vh' (quot viewport-height' 2)]
           (swap! *state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
 
-        #{:key/equals}
+        #{:equals}
         (let [{:keys [scale zoom init-cell canvas-width canvas-height]} state
               zoom' (min 5 (+ zoom 0.2))
               cell' (long (/ (* init-cell zoom') scale))
@@ -351,51 +352,52 @@
 
 (declare on-resize)
 
-(defn on-key-pressed-mini-panel-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+(defn on-key-pressed-mini-panel-impl [{:keys [key pressed? event] :as raw-event}]
   (let [state @*state]
 
     ;; mouse
-    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
-      (println :mini-panel event))
+    #_#_
+    (when (and (= event :hui/mouse-move) (:hui.event/pos raw-event))
+      (println :mini-panel raw-event))
 
-    (when (= event-type :hui/mouse-button)
-      (println :mini-panel event))
+    (when (= event :hui/mouse-button)
+      (println :mini-panel raw-event))
 
     ;; keyboard
-    (when (and (= event-type :hui/key-down) pressed?)
+    (when (and (= event :key) pressed?)
       (println :mini-panel key)
       (println (:peep @*state))
       (condp contains? key
-        #{:key/q}
+        #{:q}
         (let [history-index (get state :history-index)
               history (data/history-log-entries (:world-db state))
               history-size (count history)]
           (swap! *state assoc :history-index (min (dec history-size) (inc history-index))))
 
-        #{:key/e}
+        #{:e}
         (let [history-index (get state :history-index)]
           (swap! *state assoc :history-index (max 0 (dec history-index))))
 
-        #{:key/t}
+        #{:t}
         (swap! *state update :economy? not)
 
-        #{:key/y}
+        #{:y}
         (swap! *state update :world-db data/step-economy)
 
-        #{:key/p}
+        #{:p}
         (swap! *state update :paused? not)
 
-        #{:key/close-bracket}
+        #{:close-bracket}
         (let [civ-index (get state :civ-index)
               size (data/civ-count (:world-db state))]
           (swap! *state assoc :civ-index (rem (inc civ-index) size)))
 
-        #{:key/open-bracket}
+        #{:open-bracket}
         (let [civ-index (get state :civ-index)
               size (data/civ-count (:world-db state))]
           (swap! *state assoc :civ-index (rem (+ (dec civ-index) size) size)))
 
-        ;#{:key/digit5}
+        ;#{:digit5}
         ;(let [civ-index (get state :civ-index)
         ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
         ;      controlling-civ (nth (vals civ-name->civ) civ-index)
@@ -408,7 +410,7 @@
         ;      (swap! update :world civ-actions/grow-pop controlling-civ)
         ;      (swap! update :world-db civ-actions/grow-pop' controlling-civ'))))
         ;
-        ;#{:key/digit6}
+        ;#{:digit6}
         ;(let [civ-index (get state :civ-index)
         ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
         ;      controlling-civ (nth (vals civ-name->civ) civ-index)
@@ -422,14 +424,14 @@
         ;  (when controlling-civ
         ;    (swap! *state update :world civ-actions/expand-territory controlling-civ)))
         ;
-        ;#{:key/digit7}
+        ;#{:digit7}
         ;(let [civ-index (get state :civ-index)
         ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
         ;      controlling-civ (nth (vals civ-name->civ) civ-index)]
         ;  (when controlling-civ
         ;    (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
 
-        #{:key/r}
+        #{:r}
         (do
           (reset! *state (new-state))
           (on-resize @*window))
@@ -437,46 +439,47 @@
         ;; (println :mini-panel key)
         nil))))
 
-(defn on-key-pressed-svg-impl [{event-type :hui/event :hui.event.key/keys [key pressed?] :as event}]
+(defn on-key-pressed-svg-impl [{:keys [key pressed? event] :as raw-event}]
   (let [state @*state]
 
     ;; mouse
-    (when (and (= event-type :hui/mouse-move) (:hui.event/pos event))
-      (println :tech-ui-panel event))
+    #_#_
+    (when (and (= event :hui/mouse-move) (:hui.event/pos raw-event))
+      (println :tech-ui-panel raw-event))
 
-    (when (= event-type :hui/mouse-button)
-      (println :tech-ui-panel event))
+    (when (= event :hui/mouse-button)
+      (println :tech-ui-panel raw-event))
 
     ;; keyboard
-    (when (and (= event-type :hui/key-down) pressed?)
+    (when (and (= event :key) pressed?)
       (println :tech-ui-panel key)
       (condp contains? key
-        #{:key/d :key/right}
+        #{:d :right}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 0] + 20))
 
-        #{:key/a :key/left}
+        #{:a :left}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 0] - 20))
 
-        #{:key/s :key/down}
+        #{:s :down}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 1] + 20))
 
-        #{:key/w :key/up}
+        #{:w :up}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 1] - 20))
 
-        #{:key/minus}
+        #{:minus}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 2] - 0.1))
 
-        #{:key/equals}
+        #{:equals}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
           (swap! *state update-in [:svg-xyz 2] + 0.1))
