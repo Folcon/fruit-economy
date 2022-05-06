@@ -322,7 +322,7 @@
   [^Canvas canvas window-width window-height]
   (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
         now (System/currentTimeMillis)
-        fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+        fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
 
         cell-x (/ window-width 2)
         cell-y (/ window-height 2)
@@ -607,7 +607,7 @@
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
-      (ui/dynamic ctx [{:keys [scale face-ui x-scale y-scale ]} ctx
+      (ui/dynamic ctx [{:keys [scale face-ui x-scale y-scale]} ctx
                        {:keys [world-db camera tick svg-xyz]} @*state]
         (let [font-default (Font. face-default (float (* 18 scale)))
               font-large (Font. ^Typeface face-default (float (* scale 26)))
@@ -752,16 +752,16 @@
               fill-yellow (paint/fill 0xFFC9B457)
               fill-light-gray (paint/fill 0xFFD4D6DA)]
           (ui/with-context
-            {:font-large      (Font. ^Typeface face-default (float (* scale 26)))
-             :font-small      font-small
-             :fill-white      (paint/fill 0xFFFFFFFF)
-             :fill-black      fill-black
+            {:font-large (Font. ^Typeface face-default (float (* scale 26)))
+             :font-small font-small
+             :fill-white (paint/fill 0xFFFFFFFF)
+             :fill-black fill-black
              :fill-light-gray fill-light-gray
-             :fill-dark-gray  (paint/fill 0xFF777C7E)
-             :fill-green      (paint/fill 0xFF6AAA64)
-             :fill-yellow     fill-yellow
+             :fill-dark-gray (paint/fill 0xFF777C7E)
+             :fill-green (paint/fill 0xFF6AAA64)
+             :fill-yellow fill-yellow
              :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
-             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
+             :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
             (ui/column
               top-bar-ui
               [:stretch 1
@@ -826,13 +826,13 @@
 (def app
   (ui/dynamic ctx [scale (:scale ctx)
                    player-hp (:player-hp @*state)]
-    (let [font-ui   (Font. face-default (float (* 13 scale)))
-          leading   (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
+    (let [font-ui (Font. face-default (float (* 13 scale)))
+          leading (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
           emoji-font (Font. emoji-face (float 72))
           fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
-      (ui/with-context {:face-ui   face-default
-                        :font-ui   font-ui
-                        :leading   leading
+      (ui/with-context {:face-ui face-default
+                        :font-ui font-ui
+                        :leading leading
                         :fill-text fill-text}
         (ui/row
           (ui/column
@@ -846,13 +846,13 @@
                      (ui/clickable
                        #(reset! *selected-ui-view name)
                        (ui/dynamic ctx [selected? (= name @*selected-ui-view)
-                                        hovered?  (:hui/hovered? ctx)]
+                                        hovered? (:hui/hovered? ctx)]
                          (let [label (ui/padding 20 leading
                                        (ui/label name font-ui fill-text))]
                            (cond
                              selected? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
-                             hovered?  (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
-                             :else     label))))))))]
+                             hovered? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
+                             :else label))))))))]
             (ui/padding 10 10
               (cui/atom-checkbox *floating "On top")))
           [:stretch 1
@@ -869,16 +869,16 @@
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
         y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
         xy-scale (max x-scale y-scale)
-        ctx    {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
-        app    app]
+        ctx {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
+        app app]
     (ui/draw app ctx bounds canvas)
     (window/request-frame window)))
 
 (defn on-event [window event]
-  (let [app      app
+  (let [app app
         changed? (condp instance? event
                    EventMouseMove
-                   (let [pos   (IPoint. (.getX ^EventMouseMove event) (.getY ^EventMouseMove event))
+                   (let [pos (IPoint. (.getX ^EventMouseMove event) (.getY ^EventMouseMove event))
                          event {:hui/event :hui/mouse-move
                                 :hui.event/pos pos}]
                      (ui/event app event))
@@ -942,23 +942,23 @@
     (window/set-window-size window (max window-width min-width) (max window-height min-height))))
 
 (defn screen-sized-window [window {:keys [width height right y] :as _work-area}]
-  (let [window-width  width
+  (let [window-width width
         window-height height
-        window-left   (- right window-width)
-        window-top    (-> y
-                        (+ height)
-                        (- (/ window-height 2)))]
+        window-left (- right window-width)
+        window-top (-> y
+                     (+ height)
+                     (- (/ window-height 2)))]
     (doto window
       (window/set-window-size window-width window-height)
       (window/set-window-position window-left window-top))))
 
 (defn small-window [window {:keys [width height right y] :as _work-area}]
-  (let [window-width  (/ width 2)
+  (let [window-width (/ width 2)
         window-height (/ height 2)
-        window-left   (- right window-width)
-        window-top    (-> y
-                        (+ (/ height 2))
-                        (- (/ window-height 2)))]
+        window-left (- right window-width)
+        window-top (-> y
+                     (+ (/ height 2))
+                     (- (/ window-height 2)))]
     (doto window
       (window/set-window-size window-width window-height)
       (window/set-window-position window-left window-top))))
