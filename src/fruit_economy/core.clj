@@ -4,6 +4,8 @@
    [clojure.java.io :as io]
    [environ.core :refer [env]]
    [clojure.stacktrace :as stacktrace]
+   [io.github.humbleui.app :as app]
+   [io.github.humbleui.canvas :as canvas]
    [io.github.humbleui.core :as hui]
    [io.github.humbleui.paint :as paint]
    [io.github.humbleui.window :as window]
@@ -863,19 +865,19 @@
   (window/request-frame @*window))
 
 (defn on-paint [window ^Canvas canvas]
-  (.clear canvas (unchecked-int 0xFFF0F0F0))
+  (canvas/clear canvas 0xFFF0F0F0)
   (let [bounds (window/content-rect window)
-        {screen :work-area} (hui/primary-screen)
+        {screen :work-area} (app/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
         y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
         xy-scale (max x-scale y-scale)
         ctx {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
         app app]
-    (ui/draw app ctx (IRect/makeXYWH 0 0 (:width bounds) (:height bounds)) canvas)
+    (hui/draw app ctx (IRect/makeXYWH 0 0 (:width bounds) (:height bounds)) canvas)
     (window/request-frame window)))
 
 (defn on-event [window event]
-  (when-let [changed? (ui/event app event)]
+  (when-let [changed? (hui/event app event)]
     (window/request-frame window)))
 
 (defn on-resize [window]
@@ -885,7 +887,7 @@
         [content-width content-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
         {:keys [init-cell zoom]} @*state
         scale (max (float (/ *canvas-width* content-width)) (float (/ *canvas-height* content-height)))
-        {screen :work-area} (hui/primary-screen)
+        {screen :work-area} (app/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
         y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
 
@@ -927,7 +929,7 @@
       (window/set-window-position window-left window-top))))
 
 (defn make-window []
-  (let [{:keys [work-area]} (hui/primary-screen)
+  (let [{:keys [work-area]} (app/primary-screen)
         window-size-fn (if (debug?) small-window screen-sized-window)]
     (doto
       (window/make
@@ -966,18 +968,18 @@
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
   (start-clock 1000)
-  (hui/start #(reset! *window (make-window))))
+  (app/start #(reset! *window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
 (some-> @*window window/request-frame)
 
 (comment
   (do
-    (hui/doui (some-> @*window window/close))
+    (app/doui (some-> @*window window/close))
     (reset! *window (hui/doui (make-window))))
 
-  (hui/doui (window/set-z-order @*window :normal))
-  (hui/doui (window/set-z-order @*window :floating)))
+  (app/doui (window/set-z-order @*window :normal))
+  (app/doui (window/set-z-order @*window :floating)))
 
 (comment
   (-main)

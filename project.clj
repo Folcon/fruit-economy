@@ -16,7 +16,7 @@
                  [io.github.humbleui/skija-linux "0.102.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-macos-x64 "0.102.0" :exclusions [io.github.humbleui/types]]
                  [io.github.humbleui/skija-macos-arm64 "0.102.0" :exclusions [io.github.humbleui/types]]
-                 [humbleui "7fbdae3f5a2829a57886aa46ce9f4a8383056154"]
+                 [humbleui "7c47516ffb1167879d99a5c5a549e30208fbcf92"]
                  [datascript "1.3.12"]
 
                  [net.mikera/clisk "0.11.0"]
