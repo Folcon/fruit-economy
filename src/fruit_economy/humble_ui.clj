@@ -1,7 +1,9 @@
 (ns fruit-economy.humble-ui
   (:require [clojure.stacktrace :as stacktrace]
             [io.github.humbleui.protocols :refer [IComponent -measure -draw -event]]
-            [io.github.humbleui.ui :as ui])
+            [io.github.humbleui.ui :as ui]
+            [dali.io :refer [render-svg-string]]
+            [dali.layout.stack])
   (:import [io.github.humbleui.skija Canvas Data ClipMode Surface]
            [io.github.humbleui.types IPoint IRect Rect]
            [io.github.humbleui.skija.svg SVGDOM]))
@@ -51,6 +53,9 @@
                (SVGDOM. data))
          scaling (ui/svg-opts->scaling opts)]
      (ui/->SVG dom scaling nil))))
+
+(defn svg [doc]
+  (svg-canvas (render-svg-string doc)))
 ;; END Should be in io.github.humbleui.ui
 
 (def render-buffer (atom {}))

@@ -22,6 +22,7 @@
                  [net.mikera/clisk "0.11.0"]
                  [ubergraph "0.8.2"]
                  [hiccup "1.0.5"]
+                 [dali "1.0.2"]
                  [guru.nidi/graphviz-java "0.18.1"]
                  [com.squidpony/squidlib-util "3.0.4"]]
   :java-source-paths ["src/java" "test/java"]
