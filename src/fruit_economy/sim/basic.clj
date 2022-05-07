@@ -318,7 +318,7 @@
 (def peep-consume-rule
   (let [consume (fn [db peep-eid]
                   (let [{:keys [min-food min-clothes food clothes] :as peep} (d/entity db peep-eid)
-                        labour 10 ;; reset labour
+                        base-labour 10 ;; reset labour
 
                         food-rem (- food min-food)
                         clothes-rem (- clothes min-clothes)
