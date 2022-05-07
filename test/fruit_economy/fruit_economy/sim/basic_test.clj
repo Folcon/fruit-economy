@@ -265,12 +265,15 @@
                   [:db/add 3 :labour/supply 10]])
             (set (db->datoms (basic/infer db [basic/peep-consume-rule] 1))))))))
 
+(def base-market-data
+  {:food/price 1 :food/price-float 100 :food/demand 0 :food/supply 0
+   :clothes/price 2 :clothes/price-float 200 :clothes/demand 0 :clothes/supply 0
+   :labour/price 3 :labour/price-float 300 :labour/demand 0 :labour/supply 0})
+
 ;; TODO: Update test cases to be inline with the current `update-price-velocity`
 (deftest update-prices-test
   (testing "Testing prices don't change when demand equal to supply"
-    (let [world-data [{:food/price 1 :food/price-float 100 :food/demand 0 :food/supply 0 :food/price-velocity 0
-                       :clothes/price 2 :clothes/price-float 200 :clothes/demand 0 :clothes/supply 0 :clothes/price-velocity 0
-                       :labour/price 3 :labour/price-float 300 :labour/demand 0 :labour/supply 0 :labour/price-velocity 0}]
+    (let [world-data [base-market-data]
           db (d/db-with (d/empty-db {:hometown {:db/valueType :db.type/ref}})
                world-data)]
       (is (set/subset?
