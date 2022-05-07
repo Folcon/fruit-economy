@@ -112,3 +112,10 @@
         (.encodeToData)
         (.getBytes))
       (io/file "resources/mock-screen.png"))))
+
+;; Should be in io.github.humbleui.ui
+(defn fragment [& children]
+  (list children))
+
+(def <> #'fragment)
+
