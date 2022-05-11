@@ -772,18 +772,12 @@
                      (message-log-ui))))])))))))
 
 (def basic-ui-view
-  (ui/dynamic ctx [{:keys [scale x-scale y-scale]} ctx
+  (ui/dynamic ctx [{:keys [scale x-scale y-scale
+                           fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
                    {:keys [camera tick zoom]} @*state]
     (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
           map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
-
-          fill-white (paint/fill 0xFFFFFFFF)
-          fill-black (paint/fill 0xFF000000)
-          fill-light-gray (paint/fill 0xFFD4D6DA)
-          fill-dark-gray (paint/fill 0xFF777C7E)
-          fill-green (paint/fill 0xFF6AAA64)
-          fill-yellow (paint/fill 0xFFC9B457)
 
           canvas-width (int (* x-scale *canvas-width*))
           canvas-height (int (* y-scale *canvas-height*))
@@ -794,13 +788,7 @@
                         :emoji-font emoji-font
                         :lrtb lrtb
                         :cell cell
-                        :tick tick
-                        :fill-white fill-white
-                        :fill-black fill-black
-                        :fill-light-gray fill-light-gray
-                        :fill-dark-gray fill-dark-gray
-                        :fill-green fill-green
-                        :fill-yellow fill-yellow}
+                        :tick tick}
         (ui/padding 20
           basic/ui-view)))))
 
