@@ -6,7 +6,8 @@
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.land :refer [render-tile-colour]]
             [fruit-economy.colour :refer [colour colour-noise]]
-            [fruit-economy.data.core :refer [lookup-avet]])
+            [fruit-economy.data.core :refer [lookup-avet]]
+            [fruit-economy.humble-ui :as custom-ui])
   (:import [io.github.humbleui.skija Paint]))
 
 
