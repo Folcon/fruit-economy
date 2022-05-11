@@ -862,7 +862,7 @@
           (ui/padding 80 10 80 10
             (ui/label "Start")))))))
 
-(defonce *menu (atom (if-not (debug?) game-screen start-screen)))
+(defonce *menu (atom (if (debug?) game-screen start-screen)))
 
 #_  ;; For debugging start-screen
 (reset! *menu start-screen)
