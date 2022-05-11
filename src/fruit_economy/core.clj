@@ -827,8 +827,9 @@
         (window/set-z-order window :floating)
         (window/set-z-order window :normal)))))
 
+(declare *menu)
 
-(def app
+(def game-screen
   (ui/dynamic ctx [scale (:scale ctx)
                    player-hp (:player-hp @*state)]
     (let [font-ui (Font. face-default (float (* 13 scale)))
@@ -863,6 +864,38 @@
           [:stretch 1
            (ui/dynamic _ [name @*selected-ui-view]
              (ui-views name))])))))
+
+(def start-screen
+  (ui/valign 0.5
+    (ui/halign 0.5
+      (ui/column
+        (ui/padding 20
+          (ui/valign 0.5
+            (ui/halign 0.5
+              (ui/label "Fruit Economy"))))
+        (ui/button
+          #(reset! *menu game-screen)
+          (ui/padding 80 10 80 10
+            (ui/label "Start")))))))
+
+(defonce *menu (atom (if-not (debug?) game-screen start-screen)))
+
+#_  ;; For debugging start-screen
+(reset! *menu start-screen)
+
+(def app
+  (ui/dynamic ctx [scale (:scale ctx)]
+    (let [font-ui   (Font. face-default (float (* 13 scale)))
+          leading   (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
+          fill-text (paint/fill 0xFF000000)]
+      (ui/with-context {:face-ui        face-default
+                        :font-ui        font-ui
+                        :leading        leading
+                        :fill-text      fill-text
+                        :fill-cursor    fill-text
+                        :fill-selection (paint/fill 0xFFB1D7FF)}
+        (ui/dynamic ctx [screen @*menu]
+          screen)))))
 
 (comment
   (window/request-frame @*window))
