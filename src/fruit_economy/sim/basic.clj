@@ -626,7 +626,7 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "Apply Rules" {:font font-small :paint fill-white})))))))
+                  (ui/label "+ 1 Day" {:font font-small :paint fill-white})))))))
       (ui/row
         (ui/clickable
           #(swap! *world assoc :map-view :default-view)
