@@ -8,6 +8,19 @@
   ([world-db attrs id]
    (ffirst (db/q '[:find (pull ?e ?attrs) :in $ ?e ?attrs] world-db id attrs))))
 
+(defn lookup-avet
+  ([world-db attr value] (lookup-avet world-db attr value nil))
+  ([world-db attr value attrs]
+   (reduce
+     (fn [v datom]
+       (let [eid (first datom)]
+         (conj v
+           (cond-> (db/entity world-db eid)
+             attrs
+             (select-keys attrs)))))
+     []
+     (db/datoms world-db :avet attr value))))
+
 (defn land-data [world-db]
   (db/q '[:find (pull ?e [*]) . :where [?e :fruit-economy.land/terrain]] world-db))
 
