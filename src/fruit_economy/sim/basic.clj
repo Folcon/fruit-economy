@@ -90,7 +90,8 @@
 
 (defn reset-world []
   (d/db-with (d/empty-db {:place {:db/valueType :db.type/ref}
-                          :coord {:db/unique :db.unique/identity}})
+                          :coord {:db/unique :db.unique/identity}
+                          :settlement/place {:db/valueType :db.type/ref}})
     (gen-bug-world bug-world-size bug-count)))
 
 (defn apply-rules [world-db decision-rules reaction-rules]
