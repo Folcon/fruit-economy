@@ -642,12 +642,18 @@
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
                    {:keys [world-db map-view]} @*world]
     (ui/column
-      (ui/row map-ui-view chart-view)
       (ui/row
-        (interpose (ui/gap 4 0)
-          (for [settlement (settlements-q world-db nil)]
-            (ui/padding 4
-              (city-view settlement)))))
+        map-ui-view
+        (ui/height 200
+          (ui/column
+            chart-view
+            (ui/vscrollbar
+              (ui/vscroll
+                (ui/column
+                  (interpose (ui/gap 4 0)
+                    (for [settlement (settlements-q world-db nil)]
+                      (ui/padding 4
+                        (city-view settlement))))))))))
       (ui/row
         (ui/clickable
           #(reset! *world {:world-db (reset-world)})
