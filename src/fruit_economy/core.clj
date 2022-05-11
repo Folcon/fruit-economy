@@ -518,9 +518,7 @@
                     (ui/valign 0.5
                       (ui/halign 0.5
                         (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                          (custom-ui/svg-canvas canvas-width canvas-height
-                            {:svg-str (economy/->svg economy)
-                             :on-event #'on-key-pressed-svg-impl}))))
+                          (custom-ui/svg-canvas (economy/->svg economy)))))
                     (custom-ui/ui-canvas canvas-width canvas-height
                       {:on-paint #'draw-impl
                        :on-event #'on-key-pressed-impl}))))
@@ -644,9 +642,7 @@
                   (ui/valign 0.5
                     (ui/halign 0.5
                       (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                        (custom-ui/svg-canvas canvas-width canvas-height
-                          {:svg-str (economy/->svg economy)
-                           :on-event #'on-key-pressed-svg-impl}))))])])))))))
+                        (custom-ui/svg-canvas (economy/->svg economy)))))])])))))))
 
 (defn camera->viewport [camera zoom content-width content-height]
   (let [w content-width h content-height
