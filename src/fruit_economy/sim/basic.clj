@@ -99,6 +99,32 @@
     (infer decision-rules 1)
     (infer reaction-rules 1)))
 
+(defn gen-summary [db]
+  (let [peeps (lookup-avet db :kind :peep)
+        food-factories (lookup-avet db :kind :food-factory)
+        clothes-factories (lookup-avet db :kind :clothes-factory)
+        cities (lookup-avet db :kind :city)
+        money (lookup-avet db :money nil)
+        day (lookup-avet db :day nil)]
+    {:peeps peeps
+     :food-factories food-factories
+     :clothes-factories clothes-factories
+     :cities cities
+     :money money
+     :day (:day (first day))}))
+
+(defn add-stats [stats world-db]
+  (let [{:keys [peeps] :as summary} (gen-summary world-db)]
+    (if (seq peeps)
+      (conj stats summary)
+      stats)))
+
+(defn track-db [dbs world-db]
+  (let [cities (lookup-avet world-db :kind :city)]
+    (if (seq cities)
+      (conj dbs world-db)
+      dbs)))
+
 (def *world (atom {:world-db (reset-world) :map-view :default-view}))
 
 (defn touch [e]
