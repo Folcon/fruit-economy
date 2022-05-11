@@ -130,7 +130,7 @@
       (conj dbs world-db)
       dbs)))
 
-(def *world (atom {:world-db (reset-world) :map-view :default-view}))
+(defonce *world (atom {:world-db (reset-world) :map-view :default-view}))
 
 (defn touch [e]
   (if e
