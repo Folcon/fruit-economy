@@ -593,6 +593,15 @@
                     (ui/padding 0 0 40 0
                       (ui/label label {:font font-small :paint fill-black}))))))))))))
 
+(defn tick-world [*world]
+  (as-> *world $
+    (update $ :world-db apply-rules decision-rules reaction-rules)
+    (update $ :dbs (fnil track-db []) (:world-db $))
+    (update $ :stats (fnil add-stats []) (:world-db $))))
+
+(defn do-tick-world []
+  (swap! *world tick-world))
+
 (def ui-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
                    {:keys [world-db map-view]} @*world]
@@ -612,7 +621,7 @@
                 (ui/padding 10 10
                   (ui/label "RESET!" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world update :world-db apply-rules decision-rules reaction-rules)
+          do-tick-world
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
