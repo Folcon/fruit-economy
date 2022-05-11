@@ -74,7 +74,8 @@
         elev (process-noise-map elev-noise elev-mod)
         sea-level (rand-nth (range 0.001 0.009 0.001))]
     (into
-      (vec
+      [{:day 0}]
+      (concat
         (for [x (range size)
               y (range size)]
           (let [local-temp (get-in temp [y x]) local-elev (get-in elev [y x])
@@ -104,13 +105,16 @@
     (infer decision-rules 1)
     (infer reaction-rules 1)))
 
+(defn lookup-day [db]
+  (:day (first (lookup-avet db :day nil))))
+
 (defn gen-summary [db]
   (let [peeps (lookup-avet db :kind :peep)
         food-factories (lookup-avet db :kind :food-factory)
         clothes-factories (lookup-avet db :kind :clothes-factory)
         cities (lookup-avet db :kind :city)
         money (lookup-avet db :money nil)
-        day (lookup-avet db :day nil)]
+        day (lookup-day db)]
     {:peeps peeps
      :food-factories food-factories
      :clothes-factories clothes-factories
