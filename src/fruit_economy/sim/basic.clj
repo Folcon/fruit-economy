@@ -496,7 +496,6 @@
                             {name :settlement/name :as settlement} (when tile (first (settlements-q world-db coord)))]
                         (when thing
                           (println :wealth thing (get thing :wealth)))
-                          (println :wealth settlement thing (get thing :wealth)))
                         (cond
                           thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
                           (seq settlement) [name (colour 0 0 155) map-font font-offset-x font-offset-y]
