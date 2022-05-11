@@ -602,6 +602,11 @@
 (defn do-tick-world []
   (swap! *world tick-world))
 
+(defn tick-world-10x []
+  (dotimes [_ 10]
+    (do-tick-world)))
+
+
 (def ui-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
                    {:keys [world-db map-view]} @*world]
@@ -626,7 +631,14 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "+ 1 Day" {:font font-small :paint fill-white})))))))
+                  (ui/label "+ 1 Day" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          tick-world-10x
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "+ 10 Day" {:font font-small :paint fill-white})))))))
       (ui/row
         (ui/clickable
           #(swap! *world assoc :map-view :default-view)
