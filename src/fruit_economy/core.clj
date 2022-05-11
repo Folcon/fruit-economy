@@ -789,8 +789,10 @@
                         :lrtb lrtb
                         :cell cell
                         :tick tick}
-        (ui/padding 20
-          basic/ui-view)))))
+        (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
+          (ui/column
+            (ui/padding 20
+              basic/ui-view)))))))
 
 (def ui-views
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
