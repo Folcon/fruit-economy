@@ -89,7 +89,7 @@
 (def bug-world-size 100 #_4 #_100)
 (def bug-count 200 #_2 #_200)
 
-(defn reset-world []
+(defn reset-world-db []
   (d/db-with (d/empty-db {:day {:db/index true}
                           :money {:db/index true}
                           :kind {:db/index true}
@@ -99,6 +99,9 @@
                           :settlement/place {:db/valueType :db.type/ref}
                           :hometown {:db/valueType :db.type/ref}})
     (gen-bug-world bug-world-size bug-count)))
+
+(defn reset-world []
+  {:world-db (reset-world-db) :map-view :default-view})
 
 (defn apply-rules [world-db decision-rules reaction-rules]
   (-> world-db
