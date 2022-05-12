@@ -774,7 +774,8 @@
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
                            fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
-                   {:keys [camera tick zoom]} @*state]
+                   {:keys [camera tick zoom]} @*state
+                   world @basic/*world]
     (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
           map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
@@ -791,6 +792,20 @@
                         :tick tick}
         (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
           (ui/column
+            (ui/dynamic ctx [{:keys [day]} world]
+              (ui/column
+                [:stretch 1
+                 (ui/padding 0 0 0 10
+                   (ui/fill fill-yellow
+                     (ui/row
+                       (ui/padding 10 10
+                         (ui/label (str "Day " day) {:font font-small :paint fill-black}))
+                       [:stretch 1 nil]
+                       (ui/fill fill-white
+                         (ui/clickable
+                           #(reset! basic/*world (basic/reset-world))
+                           (ui/padding 10 10
+                             (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))]))
             (ui/padding 20
               basic/ui-view)))))))
 

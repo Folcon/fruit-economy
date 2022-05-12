@@ -101,7 +101,7 @@
     (gen-bug-world bug-world-size bug-count)))
 
 (defn reset-world []
-  {:world-db (reset-world-db) :map-view :default-view})
+  {:world-db (reset-world-db) :map-view :default-view :day 0})
 
 (defn apply-rules [world-db decision-rules reaction-rules]
   (-> world-db
