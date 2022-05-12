@@ -81,9 +81,9 @@
           (let [local-temp (get-in temp [y x]) local-elev (get-in elev [y x])
                 food (resource-fn local-elev sea-level local-temp)
                 rock (resource-fn local-elev sea-level local-elev)]
-            {:init-food food :food food :rock rock :coord [x y] :temp local-temp :elev local-elev :biome (decide-biome local-temp local-elev sea-level)})))
-      (coord+entity->entities-coll
-        (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)]))))))
+            {:init-food food :food food :rock rock :coord [x y] :temp local-temp :elev local-elev :biome (decide-biome local-temp local-elev sea-level)}))
+        (coord+entity->entities-coll
+          (repeatedly n-peeps (fn [] [[(rand-int size) (rand-int size)] (make-bug)])))))))
 
 
 (def bug-world-size 100 #_4 #_100)
