@@ -169,6 +169,11 @@
     (d/pull-many db '[* {:settlement/place [:coord]}])
     (mapv #(update % :settlement/place :coord))))
 
+(def days-pass-rule
+  {:when '[[?e :day ?day]
+           [(inc ?day) ?next-day]]
+   :then '[[:db/add ?e :day ?next-day]]})
+
 (defn sees [coord vision]
   (let [[x y] coord]
     (into []
@@ -497,7 +502,8 @@
      :call {'update-prices update-prices}}))
 
 (def decision-rules
-  [hunt-rule
+  [days-pass-rule
+   hunt-rule
    try-eat-rule
    grow-food-rule
 
