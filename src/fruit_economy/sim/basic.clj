@@ -137,7 +137,7 @@
       (conj dbs world-db)
       dbs)))
 
-(defonce *world (atom {:world-db (reset-world) :map-view :default-view}))
+(defonce *world (atom (reset-world)))
 
 (defn touch [e]
   (if e
@@ -663,7 +663,7 @@
                         (city-view settlement))))))))))
       (ui/row
         (ui/clickable
-          #(reset! *world {:world-db (reset-world)})
+          #(reset! *world (reset-world))
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
