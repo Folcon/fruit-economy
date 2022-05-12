@@ -123,7 +123,7 @@
      :clothes-factories clothes-factories
      :cities cities
      :money money
-     :day (:day (first day))}))
+     :day day}))
 
 (defn add-stats [stats world-db]
   (let [{:keys [peeps] :as summary} (gen-summary world-db)]
