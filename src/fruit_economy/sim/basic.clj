@@ -637,11 +637,22 @@
                     (ui/padding 0 0 40 0
                       (ui/label label {:font font-small :paint fill-black}))))))))))))
 
+(def *sim-broken (atom nil))
+
 (defn tick-world [*world]
-  (as-> *world $
-    (update $ :world-db apply-rules decision-rules reaction-rules)
-    (update $ :dbs (fnil track-db []) (:world-db $))
-    (update $ :stats (fnil add-stats []) (:world-db $))))
+  (if (nil? @*sim-broken)
+    (try
+      (as-> *world $
+        (update $ :world-db apply-rules decision-rules reaction-rules)
+        (update $ :dbs (fnil track-db []) (:world-db $))
+        (update $ :stats (fnil add-stats []) (:world-db $)))
+      (catch Exception e
+        (reset! *sim-broken e)
+        *world))
+    *world))
+
+(comment
+  (identity @*sim-broken))
 
 (defn do-tick-world []
   (swap! *world tick-world))
