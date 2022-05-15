@@ -835,7 +835,8 @@
                               price-history ((market-keys-fn selected-market :price-history) city)
                               produced ((market-keys-fn selected-market :last-produced) city)
                               consumed ((market-keys-fn selected-market :last-consumed) city)
-                              total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)]
+                              total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)
+                              percent-of-production (if (zero? total-production) 0 (* (/ produced total-production) 100))]
                           (ui/column
                             (ui/row
                               (ui/padding 20
@@ -843,7 +844,7 @@
                                   (ui/padding 5
                                     (ui/label label))
                                   (ui/padding 5
-                                    (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" (* (/ produced total-production) 100))))))
+                                    (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production)))))
                               (ui/with-context
                                 {:price price :price-history price-history}
                                 screen-ui/price-chart-ui))
