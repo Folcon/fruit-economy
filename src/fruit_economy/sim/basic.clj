@@ -324,6 +324,8 @@
                [:db/add (- idx 200) :production 0.7]
                [:db/add (- idx 200) :money 10000]
                [:db/add (- idx 200) :inventory 0]
+               [:db/add (- idx 200) :sold 0]
+               [:db/add (- idx 200) :last-sold 0]
                [:db/add (- idx 200) :min-labour 2]
                [:db/add (- idx 200) :base-planning base-planning]
                [:db/add (- idx 200) :planning base-planning]])
@@ -337,6 +339,8 @@
                [:db/add (- idx 300) :production 2]
                [:db/add (- idx 300) :money 10000]
                [:db/add (- idx 300) :inventory 0]
+               [:db/add (- idx 300) :sold 0]
+               [:db/add (- idx 300) :last-sold 0]
                [:db/add (- idx 300) :min-labour 2]
                [:db/add (- idx 300) :base-planning base-planning]
                [:db/add (- idx 300) :planning base-planning]])])
