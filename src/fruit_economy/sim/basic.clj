@@ -292,6 +292,7 @@
              [:db/add -1 :labour/price 1]
              [:db/add -1 :labour/price-float 1]
              [:db/add -1 :labour/price-velocity 1]
+             [:db/add -1 :labour/price-history []]
              [:db/add -1 :labour/demand 1]
              [:db/add -1 :labour/supply 1]
              [:db/add -1 :labour/last-demand 1]
