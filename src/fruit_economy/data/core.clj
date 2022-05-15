@@ -4,7 +4,7 @@
 
 
 (defn entity
-  ([world-db id] (entity world-db '[*] id))
+  ([world-db id] (db/touch (db/entity world-db id)))
   ([world-db attrs id]
    (ffirst (db/q '[:find (pull ?e ?attrs) :in $ ?e ?attrs] world-db id attrs))))
 
