@@ -467,10 +467,12 @@
 
 (def craft-rule
   (let [craft (fn [db factory-eid]
-                (let [{:keys [money planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
-                      labour-plan (* min-labour planning)
+                (let [{:keys [money sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
+                      _ (println :sold sold)
+                      labour-plan (* min-labour planning 10)
                       {labour-price :labour/price
                        labour-supply :labour/supply
+                       labour-consumed :labour/consumed
                        :as home} (get factory :hometown)
                       labour-like (like-to-buy money labour-price 0.8)
                       labour-want (min labour-like labour-plan)
@@ -478,15 +480,37 @@
                       labour-cost (* labour-bought labour-price)
                       produced (long (* production (Math/log (+ labour-bought 1))))
                       decayed-inventory (long (* inventory decay))
-                      good-supply-key (condp = good :food :food/supply :clothes :clothes/supply)]
+                      good-supply-key (condp = good :food :food/supply :clothes :clothes/supply)
+                      good-produced-key (condp = good :food :food/produced :clothes :clothes/produced)
+
+                      peeps (into [] (filter #(= (:kind %) :peep)) (:_hometown home))
+                      labour-orders (gen-orders labour-want labour-price (shuffle peeps))
+                      _ (println :home home peeps)
+                      _ (println :labour-orders labour-orders)
+                      labour-bought (reduce (fn [val order] (+ val (:buy order))) 0 labour-orders)
+                      peep-earnings-tx (reduce
+                                         (fn [v order]
+                                           (let [factory (:from order)
+                                                 eid (:db/id factory)
+                                                 money (:money factory)
+                                                 buying (:buy order)
+                                                 price (:price order)]
+                                             (conj v [:db/add eid :money (+ money (* buying price))])))
+                                         []
+                                         labour-orders)]
                   (println factory-eid :craft labour-want :labour-bought labour-bought (d/touch factory))
+                  (println (:_hometown home) :tx peep-earnings-tx)
                   (cond-> [[:db/add (:db/id home) good-supply-key (+ (good-supply-key home) produced)]
+                           [:db/add (:db/id home) good-produced-key (+ (good-produced-key home) produced)]
                            [:db/add (:db/id home) :labour/demand (+ (:labour/demand home) labour-want)]
                            [:db/add factory-eid :inventory (+ decayed-inventory produced)]]
 
                     (>= labour-bought min-labour)
-                    (into [[:db/add (:db/id home) :labour/supply (- labour-supply labour-bought)]
-                           [:db/add factory-eid :money (- money labour-cost)]]))))]
+                    (into cat
+                      [[[:db/add (:db/id home) :labour/supply (- labour-supply labour-bought)]
+                        [:db/add factory-eid :money (- money labour-cost)]
+                        [:db/add (:db/id home) :labour/consumed (+ labour-consumed labour-bought)]]
+                       peep-earnings-tx]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :inventory ?inventory]
