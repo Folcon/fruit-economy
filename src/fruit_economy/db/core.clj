@@ -191,6 +191,18 @@
   entity
   d/entity)
 
+(def ^{:arglists '([e])
+       :doc "Forces all entity attributes to be eagerly fetched and cached. Only usable for debug output.
+
+             Usage:
+
+             ```
+             (entity db 1) ; => {:db/id 1}
+             (touch (entity db 1)) ; => {:db/id 1, :dislikes [:pie], :likes [:pizza]}
+             ```"}
+  touch
+  d/touch)
+
 (defn init-db []
   (d/empty-db {:land/history {:db/valueType :db.type/ref
                               :db/cardinality :db.cardinality/many}
