@@ -384,21 +384,30 @@
                         food-rem (- food min-food)
                         clothes-rem (- clothes min-clothes)
 
-                        enough-food? (>= food-rem 0)
-                        enough-clothes? (>= clothes-rem 0)
+                        food-had (- food food-rem)
+                        clothes-had (- clothes food-rem)
+
+                        enough-food? (>= food-had 0)
+                        enough-clothes? (>= clothes-had 0)
                         hometown (:hometown peep)
-                        labour-supply (:labour/supply hometown)]
+                        labour-supply (:labour/supply hometown)
+                        labour-produced (:labour/produced hometown)
+                        food-consumed (:food/consumed hometown)
+                        clothes-consumed (:clothes/consumed hometown)]
                     (cond-> [[:db/add peep-eid :food (max food-rem 0)]
                              [:db/add peep-eid :clothes (max clothes-rem 0)]
                              [:db/add peep-eid :labour base-labour]
-                             [:db/add (:db/id hometown) :labour/supply (+ labour-supply base-labour)]]
+                             [:db/add (:db/id hometown) :labour/supply (+ labour-supply base-labour)]
+                             [:db/add (:db/id hometown) :labour/produced (+ labour-produced base-labour)]
+                             [:db/add (:db/id hometown) :food/consumed (+ food-consumed food-had)]
+                             [:db/add (:db/id hometown) :clothes/consumed (+ clothes-consumed clothes-had)]]
                       (or (not enough-food?) (not enough-clothes?))
                       (conj [:db/add peep-eid :health (max (dec (:health peep)) 0)])
 
                       (and enough-food? enough-clothes?)
                       (conj [:db/add peep-eid :health (min (inc (:health peep)) 10)])
 
-                      #_#_ ;; let's not have labour ability be dynamic, we can worry about that later...
+                      #_#_;; let's not have labour ability be dynamic, we can worry about that later...
                       (or enough-food? enough-clothes?)
                       (conj [:db/add (:db/id hometown) :labour/supply (+ labour-supply (if enough-food? 5 2) (if enough-clothes? 5 2))]))))]
     {:when '[[?e :food _]
