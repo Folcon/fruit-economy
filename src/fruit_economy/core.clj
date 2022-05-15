@@ -23,6 +23,7 @@
    [fruit-economy.game :as game]
    [fruit-economy.economy :as economy]
    [fruit-economy.sim.basic :as basic]
+   [fruit-economy.screen-ui :as screen-ui]
    [fruit-economy.utils :refer [suppress-print]])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
