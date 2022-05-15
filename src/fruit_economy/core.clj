@@ -722,7 +722,7 @@
 
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
-                           fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
+                           font-small fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
                    {:keys [camera tick zoom]} @*state
                    world @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
