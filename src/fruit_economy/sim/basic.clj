@@ -482,9 +482,9 @@
 
                                     :else 0)))
         update-prices (fn [db town-eid]
-                        (let [{food-price-float :food/price-float food-price-velocity :food/price-velocity food-supply :food/supply food-demand :food/demand
-                               clothes-price-float :clothes/price-float clothes-price-velocity :clothes/price-velocity clothes-supply :clothes/supply clothes-demand :clothes/demand
-                               labour-price-float :labour/price-float labour-price-velocity :labour/price-velocity labour-supply :labour/supply labour-demand :labour/demand
+                        (let [{food-price-float :food/price-float food-price-velocity :food/price-velocity food-price :food/price food-price-history :food/price-history food-supply :food/supply food-demand :food/demand food-produced :food/produced food-consumed :food/consumed
+                               clothes-price-float :clothes/price-float clothes-price-velocity :clothes/price-velocity clothes-price :clothes/price clothes-price-history :clothes/price-history clothes-supply :clothes/supply clothes-demand :clothes/demand clothes-produced :clothes/produced clothes-consumed :clothes/consumed
+                               labour-price-float :labour/price-float labour-price-velocity :labour/price-velocity labour-price :labour/price labour-price-history :labour/price-history labour-supply :labour/supply labour-demand :labour/demand labour-produced :labour/produced labour-consumed :labour/consumed
                                :as town} (d/entity db town-eid)
                               food-price-velocity' (update-price-velocity food-supply food-demand food-price-velocity)
                               food-price-float' (+ food-price-float food-price-velocity')
@@ -499,6 +499,10 @@
                            [:db/add town-eid :food/demand 0]
                            [:db/add town-eid :food/last-supply food-supply]
                            [:db/add town-eid :food/last-demand food-demand]
+                           [:db/add town-eid :food/produced 0]
+                           [:db/add town-eid :food/consumed 0]
+                           [:db/add town-eid :food/last-produced food-produced]
+                           [:db/add town-eid :food/last-consumed food-consumed]
                            [:db/add town-eid :clothes/price-velocity clothes-price-velocity']
                            #_[:db/add town-eid :clothes/price-float (max clothes-price-float' 1)]
                            #_[:db/add town-eid :clothes/price (max (quot clothes-price-float' 100) 1)]
@@ -506,6 +510,10 @@
                            [:db/add town-eid :clothes/demand 0]
                            [:db/add town-eid :clothes/last-supply clothes-supply]
                            [:db/add town-eid :clothes/last-demand clothes-demand]
+                           [:db/add town-eid :clothes/produced 0]
+                           [:db/add town-eid :clothes/consumed 0]
+                           [:db/add town-eid :clothes/last-produced clothes-produced]
+                           [:db/add town-eid :clothes/last-consumed clothes-consumed]
                            [:db/add town-eid :labour/price-velocity labour-price-velocity']
                            #_[:db/add town-eid :labour/price-float (max labour-price-float' 1)]
                            #_[:db/add town-eid :labour/price (max (quot labour-price-float' 100) 1)]
@@ -513,14 +521,21 @@
                            [:db/add town-eid :labour/demand 0]
                            [:db/add town-eid :labour/last-supply labour-supply]
                            [:db/add town-eid :labour/last-demand labour-demand]
+                           [:db/add town-eid :labour/produced 0]
+                           [:db/add town-eid :labour/consumed 0]
+                           [:db/add town-eid :labour/last-produced labour-produced]
+                           [:db/add town-eid :labour/last-consumed labour-consumed]
 
-                           ;#_#_#_#_#_#_
+                           ;#_#_#_#_#_#_#_#_#_
                            [:db/add town-eid :food/price-float (max food-price-float' 1)]
                            [:db/add town-eid :food/price (max (long food-price-float') 1)]
+                           [:db/add town-eid :food/price-history (conj-to-limit food-price-history price-history-limit food-price)]
                            [:db/add town-eid :clothes/price-float (max clothes-price-float' 1)]
                            [:db/add town-eid :clothes/price (max (long clothes-price-float') 1)]
+                           [:db/add town-eid :clothes/price-history (conj-to-limit clothes-price-history price-history-limit clothes-price)]
                            [:db/add town-eid :labour/price-float (max labour-price-float' 1)]
-                           [:db/add town-eid :labour/price (max (long labour-price-float') 1)]]))]
+                           [:db/add town-eid :labour/price (max (long labour-price-float') 1)]
+                           [:db/add town-eid :labour/price-history (conj-to-limit labour-price-history price-history-limit labour-price)]]))]
 
     {:when '[[?e :food/price _]]
      :then '[[:db.fn/call update-prices ?e]]
