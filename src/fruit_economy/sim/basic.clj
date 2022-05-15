@@ -679,6 +679,7 @@
     (try
       (as-> *world $
         (update $ :world-db apply-rules decision-rules reaction-rules)
+        (assoc $ :day (lookup-day (:world-db $)))
         (update $ :dbs (fnil track-db []) (:world-db $))
         (update $ :stats (fnil add-stats []) (:world-db $)))
       (catch Exception e
