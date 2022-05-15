@@ -167,7 +167,7 @@
          [:coord coord])
     (lookup-avet db :settlement/place)
     (mapv :db/id)
-    (d/pull-many db '[* {:settlement/place [:coord]}])
+    (d/pull-many db '[* {:settlement/place [:coord] :_governs [*]}])
     (mapv #(update % :settlement/place :coord))))
 
 (def days-pass-rule
