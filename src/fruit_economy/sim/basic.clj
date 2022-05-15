@@ -465,6 +465,20 @@
      :then '[[:db.fn/call consume ?e]]
      :call {'consume consume}}))
 
+(def adjust-factories-planning-rule
+  (let [adjust-factory (fn [_db factory-eid sold wanted planning base-planning]
+                         (if (> sold wanted)
+                           [[:db/add factory-eid :planning (inc planning)]]
+                           [[:db/add factory-eid :planning (max (dec planning) base-planning)]]))]
+    {:when '[[?e :last-sold ?sold]
+             [?e :inventory ?inventory]
+             [?e :planning ?planning]
+             [?e :base-planning ?base-planning]
+             [(* ?planning 10) ?wanted]
+             [(not= ?sold ?wanted)]]
+     :then '[[:db.fn/call adjust-factory ?e ?sold ?wanted ?planning ?base-planning]]
+     :call {'adjust-factory adjust-factory}}))
+
 (def reset-factories-rule
   (let [reset-factory (fn [db factory-eid]
                         [[:db/add factory-eid :sold 0]
