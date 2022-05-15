@@ -804,7 +804,7 @@
                                     (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))))
                     (when (and selected-city selected-market)
                       (ui/dynamic ctx [{:keys [world-db selected-city selected-market]} ctx]
-                        (let [city (d/entity world-db selected-city)
+                        (let [city (db/entity world-db selected-city)
 
                               producers (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :producers))
                               demanders (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :demanders))
