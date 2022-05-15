@@ -724,20 +724,19 @@
                            fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
                    {:keys [camera tick zoom]} @*state
                    world @basic/*world]
-    (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
-          map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
+    (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
 
           canvas-width (int (* x-scale *canvas-width*))
           canvas-height (int (* y-scale *canvas-height*))
 
           {:keys [cell lrtb]} (camera->viewport camera zoom canvas-width canvas-height)]
-      (ui/with-context {:font-small font-small
-                        :map-font map-font
-                        :emoji-font emoji-font
-                        :lrtb lrtb
-                        :cell cell
-                        :tick tick}
+      (ui/with-context
+        {:map-font map-font
+         :emoji-font emoji-font
+         :lrtb lrtb
+         :cell cell
+         :tick tick}
         (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
           (ui/column
             (ui/dynamic ctx [{:keys [day]} world]
