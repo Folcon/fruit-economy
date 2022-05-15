@@ -800,7 +800,7 @@
       (ui/column
         (interpose (ui/gap 4 0)
           (for [peep (mapv d/touch (lookup-avet world-db :hometown (:db/id settlement)))]
-            (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :planning])) {:font font-small :paint fill-black}))))
+            (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning])) {:font font-small :paint fill-black}))))
       (ui/row
         (interpose (ui/gap 4 0)
           (for [k [:settlement/name :settlement/place]]
