@@ -300,7 +300,10 @@
              [:db/add -1 :labour/produced 0]
              [:db/add -1 :labour/consumed 0]
              [:db/add -1 :labour/last-produced 0]
-             [:db/add -1 :labour/last-consumed 0]]
+             [:db/add -1 :labour/last-consumed 0]
+             [:db/add -2 :tax-rate 10]
+             [:db/add -2 :money 10000]
+             [:db/add -2 :governs -1]]
            (comp cat cat)
            [;; peeps
             (for [idx (range 10)]
