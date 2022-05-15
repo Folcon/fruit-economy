@@ -733,11 +733,13 @@
 
           {:keys [cell lrtb]} (camera->viewport camera zoom canvas-width canvas-height)]
       (ui/with-context
-        {:map-font map-font
-         :emoji-font emoji-font
-         :lrtb lrtb
-         :cell cell
-         :tick tick}
+        (merge
+          {:map-font map-font
+           :emoji-font emoji-font
+           :lrtb lrtb
+           :cell cell
+           :tick tick}
+          world)
         (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
           (ui/column
             screen-ui/top-bar-ui
