@@ -794,7 +794,7 @@
             screen-ui/top-bar-ui
             (ui/padding 20
               basic/ui-view)
-            (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} @basic/*world]
+            (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} ctx]
               (let [db world-db
                     cities (data/lookup-avet db :kind :city)]
                 (if-not (seq cities)
