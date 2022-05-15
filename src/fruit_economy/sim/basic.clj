@@ -502,6 +502,38 @@
      :then '[[:db.fn/call update-prices ?e]]
      :call {'update-prices update-prices}}))
 
+(defn gen-tax-tx [gov-ent gov-money tax-rate citizens]
+  (let [{:keys [pay-tx tax-earnings]} (reduce
+                                        (fn [state ent]
+                                          (let [money (:money ent)
+                                                tax (long (* tax-rate money))]
+                                            (-> state
+                                              (update :pay-tx conj [:db/add (:db/id ent) :money (- money tax)])
+                                              (update :tax-earnings + tax))))
+                                        {:pay-tx [] :tax-earnings 0}
+                                        citizens)]
+    (conj pay-tx [:db/add gov-ent :money (+ gov-money tax-earnings)])))
+
+(def state-tax-rule
+  (let [tax (fn [db]
+              (let [governments (lookup-avet db :governs nil)]
+                (println :state-tax)
+                (reduce
+                  (fn [v {gov-ent :db/id
+                          gov-money :money
+                          :keys [governs tax-rate] :as gov}]
+                    (let [tax-rate (/ tax-rate 100)
+                          tax-tx (gen-tax-tx gov-ent gov-money tax-rate (:_hometown governs))]
+                      (println (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
+                      (into v tax-tx)))
+                  []
+                  governments)))]
+    {:when '[[?e :day ?day]
+             [(mod ?day 30) ?mod]
+             [(zero? ?mod)]]
+     :then '[[:db.fn/call tax]]
+     :call {'tax tax}}))
+
 (def decision-rules
   [days-pass-rule
    hunt-rule
@@ -512,7 +544,8 @@
    peep-shop-rule
    peep-consume-rule
    craft-rule
-   update-prices-rule])
+   update-prices-rule
+   state-tax-rule])
 
 (def reaction-rules
   [remove-starving-rule])
