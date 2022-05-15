@@ -465,6 +465,14 @@
      :then '[[:db.fn/call consume ?e]]
      :call {'consume consume}}))
 
+(def reset-factories-rule
+  (let [reset-factory (fn [db factory-eid]
+                        [[:db/add factory-eid :sold 0]
+                         [:db/add factory-eid :last-sold (:sold (d/entity db factory-eid))]])]
+    {:when '[[?e :sold _]]
+     :then '[[:db.fn/call reset-factory ?e]]
+     :call {'reset-factory reset-factory}}))
+
 (def craft-rule
   (let [craft (fn [db factory-eid]
                 (let [{:keys [money sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
