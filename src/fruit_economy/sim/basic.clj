@@ -692,8 +692,10 @@
    create-settlement-rule
    peep-shop-rule
    peep-consume-rule
+   adjust-factories-planning-rule
    craft-rule
    update-prices-rule
+   reset-factories-rule
    state-tax-rule])
 
 (def reaction-rules
