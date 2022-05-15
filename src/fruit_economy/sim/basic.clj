@@ -442,22 +442,22 @@
                                     :else 0)))
         #_#_
         update-price-velocity (fn [supply demand price-velocity]
-                               (let [more-demand? (> demand supply)
-                                     more-supply? (< demand supply)]
-                                 (cond
-                                   (and more-demand? (> price-velocity 0))
-                                   (max (+ (quot price-velocity 2) price-velocity) 1)
+                                (let [more-demand? (> demand supply)
+                                      more-supply? (< demand supply)]
+                                  (cond
+                                    (and more-demand? (> price-velocity 0))
+                                    (max (+ (quot price-velocity 2) price-velocity) 1)
 
-                                   more-demand?
-                                   (max (- (quot price-velocity 2)) 1)
+                                    more-demand?
+                                    (max (- (quot price-velocity 2)) 1)
 
-                                   (and more-supply? (< price-velocity 0))
-                                   (max (+ (quot price-velocity 2) price-velocity) -1)
+                                    (and more-supply? (< price-velocity 0))
+                                    (max (+ (quot price-velocity 2) price-velocity) -1)
 
-                                   more-supply?
-                                   (min (- (quot price-velocity 2)) -1)
+                                    more-supply?
+                                    (min (- (quot price-velocity 2)) -1)
 
-                                   :else 0)))
+                                    :else 0)))
         update-prices (fn [db town-eid]
                         (let [{food-price-float :food/price-float food-price-velocity :food/price-velocity food-supply :food/supply food-demand :food/demand
                                clothes-price-float :clothes/price-float clothes-price-velocity :clothes/price-velocity clothes-supply :clothes/supply clothes-demand :clothes/demand
