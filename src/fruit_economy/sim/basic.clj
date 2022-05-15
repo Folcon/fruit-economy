@@ -314,7 +314,8 @@
                [:db/add (- idx 100) :min-clothes 1]
                [:db/add (- idx 100) :planning (rand-nth [1 3 5 8 15])]])
             ;; food factories
-            (for [idx (range 1)]
+            (for [idx (range 1)
+                  :let [base-planning (rand-nth [1 3 5 8 15])]]
               [[:db/add (- idx 200) :kind :food-factory]
                [:db/add (- idx 200) :hometown -1]
                [:db/add (- idx 200) :good :food]
@@ -323,9 +324,11 @@
                [:db/add (- idx 200) :money 10000]
                [:db/add (- idx 200) :inventory 0]
                [:db/add (- idx 200) :min-labour 2]
-               [:db/add (- idx 200) :planning (rand-nth [1 3 5 8 15])]])
+               [:db/add (- idx 200) :base-planning base-planning]
+               [:db/add (- idx 200) :planning base-planning]])
             ;; clothes factories
-            (for [idx (range 1)]
+            (for [idx (range 1)
+                  :let [base-planning (rand-nth [1 3 5 8 15])]]
               [[:db/add (- idx 300) :kind :clothes-factory]
                [:db/add (- idx 300) :hometown -1]
                [:db/add (- idx 300) :good :clothes]
@@ -334,7 +337,8 @@
                [:db/add (- idx 300) :money 10000]
                [:db/add (- idx 300) :inventory 0]
                [:db/add (- idx 300) :min-labour 2]
-               [:db/add (- idx 300) :planning (rand-nth [1 3 5 8 15])]])])
+               [:db/add (- idx 300) :base-planning base-planning]
+               [:db/add (- idx 300) :planning base-planning]])])
    :args {'rand-nth rand-nth}})
 
 (defn like-to-buy [money price percentage]
