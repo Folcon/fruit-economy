@@ -98,7 +98,8 @@
                           :coord {:db/unique :db.unique/identity}
                           :settlement/place {:db/valueType :db.type/ref}
                           :hometown {:db/valueType :db.type/ref}
-                          :governs {:db/valueType :db.type/ref}})
+                          :governs {:db/valueType :db.type/ref
+                                    :db/cardinality :db.cardinality/one}})
     (gen-bug-world bug-world-size bug-count)))
 
 (defn reset-world []
