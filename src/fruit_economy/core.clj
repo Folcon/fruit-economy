@@ -693,37 +693,19 @@
 (def map-ui-view
   (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
-      (ui/dynamic ctx [{:keys [scale face-ui]} ctx
+      (ui/dynamic ctx [{:keys [scale font-small fill-white fill-black fill-green fill-dark-gray fill-light-gray]} ctx
                        {:keys [camera tick]} @*state]
-        (let [font-default (Font. face-default (float (* 18 scale)))
-              font-large (Font. ^Typeface face-default (float (* scale 26)))
-              font-small (Font. ^Typeface face-default (float (* scale 13)))
-
-              fill-black (paint/fill 0xFF000000)
-              fill-light-gray (paint/fill 0xFFD4D6DA)]
-          (ui/with-context
-            {:font-default    font-default
-             :font-large      font-large
-             :font-small      font-small
-             :fill-white      (paint/fill 0xFFFFFFFF)
-             :fill-black      fill-black
-             :fill-light-gray fill-light-gray
-             :fill-dark-gray  (paint/fill 0xFF777C7E)
-             :fill-green      (paint/fill 0xFF6AAA64)
-             :fill-yellow     (paint/fill 0xFFC9B457)
-             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
-             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
-            (ui/column
-              top-bar-ui
-              (ui/gap 0 padding)
-              [:stretch 1 nil]
-              world-map
-              (ui/padding 5
-                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick #_(when controlling (str " controlling " controlling))) {:font font-small :paint fill-black}))
-              (ui/padding 5
-                (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") {:font font-small :paint fill-black}))
-              (ui/padding 5
-                (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-black})))))))))
+        (ui/column
+          top-bar-ui
+          (ui/gap 0 padding)
+          [:stretch 1 nil]
+          world-map
+          (ui/padding 5
+            (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick #_(when controlling (str " controlling " controlling))) {:font font-small :paint fill-black}))
+          (ui/padding 5
+            (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") {:font font-small :paint fill-black}))
+          (ui/padding 5
+            (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-black})))))))
 
 (def messages-ui-view
   (ui/on-key-down #(on-key-pressed-impl (:hui.event.key/key %))
