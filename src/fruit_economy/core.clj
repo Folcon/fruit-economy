@@ -744,7 +744,125 @@
           (ui/column
             screen-ui/top-bar-ui
             (ui/padding 20
-              basic/ui-view)))))))
+              basic/ui-view)
+            (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} @basic/*world]
+              (let [db world-db
+                    cities (data/lookup-avet db :kind :city)]
+                (if-not (seq cities)
+                  (ui/gap 0 0)
+                  (ui/column
+                    (ui/row
+                      (interpose (ui/fill fill-dark-gray
+                                   (ui/gap 0 0))
+                        (for [city cities
+                              :let [eid (:db/id city)]]
+                          (ui/clickable
+                            #(swap! basic/*world assoc :selected-city eid)
+                            (ui/hoverable
+                              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                                (ui/fill (cond hovered? fill-yellow (= selected-city eid) fill-green :else fill-dark-gray)
+                                  (ui/padding 10 10
+                                    (ui/label (:settlement/name city) {:font font-small :paint fill-white})))))))))
+                    (ui/row
+                      (interpose (ui/fill fill-dark-gray
+                                   (ui/gap 0 0))
+                        (for [market [:food :clothes :labour]]
+                          (ui/clickable
+                            #(swap! basic/*world assoc :selected-market market)
+                            (ui/hoverable
+                              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                                (ui/fill (cond hovered? fill-yellow (= selected-market market) fill-green :else fill-dark-gray)
+                                  (ui/padding 10 10
+                                    (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))))
+                    (when (and selected-city selected-market)
+                      (ui/dynamic ctx [{:keys [world-db selected-city selected-market]} ctx]
+                        (let [city (d/entity world-db selected-city)
+
+                              producers (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :producers))
+                              demanders (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :demanders))
+
+                              label (market-label-fn selected-market)
+                              price ((market-keys-fn selected-market :price) city)
+                              price-history ((market-keys-fn selected-market :price-history) city)
+                              produced ((market-keys-fn selected-market :last-produced) city)
+                              consumed ((market-keys-fn selected-market :last-consumed) city)
+                              total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)]
+                          (ui/column
+                            (ui/row
+                              (ui/padding 20
+                                (ui/column
+                                  (ui/padding 5
+                                    (ui/label label))
+                                  (ui/padding 5
+                                    (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" (* (/ produced total-production) 100))))))
+                              (ui/padding 20
+                                (ui/column
+                                  (ui/label (str "Current Price:            " price " g"))
+                                  (ui/height 40
+                                    (if-not (seq price-history)
+                                      (ui/label (pr-str price-history))
+                                      (ui/column
+                                        (let [mx (apply max price-history)
+                                              limit-fn (fn [val]
+                                                         (reduce
+                                                           (fn [val [limit div]]
+                                                             (if (zero? (quot val limit))
+                                                               val
+                                                               (reduced div)))
+                                                           val
+                                                           [[1000 100] [100 10] [10 nil]]))
+                                              apply-limit-fn (fn [val limit] (if limit (float (/ val limit)) val))
+                                              limit (limit-fn mx)]
+                                          (custom-ui/svg
+                                            [:dali/page
+                                             [:dali/stack
+                                              {:position [10 10], :direction :right, :anchor :bottom-left, :gap 2}
+                                              (map (fn [h]
+                                                     [:dali/stack
+                                                      {:direction :up :gap 6}
+                                                      [:rect {:stroke :none, :fill :darkorchid} :_ [20 (apply-limit-fn h limit)]]
+                                                      [:text {:text-family "Verdana" :font-size 12} (str h)]])
+                                                price-history)]]))))))))
+                            (ui/row
+                              (ui/padding 20
+                                (ui/column
+                                  (ui/label "Produced by:")
+                                  (ui/gap 0 4)
+                                  (ui/height 100
+                                    (ui/row
+                                      (ui/vscrollbar
+                                        (ui/vscroll
+                                          (ui/column
+                                            (interpose (ui/gap 0 4)
+                                              (for [producer producers]
+                                                (ui/label (pr-str producer)))))))))
+                                  (ui/padding 20
+                                    (ui/label (str "Total Produced: " produced)))))
+                              (ui/padding 20
+                                (ui/column
+                                  (ui/label "Used by:")
+                                  (ui/gap 0 4)
+                                  (ui/height 100
+                                    (ui/row
+                                      (ui/vscrollbar
+                                        (ui/vscroll
+                                          (ui/column
+                                            (interpose (ui/gap 0 4)
+                                              (for [demander demanders]
+                                                (ui/label (pr-str demander)))))))))
+                                  (ui/padding 20
+                                    (ui/label (str "Total Used: " consumed))))))
+
+                            (ui/label (pr-str city))
+                            (ui/height 100
+                              (ui/row
+                                (ui/vscrollbar
+                                  (ui/vscroll
+                                    (ui/column
+                                      (interpose (ui/fill fill-dark-gray
+                                                   (ui/gap 0 4))
+                                        (for [market cities]
+                                          (show-map-ui market font-small fill-black))))))))))))))))))))))
 
 (def ui-views
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
