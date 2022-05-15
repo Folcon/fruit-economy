@@ -711,28 +711,13 @@
   (ui/on-key-down #(on-key-pressed-impl (:hui.event.key/key %))
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
-        (let [font-small (Font. ^Typeface face-default (float (* scale 13)))
-              fill-black (paint/fill 0xFF000000)
-              fill-yellow (paint/fill 0xFFC9B457)
-              fill-light-gray (paint/fill 0xFFD4D6DA)]
-          (ui/with-context
-            {:font-large (Font. ^Typeface face-default (float (* scale 26)))
-             :font-small font-small
-             :fill-white (paint/fill 0xFFFFFFFF)
-             :fill-black fill-black
-             :fill-light-gray fill-light-gray
-             :fill-dark-gray (paint/fill 0xFF777C7E)
-             :fill-green (paint/fill 0xFF6AAA64)
-             :fill-yellow fill-yellow
-             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
-             :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
-            (ui/column
-              top-bar-ui
-              [:stretch 1
-               (ui/vscrollbar
-                 (ui/vscroll
-                   (ui/column
-                     (message-log-ui))))])))))))
+        (ui/column
+          top-bar-ui
+          [:stretch 1
+           (ui/vscrollbar
+             (ui/vscroll
+               (ui/column
+                 (message-log-ui))))])))))
 
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
