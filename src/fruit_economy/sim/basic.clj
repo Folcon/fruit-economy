@@ -444,6 +444,17 @@
      :then '[[:db.fn/call craft ?e]]
      :call {'craft craft}}))
 
+(defn conj-to-limit
+  "conj's a value to a vector to the specified limit"
+  [v limit x]
+  (let [v' (conj v x)
+        size (count v')]
+    (if (> size limit)
+      (subvec v' (- size limit) size)
+      v')))
+
+(def price-history-limit (* 30 36))
+
 (def update-prices-rule
   (let [update-price-velocity (fn [supply demand price-velocity]
                                 (let [more-demand? (> demand supply)
