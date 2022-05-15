@@ -661,6 +661,12 @@
   (dotimes [_ 10]
     (do-tick-world)))
 
+(defn history-started? [world-db]
+  (< 30 (lookup-day world-db)))
+
+(defn viable-world? [world-db]
+  (seq (lookup-avet world-db :kind :city)))
+
 
 (def ui-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx

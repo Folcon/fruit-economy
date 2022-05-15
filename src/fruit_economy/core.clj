@@ -22,7 +22,8 @@
    [fruit-economy.civ :as civ]
    [fruit-economy.game :as game]
    [fruit-economy.economy :as economy]
-   [fruit-economy.sim.basic :as basic])
+   [fruit-economy.sim.basic :as basic]
+   [fruit-economy.utils :refer [suppress-print]])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
    [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint PaintMode]
@@ -814,18 +815,101 @@
              (ui-views name))])))))
 
 (def start-screen
-  (ui/dynamic ctx [{:keys [started?]} @*menu]
-    (ui/valign 0.5
-      (ui/halign 0.5
-        (ui/column
-          (ui/padding 20
-            (ui/valign 0.5
-              (ui/halign 0.5
-                (ui/label "Fruit Economy"))))
-          (ui/button
-            #(swap! *menu assoc :started? true)
-            (ui/padding 80 10 80 10
-              (ui/label "Start"))))))))
+  (ui/dynamic ctx [{:keys [scale x-scale y-scale]} ctx
+                   {:keys [camera tick zoom]} @*state
+                   {:keys [started?]} @*menu
+                   {:keys [world-db]} @basic/*world]
+    (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
+          emoji-font (Font. emoji-face (float (* scale 8 zoom)))
+
+          canvas-width (int (* x-scale *canvas-width*))
+          canvas-height (int (* y-scale *canvas-height*))
+
+          {:keys [cell lrtb]} (camera->viewport camera zoom canvas-width canvas-height)]
+      (ui/valign 0.5
+        (ui/halign 0.5
+          (ui/column
+            (ui/padding 20
+              (ui/valign 0.5
+                (ui/halign 0.5
+                  (ui/label "Fruit Economy"))))
+            (if started?
+              (ui/button
+                #(swap! *menu assoc :started? true)
+                (ui/padding 80 10 80 10
+                  (ui/label "New Game")))
+              (ui/with-context {:map-font map-font
+                                :emoji-font emoji-font
+                                :lrtb lrtb
+                                :cell cell
+                                :tick tick}
+                (ui/column
+                  basic/map-ui-view
+                  (ui/halign 0.5
+                    (ui/row
+                      (ui/button
+                        #(reset! basic/*world (basic/reset-world))
+                        (ui/padding 20 10 20 10
+                          (ui/label "Gen World")))
+                      (ui/gap 10 0)
+                      (ui/button
+                        #(dotimes [_ 50]
+                           (suppress-print
+                             (swap! basic/*world basic/tick-world)))
+                        (ui/padding 20 10 20 10
+                          (ui/label "Simulate History")))))
+                  (ui/gap 0 10)
+                  (ui/halign 0.5
+                    (let [history? (basic/history-started? world-db)
+                          viable? (basic/viable-world? world-db)
+                          select-city-btn (fn [city]
+                                            (ui/dynamic ctx [{:keys [leading]} ctx
+                                                             {:keys [player]} @basic/*world]
+                                              (let [{name :settlement/name
+                                                     governed-by :_governs} city
+                                                    government (first governed-by)
+                                                    coord (get-in city [:settlement/place :coord])
+                                                    gov-eid (:db/id government)]
+                                                (ui/clickable
+                                                  #(do
+                                                     (swap! *state assoc :camera coord)
+                                                     (swap! basic/*world assoc :player gov-eid))
+                                                  (ui/clip-rrect 4
+                                                    (ui/dynamic ctx [{:keys [hui/active? hui/hovered?]} ctx]
+                                                      (ui/fill
+                                                        (cond
+                                                          (or active? (= player gov-eid)) (paint/fill 0xFFA2C7EE)
+                                                          hovered? (paint/fill 0xFFCFE8FC)
+                                                          :else    (paint/fill 0xFFB2D7FE))
+                                                        (ui/padding 20 leading 20 leading
+                                                          (ui/halign 0.5
+                                                            (ui/with-context
+                                                              {:hui/active? false
+                                                               :hui/hovered? false}
+                                                              (ui/label (str name " $" (:money government)))))))))))))]
+                      (cond
+                        viable?
+                        (ui/column
+                          (ui/label "Pick your starting city or try again")
+                          (ui/gap 0 10)
+                          (ui/height 100
+                            (ui/vscrollbar
+                              (ui/vscroll
+                                (ui/column
+                                  (for [city (data/lookup-avet world-db :kind :city)]
+                                    (ui/padding 0 2 0 2
+                                      (select-city-btn city)))))))
+                          (ui/gap 0 10)
+                          (ui/button
+                            #(swap! *menu assoc :screen game-screen)
+                            (ui/padding 80 10 80 10
+                              (ui/label "Start"))))
+
+                        (not history?)
+                        (ui/label "Gen a world that looks interesting and start simulating history!")
+
+                        (and history? (not viable?))
+                        (ui/label "Everything Died, Try again?")))))))))))))
 
 (defonce *menu (atom (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false})))
 
