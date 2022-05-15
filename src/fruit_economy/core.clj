@@ -844,34 +844,9 @@
                                     (ui/label label))
                                   (ui/padding 5
                                     (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" (* (/ produced total-production) 100))))))
-                              (ui/padding 20
-                                (ui/column
-                                  (ui/label (str "Current Price:            " price " g"))
-                                  (ui/height 40
-                                    (if-not (seq price-history)
-                                      (ui/label (pr-str price-history))
-                                      (ui/column
-                                        (let [mx (apply max price-history)
-                                              limit-fn (fn [val]
-                                                         (reduce
-                                                           (fn [val [limit div]]
-                                                             (if (zero? (quot val limit))
-                                                               val
-                                                               (reduced div)))
-                                                           val
-                                                           [[1000 100] [100 10] [10 nil]]))
-                                              apply-limit-fn (fn [val limit] (if limit (float (/ val limit)) val))
-                                              limit (limit-fn mx)]
-                                          (custom-ui/svg
-                                            [:dali/page
-                                             [:dali/stack
-                                              {:position [10 10], :direction :right, :anchor :bottom-left, :gap 2}
-                                              (map (fn [h]
-                                                     [:dali/stack
-                                                      {:direction :up :gap 6}
-                                                      [:rect {:stroke :none, :fill :darkorchid} :_ [20 (apply-limit-fn h limit)]]
-                                                      [:text {:text-family "Verdana" :font-size 12} (str h)]])
-                                                price-history)]]))))))))
+                              (ui/with-context
+                                {:price price :price-history price-history}
+                                screen-ui/price-chart-ui))
                             (ui/row
                               (ui/padding 20
                                 (ui/column
