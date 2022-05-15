@@ -610,39 +610,20 @@
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
-      (ui/dynamic ctx [{:keys [scale face-ui x-scale y-scale]} ctx
-                       {:keys [world-db camera tick svg-xyz]} @*state]
-        (let [font-default (Font. face-default (float (* 18 scale)))
-              font-large (Font. ^Typeface face-default (float (* scale 26)))
-              font-small (Font. ^Typeface face-default (float (* scale 13)))
-              fill-black (paint/fill 0xFF000000)
-              fill-light-gray (paint/fill 0xFFD4D6DA)
-              {::land/keys [economy]} (data/land-data world-db)
-              [svg-x svg-y svg-z] svg-xyz
-              canvas-width (* x-scale *canvas-width*)
-              canvas-height (* y-scale *canvas-height*)]
-          (ui/with-context
-            {:font-default    font-default
-             :font-large      font-large
-             :font-small      font-small
-             :fill-white      (paint/fill 0xFFFFFFFF)
-             :fill-black      fill-black
-             :fill-light-gray fill-light-gray
-             :fill-dark-gray  (paint/fill 0xFF777C7E)
-             :fill-green      (paint/fill 0xFF6AAA64)
-             :fill-yellow     (paint/fill 0xFFC9B457)
-             :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
-             :stroke-dark-gray  (paint/stroke 0xFF777C7E (* 2 scale))}
-            (ui/column
-              top-bar-ui
-              (ui/gap 0 padding)
-              [:stretch 1
-               (ui/row
-                 [:stretch 1
-                  (ui/valign 0.5
-                    (ui/halign 0.5
-                      (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
-                        (custom-ui/svg-canvas (economy/->svg economy)))))])])))))))
+      (ui/dynamic ctx [{:keys [world-db svg-xyz]} @*state]
+        (let [{::land/keys [economy]} (data/land-data world-db)
+              [svg-x svg-y svg-z] svg-xyz]
+          (ui/column
+            top-bar-ui
+            (ui/gap 0 padding)
+            [:stretch 1
+             (ui/row
+               [:stretch 1
+                (ui/valign 0.5
+                  (ui/halign 0.5
+                    ;; TODO: Current scroll / zoom broken on svg
+                    (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
+                      (custom-ui/svg-canvas (economy/->svg economy)))))])]))))))
 
 (defn camera->viewport [camera zoom content-width content-height]
   (let [w content-width h content-height
