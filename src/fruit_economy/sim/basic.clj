@@ -811,6 +811,7 @@
       (ui/gap 0 4)
       (ui/row
         (ui/column
+          (ui/label (str "Money " (:money (first (get settlement :_governs)))))
           (interpose (ui/gap 0 4)
             (for [columns [["" "Food" "Clothes" "Labour"] ["Price" :food/price :clothes/price :labour/price] ["Float" :food/price-float :clothes/price-float :labour/price-float] ["Velocity" :food/price-velocity :clothes/price-velocity :labour/price-velocity] ["Demand" :food/demand :clothes/demand :labour/demand] ["Supply" :food/supply :clothes/supply :labour/supply]]]
               (ui/row
