@@ -740,8 +740,7 @@
          :tick tick}
         (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
           (ui/column
-            (ui/dynamic ctx [{:keys [day world-db player-eid]} world
-                             player (data/entity world-db player-eid)]
+            (ui/dynamic ctx [{:keys [day world-db player-eid]} world]
               (ui/column
                 [:stretch 1
                  (ui/padding 0 0 0 10
@@ -749,10 +748,14 @@
                      (ui/row
                        (ui/padding 10 10
                          (ui/label (str "Day " day) {:font font-small :paint fill-black}))
-                       (ui/padding 10 10
-                         (ui/label (str "Nation " (get-in player [:governs :settlement/name])) {:font font-small :paint fill-black}))
-                       (ui/padding 10 10
-                         (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))
+                       (if player-eid
+                         (ui/dynamic ctx [player (data/entity world-db player-eid)]
+                           (ui/row
+                             (ui/padding 10 10
+                               (ui/label (str "Nation " (get-in player [:governs :settlement/name])) {:font font-small :paint fill-black}))
+                             (ui/padding 10 10
+                               (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))))
+                         (ui/gap 0 0))
                        [:stretch 1 nil]
                        (ui/fill fill-white
                          (ui/clickable
