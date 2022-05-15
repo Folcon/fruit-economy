@@ -350,6 +350,25 @@
   (let [budget (int (* money percentage))]
     (quot budget price)))
 
+(defn gen-orders [quantity-wanted price factories]
+  (->
+    (reduce
+      (fn [[orders to-buy] {:keys [inventory labour] :as from}]
+        (let [buyable (or inventory labour)]
+          (cond
+            (zero? buyable) [orders to-buy]
+            (> to-buy 0)
+            (let [buying (min to-buy buyable)
+                  rem (- to-buy buying)
+                  orders' (conj orders {:from from :buy buying :price price})]
+              (if (<= rem 0)
+                (reduced [orders' 0])
+                [orders' rem]))
+            :else [orders to-buy])))
+      [[] quantity-wanted]
+      factories)
+    first))
+
 (def peep-shop-rule
   (let [shop
         (fn [db peep-eid]
@@ -362,15 +381,37 @@
                 clothes-like (like-to-buy money clothes-price 0.2)
                 food-want (min food-like food-plan) clothes-want (min clothes-like clothes-plan)
                 food-cost (* food-want food-price) clothes-cost (* clothes-want clothes-price)
-                food-bought food-want clothes-bought clothes-want]
+                food-factories (into [] (filter #(= (:good %) :food)) (:_hometown home))
+                clothes-factories (into [] (filter #(= (:good %) :clothes)) (:_hometown home))
+                food-orders (gen-orders food-want food-price (shuffle food-factories))
+                clothes-orders (gen-orders clothes-want clothes-price (shuffle clothes-factories))
+                _ (println :home home food-factories)
+                _ (println :food-orders food-orders)
+                _ (println :clothes-orders clothes-orders)
+                food-bought (reduce (fn [val order] (+ val (:buy order))) 0 food-orders)
+                clothes-bought (reduce (fn [val order] (+ val (:buy order))) 0 clothes-orders)
+                factory-earnings-tx (reduce
+                                      (fn [v order]
+                                        (let [factory (:from order)
+                                              eid (:db/id factory)
+                                              money (:money factory)
+                                              buying (:buy order)
+                                              price (:price order)
+                                              sold (:sold factory)]
+                                          (into v [[:db/add eid :money (+ money (* buying price))]
+                                                   [:db/add eid :sold (+ sold buying)]])))
+                                      []
+                                      (into food-orders clothes-orders))]
             (println peep-eid :shop food-want clothes-want :food-bought food-bought food :clothes-bought clothes-bought clothes (d/touch peep))
             (println :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
             (println (mapv d/touch (lookup-avet db :good nil)))
-            [[:db/add (:db/id home) :food/demand (+ (:food/demand home) food-want)]
-             [:db/add (:db/id home) :clothes/demand (+ (:clothes/demand home) clothes-want)]
-             [:db/add peep-eid :money (- money food-cost clothes-cost)]
-             [:db/add peep-eid :food (+ food food-bought)]
-             [:db/add peep-eid :clothes (+ clothes clothes-bought)]]))]
+            (into
+              [[:db/add (:db/id home) :food/demand (+ (:food/demand home) food-want)]
+               [:db/add (:db/id home) :clothes/demand (+ (:clothes/demand home) clothes-want)]
+               [:db/add peep-eid :money (- money food-cost clothes-cost)]
+               [:db/add peep-eid :food (+ food food-bought)]
+               [:db/add peep-eid :clothes (+ clothes clothes-bought)]]
+              factory-earnings-tx)))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :food ?food]
