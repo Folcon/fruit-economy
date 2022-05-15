@@ -814,22 +814,23 @@
              (ui-views name))])))))
 
 (def start-screen
-  (ui/valign 0.5
-    (ui/halign 0.5
-      (ui/column
-        (ui/padding 20
-          (ui/valign 0.5
-            (ui/halign 0.5
-              (ui/label "Fruit Economy"))))
-        (ui/button
-          #(reset! *menu game-screen)
-          (ui/padding 80 10 80 10
-            (ui/label "Start")))))))
+  (ui/dynamic ctx [{:keys [started?]} @*menu]
+    (ui/valign 0.5
+      (ui/halign 0.5
+        (ui/column
+          (ui/padding 20
+            (ui/valign 0.5
+              (ui/halign 0.5
+                (ui/label "Fruit Economy"))))
+          (ui/button
+            #(swap! *menu assoc :started? true)
+            (ui/padding 80 10 80 10
+              (ui/label "Start"))))))))
 
-(defonce *menu (atom (if (debug?) game-screen start-screen)))
+(defonce *menu (atom (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false})))
 
 #_  ;; For debugging start-screen
-(reset! *menu start-screen)
+(reset! *menu {:screen start-screen :started? false})
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
@@ -857,7 +858,7 @@
 
                         :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
                         :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
-        (ui/dynamic ctx [screen @*menu]
+        (ui/dynamic ctx [{:keys [screen]} @*menu]
           screen)))))
 
 (comment
