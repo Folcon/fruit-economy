@@ -721,6 +721,33 @@
                (ui/column
                  (message-log-ui))))])))))
 
+(defn market-label-fn [market]
+  (println market)
+  (condp = market :food "Food" :clothes "Clothes" :labour "Labour"))
+
+(defn market-keys-fn [market key]
+  (condp = [market key]
+    [:food :producers] [:food-factory]
+    [:food :demanders] [:peep]
+    [:food :last-produced] :food/last-produced
+    [:food :last-consumed] :food/last-consumed
+    [:food :price] :food/price
+    [:food :price-history] :food/price-history
+    [:clothes :producers] [:clothes-factory]
+    [:clothes :demanders] [:peep]
+    [:clothes :last-produced] :clothes/last-produced
+    [:clothes :last-consumed] :clothes/last-consumed
+    [:clothes :price] :clothes/price
+    [:clothes :price-history] :clothes/price-history
+    [:labour :producers] [:peep]
+    [:labour :demanders] [:food-factory :clothes-factory]
+    [:labour :last-produced] :labour/last-produced
+    [:labour :last-consumed] :labour/last-consumed
+    [:labour :price] :labour/price
+    [:labour :price-history] :labour/price-history))
+
+(defn lookup-by-kind [world-db] (fn [kind] (data/lookup-avet world-db :kind kind)))
+
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
                            font-small fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
