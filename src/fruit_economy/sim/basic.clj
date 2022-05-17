@@ -667,10 +667,14 @@
 (defn gen-tax-tx [gov-ent gov-money tax-rate citizens]
   (let [{:keys [pay-tx tax-earnings]} (reduce
                                         (fn [state ent]
-                                          (let [money (:money ent)
-                                                tax (long (* tax-rate money))]
+                                          (let [ent-id (:db/id ent)
+                                                money (:money ent)
+                                                earned (:earned ent)
+                                                tax (long (* tax-rate earned))]
                                             (-> state
-                                              (update :pay-tx conj [:db/add (:db/id ent) :money (- money tax)])
+                                              (update :pay-tx into [[:db/add ent-id :money (- money tax)]
+                                                                    [:db/add ent-id :earned 0]
+                                                                    [:db/add ent-id :last-earned earned]])
                                               (update :tax-earnings + tax))))
                                         {:pay-tx [] :tax-earnings 0}
                                         citizens)]
