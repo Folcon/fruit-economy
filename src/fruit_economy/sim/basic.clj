@@ -492,13 +492,13 @@
      :then '[[:db.fn/call adjust-factory ?e ?sold ?wanted ?planning ?base-planning]]
      :call {'adjust-factory adjust-factory}}))
 
-(def reset-factories-rule
-  (let [reset-factory (fn [db factory-eid]
-                        [[:db/add factory-eid :sold 0]
-                         [:db/add factory-eid :last-sold (:sold (d/entity db factory-eid))]])]
+(def reset-sold-rule
+  (let [reset-sold (fn [db eid]
+                     [[:db/add eid :sold 0]
+                      [:db/add eid :last-sold (:sold (d/entity db eid))]])]
     {:when '[[?e :sold _]]
-     :then '[[:db.fn/call reset-factory ?e]]
-     :call {'reset-factory reset-factory}}))
+     :then '[[:db.fn/call reset-sold ?e]]
+     :call {'reset-sold reset-sold}}))
 
 (def craft-rule
   (let [craft (fn [db factory-eid]
@@ -708,7 +708,7 @@
    adjust-factories-planning-rule
    craft-rule
    update-prices-rule
-   reset-factories-rule
+   reset-sold-rule
    state-tax-rule])
 
 (def reaction-rules
