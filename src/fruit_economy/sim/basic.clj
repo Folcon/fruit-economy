@@ -467,6 +467,7 @@
                         enough-food? (>= food-had 0)
                         enough-clothes? (>= clothes-had 0)
                         hometown (:hometown peep)
+                        hometown-eid (:db/id hometown)
                         labour-supply (:labour/supply hometown)
                         labour-produced (:labour/produced hometown)
                         food-consumed (:food/consumed hometown)
@@ -474,10 +475,10 @@
                     (cond-> [[:db/add peep-eid :food (max food-rem 0)]
                              [:db/add peep-eid :clothes (max clothes-rem 0)]
                              [:db/add peep-eid :labour base-labour]
-                             [:db/add (:db/id hometown) :labour/supply (+ labour-supply base-labour)]
-                             [:db/add (:db/id hometown) :labour/produced (+ labour-produced base-labour)]
-                             [:db/add (:db/id hometown) :food/consumed (+ food-consumed food-had)]
-                             [:db/add (:db/id hometown) :clothes/consumed (+ clothes-consumed clothes-had)]]
+                             [:db/add hometown-eid :labour/supply (+ labour-supply base-labour)]
+                             [:db/add hometown-eid :labour/produced (+ labour-produced base-labour)]
+                             [:db/add hometown-eid :food/consumed (+ food-consumed food-had)]
+                             [:db/add hometown-eid :clothes/consumed (+ clothes-consumed clothes-had)]]
                       (or (not enough-food?) (not enough-clothes?))
                       (conj [:db/add peep-eid :health (max (dec (:health peep)) 0)])
 
