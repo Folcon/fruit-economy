@@ -523,9 +523,9 @@
                       labour-bought (reduce (fn [val order] (+ val (:buy order))) 0 labour-orders)
                       peep-earnings-tx (reduce
                                          (fn [v order]
-                                           (let [factory (:from order)
-                                                 eid (:db/id factory)
-                                                 money (:money factory)
+                                           (let [peep (:from order)
+                                                 eid (:db/id peep)
+                                                 money (:money peep)
                                                  buying (:buy order)
                                                  price (:price order)]
                                              (conj v [:db/add eid :money (+ money (* buying price))])))
