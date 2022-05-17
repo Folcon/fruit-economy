@@ -462,7 +462,7 @@
                         clothes-rem (- clothes min-clothes)
 
                         food-had (- food food-rem)
-                        clothes-had (- clothes food-rem)
+                        clothes-had (- clothes clothes-rem)
 
                         enough-food? (>= food-had 0)
                         enough-clothes? (>= clothes-had 0)
