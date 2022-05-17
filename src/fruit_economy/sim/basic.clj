@@ -408,9 +408,11 @@
                                               money (:money factory)
                                               buying (:buy order)
                                               price (:price order)
-                                              sold (:sold factory)]
-                                          (into v [[:db/add eid :money (+ money (* buying price))]
-                                                   [:db/add eid :sold (+ sold buying)]])))
+                                              sold (:sold factory)
+                                              earning (* buying price)]
+                                          (into v [[:db/add eid :money (+ money earning)]
+                                                   [:db/add eid :sold (+ sold buying)]
+                                                   [:db/add eid :earned (+ (:earned peep) earning)]])))
                                       []
                                       (into food-orders clothes-orders))]
             (println peep-eid :shop food-want clothes-want :food-bought food-bought food :clothes-bought clothes-bought clothes (d/touch peep))
@@ -527,8 +529,11 @@
                                                  eid (:db/id peep)
                                                  money (:money peep)
                                                  buying (:buy order)
-                                                 price (:price order)]
-                                             (conj v [:db/add eid :money (+ money (* buying price))])))
+                                                 price (:price order)
+                                                 earning (* buying price)]
+                                             (into v [[:db/add eid :money (+ money earning)]
+                                                      [:db/add eid :sold (+ (:sold peep) buying)]
+                                                      [:db/add eid :earned (+ (:earned peep) earning)]])))
                                          []
                                          labour-orders)]
                   (println factory-eid :craft labour-want :labour-bought labour-bought (d/touch factory))
