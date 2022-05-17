@@ -320,7 +320,13 @@
                [:db/add (- idx 100) :sold 0]
                [:db/add (- idx 100) :last-sold 0]
                [:db/add (- idx 100) :earned 0]
-               [:db/add (- idx 100) :last-earned 0]])
+               [:db/add (- idx 100) :last-earned 0]
+               [:db/add (- idx 100) :labour/produced 0]
+               [:db/add (- idx 100) :food/consumed 0]
+               [:db/add (- idx 100) :clothes/consumed 0]
+               [:db/add (- idx 100) :labour/last-produced 0]
+               [:db/add (- idx 100) :food/last-consumed 0]
+               [:db/add (- idx 100) :clothes/last-consumed 0]])
             ;; food factories
             (for [idx (range 1)
                   :let [base-planning (rand-nth [1 3 5 8 15])]]
@@ -337,7 +343,11 @@
                [:db/add (- idx 200) :last-earned 0]
                [:db/add (- idx 200) :min-labour 2]
                [:db/add (- idx 200) :base-planning base-planning]
-               [:db/add (- idx 200) :planning base-planning]])
+               [:db/add (- idx 200) :planning base-planning]
+               [:db/add (- idx 200) :food/produced 0]
+               [:db/add (- idx 200) :labour/consumed 0]
+               [:db/add (- idx 200) :food/last-produced 0]
+               [:db/add (- idx 200) :labour/last-consumed 0]])
             ;; clothes factories
             (for [idx (range 1)
                   :let [base-planning (rand-nth [1 3 5 8 15])]]
@@ -354,7 +364,11 @@
                [:db/add (- idx 300) :last-earned 0]
                [:db/add (- idx 300) :min-labour 2]
                [:db/add (- idx 300) :base-planning base-planning]
-               [:db/add (- idx 300) :planning base-planning]])])
+               [:db/add (- idx 300) :planning base-planning]
+               [:db/add (- idx 300) :clothes/produced 0]
+               [:db/add (- idx 300) :labour/consumed 0]
+               [:db/add (- idx 300) :clothes/last-produced 0]
+               [:db/add (- idx 300) :labour/last-consumed 0]])])
    :args {'rand-nth rand-nth}})
 
 (defn like-to-buy [money price percentage]
