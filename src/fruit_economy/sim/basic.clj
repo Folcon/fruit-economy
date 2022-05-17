@@ -523,7 +523,8 @@
                 (let [{:keys [money sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
                       _ (println :sold sold)
                       labour-plan (* min-labour planning 10)
-                      {labour-price :labour/price
+                      {home-eid :db/id
+                       labour-price :labour/price
                        labour-supply :labour/supply
                        labour-consumed :labour/consumed
                        :as home} (get factory :hometown)
@@ -556,16 +557,16 @@
                                          labour-orders)]
                   (println factory-eid :craft labour-want :labour-bought labour-bought (d/touch factory))
                   (println (:_hometown home) :tx peep-earnings-tx)
-                  (cond-> [[:db/add (:db/id home) good-supply-key (+ (good-supply-key home) produced)]
-                           [:db/add (:db/id home) good-produced-key (+ (good-produced-key home) produced)]
-                           [:db/add (:db/id home) :labour/demand (+ (:labour/demand home) labour-want)]
+                  (cond-> [[:db/add home-eid good-supply-key (+ (good-supply-key home) produced)]
+                           [:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
+                           [:db/add home-eid :labour/demand (+ (:labour/demand home) labour-want)]
                            [:db/add factory-eid :inventory (+ decayed-inventory produced)]]
 
                     (>= labour-bought min-labour)
                     (into cat
-                      [[[:db/add (:db/id home) :labour/supply (- labour-supply labour-bought)]
+                      [[[:db/add home-eid :labour/supply (- labour-supply labour-bought)]
                         [:db/add factory-eid :money (- money labour-cost)]
-                        [:db/add (:db/id home) :labour/consumed (+ labour-consumed labour-bought)]]
+                        [:db/add home-eid :labour/consumed (+ labour-consumed labour-bought)]]
                        peep-earnings-tx]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
