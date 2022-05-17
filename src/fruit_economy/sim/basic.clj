@@ -316,7 +316,11 @@
                [:db/add (- idx 100) :clothes 10]
                [:db/add (- idx 100) :min-food 2]
                [:db/add (- idx 100) :min-clothes 1]
-               [:db/add (- idx 100) :planning (rand-nth [1 3 5 8 15])]])
+               [:db/add (- idx 100) :planning (rand-nth [1 3 5 8 15])]
+               [:db/add (- idx 100) :sold 0]
+               [:db/add (- idx 100) :last-sold 0]
+               [:db/add (- idx 100) :earned 0]
+               [:db/add (- idx 100) :last-earned 0]])
             ;; food factories
             (for [idx (range 1)
                   :let [base-planning (rand-nth [1 3 5 8 15])]]
@@ -329,6 +333,8 @@
                [:db/add (- idx 200) :inventory 0]
                [:db/add (- idx 200) :sold 0]
                [:db/add (- idx 200) :last-sold 0]
+               [:db/add (- idx 200) :earned 0]
+               [:db/add (- idx 200) :last-earned 0]
                [:db/add (- idx 200) :min-labour 2]
                [:db/add (- idx 200) :base-planning base-planning]
                [:db/add (- idx 200) :planning base-planning]])
@@ -344,6 +350,8 @@
                [:db/add (- idx 300) :inventory 0]
                [:db/add (- idx 300) :sold 0]
                [:db/add (- idx 300) :last-sold 0]
+               [:db/add (- idx 300) :earned 0]
+               [:db/add (- idx 300) :last-earned 0]
                [:db/add (- idx 300) :min-labour 2]
                [:db/add (- idx 300) :base-planning base-planning]
                [:db/add (- idx 300) :planning base-planning]])])
