@@ -510,13 +510,44 @@
      :then '[[:db.fn/call adjust-factory ?e ?sold ?wanted ?planning ?base-planning]]
      :call {'adjust-factory adjust-factory}}))
 
-(def reset-sold-rule
-  (let [reset-sold (fn [db eid]
-                     [[:db/add eid :sold 0]
-                      [:db/add eid :last-sold (:sold (d/entity db eid))]])]
-    {:when '[[?e :sold _]]
-     :then '[[:db.fn/call reset-sold ?e]]
-     :call {'reset-sold reset-sold}}))
+(def reset-entity-rule
+  (let [entity-sold (fn [db eid]
+                      (let [{food-produced :food/produced
+                             food-consumed :food/consumed
+                             clothes-produced :clothes/produced
+                             clothes-consumed :clothes/consumed
+                             labour-produced :labour/produced
+                             labour-consumed :labour/consumed
+                             :keys [sold]} (d/entity db eid)]
+                        (cond-> []
+                          sold
+                          (into [[:db/add eid :sold 0]
+                                 [:db/add eid :last-sold sold]])
+                          food-produced
+                          (into [[:db/add eid :food/produced 0]
+                                 [:db/add eid :food/last-produced food-produced]])
+                          food-consumed
+                          (into [[:db/add eid :food/consumed 0]
+                                 [:db/add eid :food/last-consumed food-consumed]])
+                          clothes-produced
+                          (into [[:db/add eid :clothes/produced 0]
+                                 [:db/add eid :clothes/last-produced clothes-produced]])
+                          clothes-consumed
+                          (into [[:db/add eid :clothes/consumed 0]
+                                 [:db/add eid :clothes/last-consumed clothes-consumed]])
+                          labour-produced
+                          (into [[:db/add eid :labour/produced 0]
+                                 [:db/add eid :labour/last-produced labour-produced]])
+                          labour-consumed
+                          (into [[:db/add eid :labour/consumed 0]
+                                 [:db/add eid :labour/last-consumed labour-consumed]]))))]
+    {:when '[(or
+               [?e :sold _]
+               [?e :food/consumed _]
+               [?e :clothes/consumed _]
+               [?e :labour/produced _])]
+     :then '[[:db.fn/call entity-sold ?e]]
+     :call {'entity-sold entity-sold}}))
 
 (def craft-rule
   (let [craft (fn [db factory-eid]
@@ -733,7 +764,7 @@
    adjust-factories-planning-rule
    craft-rule
    update-prices-rule
-   reset-sold-rule
+   reset-entity-rule
    state-tax-rule])
 
 (def reaction-rules
