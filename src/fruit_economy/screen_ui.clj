@@ -88,12 +88,13 @@
                        doc-2 doc-2]
         (ui/column
           (ui/row
-            (ui/fill fill-dark-gray
+            (ui/fill fill-light-gray
               (ui/height
                 height
                 (ui/width
                   width
                   (custom-ui/svg doc-1))))
+            (ui/gap 2 0)
             (ui/fill fill-light-gray
               (ui/height
                 height
