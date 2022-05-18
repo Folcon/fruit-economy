@@ -101,12 +101,14 @@
                   width
                   (custom-ui/svg doc-2))))
             (ui/column
-              [:stretch 1
-               (ui/button
-                 #(swap! *chart update :index (fn [x] (max (dec x) 0)))
-                 {:border-radius 0}
-                 (ui/label "<="))]
-              (ui/gap 0 10)
+              (ui/button
+                #(swap! *chart update :index (fn [x] (max (- x 7) 0)))
+                {:border-radius 0}
+                (ui/label "< 7x"))
+              (ui/button
+                #(swap! *chart update :index (fn [x] (max (dec x) 0)))
+                {:border-radius 0}
+                (ui/label "<="))
               #_#_
               (ui/button
                 #(println "SS")
@@ -116,11 +118,14 @@
                 #(println "SS")
                 {:border-radius 0}
                 (ui/label "-"))
-              [:stretch 1
-               (ui/button
-                 #(swap! *chart update :index (fn [x] (min (inc x) max-entries)))
-                 {:border-radius 0}
-                 (ui/label "=>"))])))))))
+              (ui/button
+                #(swap! *chart update :index (fn [x] (min (inc x) max-entries)))
+                {:border-radius 0}
+                (ui/label "=>"))
+              (ui/button
+                #(swap! *chart update :index (fn [x] (min (+ x 7) max-entries)))
+                {:border-radius 0}
+                (ui/label "7x >")))))))))
 
 (def price-chart-ui
   (ui/dynamic ctx [{:keys [price price-history fill-green]} ctx]
