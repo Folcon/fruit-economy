@@ -774,7 +774,7 @@
 
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
-                           font-small fill-white fill-black fill-dark-gray fill-green fill-yellow
+                           font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow
                            green-colour yellow-colour dark-gray-colour]} ctx
                    {:keys [camera tick zoom]} @*state
                    world @basic/*world]
@@ -867,12 +867,13 @@
                                       (ui/vscrollbar
                                         (ui/vscroll
                                           (ui/column
-                                            (interpose (ui/gap 0 4)
+                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
                                               (for [producer producers]
                                                 (ui/tooltip {:anchor :top-right :shackle :top-right}
                                                   (ui/label (pr-str producer))
-                                                  (ui/padding 150 20 150 20
-                                                    (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed])))))))))))))
+                                                  (ui/fill fill-light-gray
+                                                    (ui/padding 150 20 150 20
+                                                      (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
                                   (ui/padding 20
                                     (ui/label (str "Total Produced: " produced)))))
                               (ui/padding 20
@@ -884,9 +885,13 @@
                                       (ui/vscrollbar
                                         (ui/vscroll
                                           (ui/column
-                                            (interpose (ui/gap 0 4)
+                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
                                               (for [demander demanders]
-                                                (ui/label (pr-str demander)))))))))
+                                                (ui/tooltip {:anchor :top-right :shackle :top-right}
+                                                  (ui/label (pr-str demander))
+                                                  (ui/fill fill-light-gray
+                                                    (ui/padding 150 20 150 20
+                                                      (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
                                   (ui/padding 20
                                     (ui/label (str "Total Used: " consumed))))))
 
