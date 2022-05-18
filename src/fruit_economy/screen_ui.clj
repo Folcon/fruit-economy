@@ -93,13 +93,13 @@
                 height
                 (ui/width
                   width
-                  (custom-ui/svg doc-1 {:preserve-aspect-ratio false}))))
+                  (custom-ui/svg doc-1))))
             (ui/fill fill-light-gray
               (ui/height
                 height
                 (ui/width
                   width
-                  (custom-ui/svg doc-2 {:preserve-aspect-ratio false}))))))))))
+                  (custom-ui/svg doc-2))))))))))
 
 (def price-chart-ui
   (ui/dynamic ctx [{:keys [price price-history fill-green]} ctx]
