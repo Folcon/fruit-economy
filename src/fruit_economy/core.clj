@@ -1204,7 +1204,7 @@
 (comment
   (do
     (app/doui (some-> @*window window/close))
-    (reset! *window (hui/doui (make-window))))
+    (reset! *window (app/doui (make-window))))
 
   (app/doui (window/set-z-order @*window :normal))
   (app/doui (window/set-z-order @*window :floating)))
