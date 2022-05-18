@@ -55,9 +55,11 @@
           ;;limit (limit-fn mx)
           scale-fn (comp int #(Math/ceil %) (partial * (- height 26)) #(apply-limit-fn % mx))
           ;;_ (println :limit (mapv scale-fn xs))
-          ys (mapv (partial + 20) [0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225 256 289 324 361])
+          coll [0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225 256 289 324 361]
+          data (take #_500 1080 (cycle coll))
+          ys (mapv (partial + 20) data)
           size (count ys)
-          step 10
+          step 1 #_10 ;; effectively chart zoom
           xs (range 0 (* (inc size) step) step)
           _ (println :ys ys :xs xs :h (mapv scale-fn ys) :-h (mapv (comp (partial - height) scale-fn) ys))
           doc-1 [:dali/page page-attrs
