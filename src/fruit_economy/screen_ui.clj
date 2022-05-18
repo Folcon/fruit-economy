@@ -71,9 +71,7 @@
                        :C [140 10] [165 10] [195 80]
                        :C [225 150] [250 150] [280 80]]
                     [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (cycle [620 700]))]]]
-          step 10
-          init-x 100
-          xs (range init-x (+ (* (inc size) step) init-x) step)
+          ys' (subvec ys 0 25)
           doc-2 [:dali/page page-attrs
                  [:dali/stack
                   {:position [10 10] :direction :right :anchor :bottom-left :gap 2}
@@ -82,7 +80,7 @@
                           {:direction :up :gap 6}
                           [:rect {:stroke :none :fill :darkorchid} :_ [20 (scale-fn h)]]
                           [:text {:text-family "Verdana" :font-size 12} (str h)]])
-                    xs)]]]
+                    ys')]]]
       (ui/dynamic ctx [{:keys [fill-dark-gray fill-light-gray]} ctx
                        doc-1 doc-1
                        doc-2 doc-2]
