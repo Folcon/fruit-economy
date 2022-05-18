@@ -35,8 +35,11 @@
                  (ui/padding 10 10
                    (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
 
+(def *chart (atom {:index 0}))
+
 (defn display-chart [width height ys]
-  (ui/dynamic ctx [width width height height ys ys]
+  (ui/dynamic ctx [width width height height ys ys
+                   {:keys [index]} @*chart]
     (let [page-attrs {:xmlns "http://www.w3.org/2000/svg"
                       :version "1.2"
                       :width width
@@ -56,24 +59,21 @@
           scale-fn (comp int #(Math/ceil %) (partial * (- height 26)) #(apply-limit-fn % mx))
           ;;_ (println :limit (mapv scale-fn xs))
           coll [0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225 256 289 324 361]
-          data (take #_500 1080 (cycle coll))
+          max-entries #_500 1080
+          data (take max-entries (cycle coll))
+          ;; Have chart be able to zoom in and out... with swapping to doc-2 chart when zoomed in and doc-1 zoomed out.
           ys (mapv (partial + 20) data)
           size (count ys)
+          window 22
           step 1 #_10 ;; effectively chart zoom
-          xs (range 0 (* (inc size) step) step)
+          x-offset 4
+          xs (range x-offset (* (+ (inc size) x-offset) step) step)
           _ (println :ys ys :xs xs :h (mapv scale-fn ys) :-h (mapv (comp (partial - height) scale-fn) ys))
           doc-1 [:dali/page page-attrs
+                 [:rect {:stroke :none :fill :orchid} [(+ x-offset index) 0] [window 120]]
                  [:line {:stroke {:paint :red :width 4}} [0 0] [0 100]]
-                 [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (mapv (comp (partial - height) scale-fn) ys))]
-                 #_[:dali/stack
-                    {:position [10 10] :direction :right :anchor :bottom-left :gap 2}
-                    #_[:path
-                       {:id :path :fill :none :stroke :black}
-                       :M [110 80]
-                       :C [140 10] [165 10] [195 80]
-                       :C [225 150] [250 150] [280 80]]
-                    [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (cycle [620 700]))]]]
-          ys' (subvec ys 0 25)
+                 [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (mapv (comp (partial - height) scale-fn) ys))]]
+          ys' (subvec ys index (+ window index))
           doc-2 [:dali/page page-attrs
                  [:dali/stack
                   {:position [10 10] :direction :right :anchor :bottom-left :gap 2}
@@ -99,7 +99,28 @@
                 height
                 (ui/width
                   width
-                  (custom-ui/svg doc-2))))))))))
+                  (custom-ui/svg doc-2))))
+            (ui/column
+              [:stretch 1
+               (ui/button
+                 #(swap! *chart update :index (fn [x] (max (dec x) 0)))
+                 {:border-radius 0}
+                 (ui/label "<="))]
+              (ui/gap 0 10)
+              #_#_
+              (ui/button
+                #(println "SS")
+                {:border-radius 0}
+                (ui/label "+"))
+              (ui/button
+                #(println "SS")
+                {:border-radius 0}
+                (ui/label "-"))
+              [:stretch 1
+               (ui/button
+                 #(swap! *chart update :index (fn [x] (min (inc x) max-entries)))
+                 {:border-radius 0}
+                 (ui/label "=>"))])))))))
 
 (def price-chart-ui
   (ui/dynamic ctx [{:keys [price price-history fill-green]} ctx]
