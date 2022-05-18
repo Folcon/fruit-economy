@@ -771,7 +771,8 @@
 
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
-                           font-small fill-white fill-black fill-dark-gray fill-green fill-yellow]} ctx
+                           font-small fill-white fill-black fill-dark-gray fill-green fill-yellow
+                           green-colour yellow-colour dark-gray-colour]} ctx
                    {:keys [camera tick zoom]} @*state
                    world @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
@@ -805,24 +806,29 @@
                                    (ui/gap 0 0))
                         (for [city cities
                               :let [eid (:db/id city)]]
-                          (ui/clickable
-                            #(swap! basic/*world assoc :selected-city eid)
-                            (ui/hoverable
-                              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                                (ui/fill (cond hovered? fill-yellow (= selected-city eid) fill-green :else fill-dark-gray)
-                                  (ui/padding 10 10
-                                    (ui/label (:settlement/name city) {:font font-small :paint fill-white})))))))))
+                          (ui/with-context
+                            {:hui/active? (= selected-city eid)}
+                            (ui/button
+                              #(swap! basic/*world assoc :selected-city eid)
+                              {:bg-active green-colour
+                               :bg-hovered yellow-colour
+                               :bg dark-gray-colour
+                               :p 10 :border-radius 0}
+                              (ui/label (:settlement/name city) {:font font-small :paint fill-white}))))))
                     (ui/row
                       (interpose (ui/fill fill-dark-gray
                                    (ui/gap 0 0))
                         (for [market [:food :clothes :labour]]
-                          (ui/clickable
-                            #(swap! basic/*world assoc :selected-market market)
-                            (ui/hoverable
-                              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                                (ui/fill (cond hovered? fill-yellow (= selected-market market) fill-green :else fill-dark-gray)
-                                  (ui/padding 10 10
-                                    (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))))
+                          (ui/column
+                            (ui/with-context
+                              {:hui/active? (= selected-market market)}
+                              (ui/button
+                                #(swap! basic/*world assoc :selected-market market)
+                                {:bg-active green-colour
+                                 :bg-hovered yellow-colour
+                                 :bg dark-gray-colour
+                                 :p 10 :border-radius 0}
+                                (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))
                     (when (and selected-city selected-market)
                       (ui/dynamic ctx [{:keys [world-db selected-city selected-market]} ctx]
                         (let [city (db/entity world-db selected-city)
@@ -860,7 +866,10 @@
                                           (ui/column
                                             (interpose (ui/gap 0 4)
                                               (for [producer producers]
-                                                (ui/label (pr-str producer)))))))))
+                                                (ui/tooltip {:anchor :top-right :shackle :top-right}
+                                                  (ui/label (pr-str producer))
+                                                  (ui/padding 150 20 150 20
+                                                    (ui/label (pr-str (select-keys producer [:kind :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))
                                   (ui/padding 20
                                     (ui/label (str "Total Produced: " produced)))))
                               (ui/padding 20
