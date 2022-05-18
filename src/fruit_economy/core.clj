@@ -769,6 +769,9 @@
 
 (defn lookup-by-kind [world-db] (fn [kind] (data/lookup-avet world-db :kind kind)))
 
+(def kind->emoji
+  {:food-factory "🍲🏭" :clothes-factory "👚🏭" :peep "🧑"})
+
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
                            font-small fill-white fill-black fill-dark-gray fill-green fill-yellow
@@ -869,7 +872,7 @@
                                                 (ui/tooltip {:anchor :top-right :shackle :top-right}
                                                   (ui/label (pr-str producer))
                                                   (ui/padding 150 20 150 20
-                                                    (ui/label (pr-str (select-keys producer [:kind :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))
+                                                    (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed])))))))))))))
                                   (ui/padding 20
                                     (ui/label (str "Total Produced: " produced)))))
                               (ui/padding 20
