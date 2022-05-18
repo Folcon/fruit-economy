@@ -136,5 +136,5 @@
         (ui/label (str "Current Price:            " price " g"))
         (ui/fill fill-green
           (if-not (seq price-history)
-            (ui/label (pr-str price-history))
+            (ui/gap 0 0)
             (display-chart 500 100 (mapv #(* % %) (range 20)) #_price-history)))))))
