@@ -566,7 +566,9 @@
                     (into cat
                       [[[:db/add home-eid :labour/supply (- labour-supply labour-bought)]
                         [:db/add factory-eid :money (- money labour-cost)]
-                        [:db/add home-eid :labour/consumed (+ labour-consumed labour-bought)]]
+                        [:db/add home-eid :labour/consumed (+ labour-consumed labour-bought)]
+                        [:db/add factory-eid :labour/consumed (+ (:labour/consumed factory) labour-bought)]
+                        [:db/add factory-eid good-produced-key (+ (good-produced-key factory) produced)]]
                        peep-earnings-tx]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
