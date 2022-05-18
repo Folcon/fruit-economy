@@ -70,7 +70,7 @@
           xs (range x-offset (* (+ (inc size) x-offset) step) step)
           _ (println :ys ys :xs xs :h (mapv scale-fn ys) :-h (mapv (comp (partial - height) scale-fn) ys))
           doc-1 [:dali/page page-attrs
-                 [:rect {:stroke :none :fill :orchid} [(+ x-offset index) 0] [window 120]]
+                 [:rect {:stroke :none :fill :orchid} [(+ x-offset index) 0] [window 100]]
                  [:line {:stroke {:paint :red :width 4}} [0 0] [0 100]]
                  [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (mapv (comp (partial - height) scale-fn) ys))]]
           ys' (subvec ys index (+ window index))
