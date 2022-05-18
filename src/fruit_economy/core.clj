@@ -1064,25 +1064,42 @@
   (ui/dynamic ctx [scale (:scale ctx)]
     (let [font-ui   (Font. face-default (float (* 13 scale)))
           leading   (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
-          fill-text (paint/fill 0xFF000000)]
+          fill-text (paint/fill 0xFF000000)
+          selection-colour 0xFFB1D7FF
+          white-colour 0xFFFFFFFF
+          black-colour 0xFF000000
+          light-gray-colour 0xFFD4D6DA
+          dark-gray-colour 0xFF777C7E
+          blue-colour 0xFFB2D7FE
+          green-colour 0xFF6AAA64
+          yellow-colour 0xFFC9B457]
       (ui/with-context {:face-ui        face-default
                         :font-ui        font-ui
                         :leading        leading
                         :fill-text      fill-text
                         :fill-cursor    fill-text
-                        :fill-selection (paint/fill 0xFFB1D7FF)
+                        :fill-selection (paint/fill selection-colour)
+                        :selection-colour selection-colour
 
                         :font-default (Font. face-default (float (* 18 scale)))
                         :font-large (Font. ^Typeface face-default (float (* scale 26)))
                         :font-small (Font. ^Typeface face-default (float (* scale 13)))
 
-                        :fill-white (paint/fill 0xFFFFFFFF)
-                        :fill-black (paint/fill 0xFF000000)
-                        :fill-light-gray (paint/fill 0xFFD4D6DA)
-                        :fill-dark-gray (paint/fill 0xFF777C7E)
-                        :fill-blue (paint/fill 0xFFB2D7FE)
-                        :fill-green (paint/fill 0xFF6AAA64)
-                        :fill-yellow (paint/fill 0xFFC9B457)
+                        :fill-white (paint/fill white-colour)
+                        :fill-black (paint/fill black-colour)
+                        :fill-light-gray (paint/fill light-gray-colour)
+                        :fill-dark-gray (paint/fill dark-gray-colour)
+                        :fill-blue (paint/fill blue-colour)
+                        :fill-green (paint/fill green-colour)
+                        :fill-yellow (paint/fill yellow-colour)
+
+                        :white-colour white-colour
+                        :black-colour black-colour
+                        :light-gray-colour light-gray-colour
+                        :dark-gray-colour dark-gray-colour
+                        :blue-colour blue-colour
+                        :green-colour green-colour
+                        :yellow-colour yellow-colour
 
                         :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
                         :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
