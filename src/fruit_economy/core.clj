@@ -850,10 +850,9 @@
                             (ui/row
                               (ui/padding 20
                                 (ui/column
-                                  (ui/padding 5
-                                    (ui/label label))
-                                  (ui/padding 5
-                                    (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production)))))
+                                  (ui/label label)
+                                  (ui/gap 0 5)
+                                  (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production))))
                               (ui/with-context
                                 {:price price :price-history price-history}
                                 screen-ui/price-chart-ui))
