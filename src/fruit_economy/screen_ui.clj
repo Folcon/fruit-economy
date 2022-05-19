@@ -62,6 +62,7 @@
           max-entries #_500 1080
           data (take max-entries (cycle coll))
           ;; Have chart be able to zoom in and out... with swapping to doc-2 chart when zoomed in and doc-1 zoomed out.
+          #_#_ ;; use real data
           ys (mapv (partial + 20) data)
           size (count ys)
           window 22
@@ -137,4 +138,4 @@
         (ui/gap 0 5)
         (if-not (seq price-history)
           (ui/gap 0 0)
-          (display-chart 500 100 (mapv #(* % %) (range 20)) #_price-history))))))
+          (display-chart 500 100 price-history))))))
