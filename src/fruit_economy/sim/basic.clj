@@ -903,6 +903,7 @@
         (update $ :dbs (fnil track-db []) (:world-db $))
         (update $ :stats (fnil add-stats []) (:world-db $)))
       (catch Exception e
+        (println :BROKE!)
         (reset! *sim-broken e)
         *world))
     *world))
