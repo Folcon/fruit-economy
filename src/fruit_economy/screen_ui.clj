@@ -94,17 +94,13 @@
           (ui/fill fill-dark-gray
             (ui/row
               (ui/fill fill-light-gray
-                (ui/height
-                  height
-                  (ui/width
-                    width
+                (ui/height height
+                  (ui/width width
                     (custom-ui/svg doc-1))))
               (ui/gap 2 0)
               (ui/fill fill-light-gray
-                (ui/height
-                  height
-                  (ui/width
-                    width
+                (ui/height height
+                  (ui/width width
                     (custom-ui/svg doc-2))))
               (ui/column
                 (ui/button
