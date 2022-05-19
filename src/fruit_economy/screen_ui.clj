@@ -59,12 +59,12 @@
           scale-fn (comp int #(Math/ceil %) (partial * (- height 26)) #(apply-limit-fn % mx))
           ;;_ (println :limit (mapv scale-fn xs))
           coll [0 1 4 9 16 25 36 49 64 81 100 121 144 169 196 225 256 289 324 361]
-          max-entries #_500 1080
+          size (count ys)
+          max-entries (min size #_500 1080)
           data (take max-entries (cycle coll))
           ;; Have chart be able to zoom in and out... with swapping to doc-2 chart when zoomed in and doc-1 zoomed out.
           #_#_ ;; use real data
           ys (mapv (partial + 20) data)
-          size (count ys)
           window 22
           step 1 #_10 ;; effectively chart zoom
           x-offset 4
@@ -74,16 +74,19 @@
                  [:rect {:stroke :none :fill :orchid} [(+ x-offset index) 0] [window 100]]
                  [:line {:stroke {:paint :red :width 4}} [0 0] [0 100]]
                  [:polyline {:fill :none :stroke :black} (map #(vector %1 %2) xs (mapv (comp (partial - height) scale-fn) ys))]]
-          ys' (subvec ys index (+ window index))
+          ys' (if (seq ys)
+                (subvec ys index (min (+ window index) max-entries))
+                ys)
           doc-2 [:dali/page page-attrs
-                 [:dali/stack
-                  {:position [10 10] :direction :right :anchor :bottom-left :gap 2}
-                  (map (fn [h]
-                         [:dali/stack
-                          {:direction :up :gap 6}
-                          [:rect {:stroke :none :fill :darkorchid} :_ [20 (scale-fn h)]]
-                          [:text {:text-family "Verdana" :font-size 12} (str h)]])
-                    ys')]]]
+                 (when (seq ys')
+                   [:dali/stack
+                    {:position [10 10] :direction :right :anchor :bottom-left :gap 2}
+                    (map (fn [h]
+                           [:dali/stack
+                            {:direction :up :gap 6}
+                            [:rect {:stroke :none :fill :darkorchid} :_ [20 (scale-fn h)]]
+                            [:text {:text-family "Verdana" :font-size 12} (str h)]])
+                      ys')])]]
       (ui/dynamic ctx [{:keys [fill-dark-gray fill-light-gray]} ctx
                        doc-1 doc-1
                        doc-2 doc-2]
