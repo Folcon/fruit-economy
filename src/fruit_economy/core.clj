@@ -1076,7 +1076,8 @@
           dark-gray-colour 0xFF777C7E
           blue-colour 0xFFB2D7FE
           green-colour 0xFF6AAA64
-          yellow-colour 0xFFC9B457]
+          yellow-colour 0xFFC9B457
+          red-colour 0xFFD53F3F]
       (ui/with-context {:face-ui        face-default
                         :font-ui        font-ui
                         :leading        leading
@@ -1096,6 +1097,7 @@
                         :fill-blue (paint/fill blue-colour)
                         :fill-green (paint/fill green-colour)
                         :fill-yellow (paint/fill yellow-colour)
+                        :fill-red (paint/fill red-colour)
 
                         :white-colour white-colour
                         :black-colour black-colour
@@ -1104,6 +1106,7 @@
                         :blue-colour blue-colour
                         :green-colour green-colour
                         :yellow-colour yellow-colour
+                        :red-colour red-colour
 
                         :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
                         :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
