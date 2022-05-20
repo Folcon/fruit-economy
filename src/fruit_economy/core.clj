@@ -1126,7 +1126,7 @@
         ctx {:bounds bounds :scale (window/scale window) :x-scale x-scale :y-scale y-scale :xy-scale xy-scale}
         app app]
     (hui/draw app ctx (IRect/makeXYWH 0 0 (:width bounds) (:height bounds)) canvas)
-    (window/request-frame window)))
+    #_(window/request-frame window)))
 
 (defn on-event [window event]
   (when-let [changed? (hui/event app event)]
