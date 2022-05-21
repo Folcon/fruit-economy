@@ -932,7 +932,7 @@
         (window/set-z-order window :normal)))))
 
 (def game-screen
-  (ui/dynamic ctx [{:keys [scale face-default emoji-face]} ctx
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face game-glyph]} ctx
                    player-hp (:player-hp @state/*state)]
     (let [font-ui (Font. ^Typeface face-default (float (* 13 scale)))
           leading (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
@@ -1086,6 +1086,7 @@
           red-colour 0xFFD53F3F]
       (ui/with-context {:face-default   face-default
                         :emoji-face     emoji-face
+                        :game-glyph     game-glyph
                         :face-ui        face-default
                         :font-ui        font-ui
                         :leading        leading
