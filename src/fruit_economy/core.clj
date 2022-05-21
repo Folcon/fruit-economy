@@ -779,13 +779,13 @@
   {:food-factory "🍲🏭" :clothes-factory "👚🏭" :peep "🧑"})
 
 (def basic-ui-view
-  (ui/dynamic ctx [{:keys [scale x-scale y-scale
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
                            font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow
                            green-colour yellow-colour dark-gray-colour]} ctx
                    {:keys [camera tick zoom]} @state/*state
                    world @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
-          emoji-font (Font. emoji-face (float (* scale 8 zoom)))
+          emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
           canvas-width (int (* x-scale *canvas-width*))
           canvas-height (int (* y-scale *canvas-height*))
