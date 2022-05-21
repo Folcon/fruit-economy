@@ -24,7 +24,8 @@
    [fruit-economy.economy :as economy]
    [fruit-economy.sim.basic :as basic]
    [fruit-economy.screen-ui :as screen-ui]
-   [fruit-economy.utils :refer [suppress-print]])
+   [fruit-economy.utils :refer [suppress-print]]
+   [taoensso.timbre :refer [set-level! log]])
   (:import
    [io.github.humbleui.jwm EventMouseButton EventMouseMove EventMouseScroll EventKey KeyModifier]
    [io.github.humbleui.skija Surface Canvas Color4f FontMgr FontStyle Typeface Font Paint PaintMode]
@@ -35,6 +36,10 @@
 (set! *warn-on-reflection* true)
 
 (defn debug? [] (= (env :debug?) "true"))
+
+;; TODO: Make this compile time using env vars for prod builds
+(when-not (debug?)
+  (set-level! :warn))
 
 (defonce font-mgr (FontMgr/getDefault))
 
