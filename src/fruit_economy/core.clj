@@ -495,8 +495,8 @@
 
 (def world-map
   (ui/dynamic ctx [{:keys [scale x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
-    (let [{::land/keys [terrain units area->units] :as d} (data/land-data world-db)
                    {:keys [world-db tick camera zoom map-view] :as state} @state/*state]
+    (let [{::land/keys [terrain temp elev raw-resource units area->units] :as d} (data/land-data world-db)
           territory (into #{} (map :area) (data/land-claims world-db))
 
           canvas-width (int (* x-scale state/*canvas-width*))
@@ -509,26 +509,44 @@
           map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
 
-          unit-data (fn [_tile x y]
+          unit-data (fn [x y]
                       (let [;; pixel-x and pixel-y
-                            loc-x x ;(+ (int (- x half-vw)) camera-x)
-                            loc-y y ;(+ (int (- y half-vh)) camera-y)
+                            loc-x x                         ;(+ (int (- x half-vw)) camera-x)
+                            loc-y y                         ;(+ (int (- y half-vh)) camera-y)
                             loc [loc-x loc-y]
                             path [loc-y loc-x]
 
                             biome (get-in terrain path)
+
+                            ;; temp + elevation map
+                            ;; Distribute out food for foraging + rock for crafting
+                            local-temp (get-in temp path)
+                            local-elev (get-in elev path)
+                            raw-resource (get-in raw-resource path)
+
+                            local-temp' (if local-temp (int (quot (* (+ local-temp 1) 255) 2)) 0)
+                            local-elev' (if local-elev (int (quot (* (+ local-elev 1) 255) 2)) 0)
 
                             territory? (contains? territory loc)
                             {::civ/keys [symbol tint] :as civ} (when territory? (data/land-area->civ world-db loc))
 
                             things (data/land-area world-db [x y])
                             size (count things)
-                            thing (when-not (zero? size) (:glyph (nth things (rem tick size))))]
+                            thing (when-not (zero? size) (:glyph (nth things (rem tick size))))
+
+                            default-tint (condp = map-view
+                                           :temp-view (colour local-temp' 0 0)
+                                           :elev-view (colour 0 local-elev' 0)
+                                           :climate-view (colour local-temp' local-elev' 0)
+                                           :forage-view (colour 0 (* (get raw-resource :food 0) 40) 0)
+                                           :mine-view (colour 0 (* (get raw-resource :rock 0) 40) 0)
+                                           :default-map-view (land/render-tile-colour biome)
+                                           (colour 0 0 0))]
                         (cond
                           thing [thing (if territory? tint (land/render-tile-colour biome)) emoji-font emoji-offset-x emoji-offset-y]
                           civ [symbol tint map-font font-offset-x font-offset-y]
                           territory? ["" tint map-font font-offset-x font-offset-y]
-                          :else ["" (land/render-tile-colour biome) map-font font-offset-x font-offset-y])))]
+                          :else ["" default-tint map-font font-offset-x font-offset-y])))]
       (ui/column
         (interpose (ui/gap 0 0)
           (for [y-idx (range top bottom)]
