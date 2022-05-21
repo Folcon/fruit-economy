@@ -46,8 +46,6 @@
 
 (defonce font-mgr (FontMgr/getDefault))
 
-(defonce ^:dynamic *canvas-width* 2400)
-(defonce ^:dynamic *canvas-height* 1200)
 
 
 (defn init-world [world-name width height]
@@ -574,8 +572,8 @@
                    {:keys [world-db tick camera zoom map-view] :as state} @state/*state]
           territory (into #{} (map :area) (data/land-claims world-db))
 
-          canvas-width (int (* x-scale *canvas-width*))
-          canvas-height (int (* y-scale *canvas-height*))
+          canvas-width (int (* x-scale state/*canvas-width*))
+          canvas-height (int (* y-scale state/*canvas-height*))
 
           {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)
 
@@ -693,8 +691,8 @@
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
-          canvas-width (int (* x-scale *canvas-width*))
-          canvas-height (int (* y-scale *canvas-height*))
+          canvas-width (int (* x-scale state/*canvas-width*))
+          canvas-height (int (* y-scale state/*canvas-height*))
 
           {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)]
       (ui/with-context
@@ -881,8 +879,8 @@
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
-          canvas-width (int (* x-scale *canvas-width*))
-          canvas-height (int (* y-scale *canvas-height*))
+          canvas-width (int (* x-scale state/*canvas-width*))
+          canvas-height (int (* y-scale state/*canvas-height*))
 
           {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)]
       (ui/valign 0.5
@@ -1053,7 +1051,7 @@
         bounds (window/content-rect window)
         [content-width content-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
         {:keys [init-cell zoom]} @state/*state
-        scale (max (float (/ *canvas-width* content-width)) (float (/ *canvas-height* content-height)))
+        scale (max (float (/ state/*canvas-width* content-width)) (float (/ state/*canvas-height* content-height)))
         {screen :work-area} (app/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
         y-scale (float (/ (.getHeight ^IRect bounds) (.getHeight ^IRect screen)))
@@ -1062,8 +1060,8 @@
         ;;   we should pass it whole numbers
         ;; TODO: need better names here, we want to be able to disambiguate the size of the tile, whether it's scaled or not and what those things depend on.
         cell' (* init-cell zoom)
-        canvas-width' (long (* x-scale *canvas-width*))
-        canvas-height' (long (* y-scale *canvas-height*))
+        canvas-width' (long (* x-scale state/*canvas-width*))
+        canvas-height' (long (* y-scale state/*canvas-height*))
         viewport-width' (inc (quot canvas-width' cell'))
         viewport-height' (inc (quot canvas-height' cell'))
         half-vw' (quot viewport-width' 2)
