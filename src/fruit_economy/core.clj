@@ -24,6 +24,7 @@
    [fruit-economy.game :as game]
    [fruit-economy.economy :as economy]
    [fruit-economy.sim.basic :as basic]
+   [fruit-economy.ui.bits :as ui.bits :refer [padding]]
    [fruit-economy.screen-ui :as screen-ui]
    [fruit-economy.utils :refer [suppress-print]]
    [taoensso.timbre :refer [set-level! log]])
@@ -537,8 +538,6 @@
                 (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") {:font font-small :paint fill-text}))
               (ui/padding 10
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-text})))))))))
-
-(def padding 4)
 
 (defn nested-limit
   ([coll limit] (nested-limit coll limit nil))
