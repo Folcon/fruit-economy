@@ -86,7 +86,8 @@
      :render-ms 400
      :last-render (System/currentTimeMillis)}))
 
-(defonce *state (atom (new-state)))
+(when (nil? @state/*state)
+  (reset! state/*state (new-state)))
 ;; END GAME STATE
 
 (defonce *window (atom nil))
@@ -178,7 +179,7 @@
      :image (.makeImageSnapshot buffer)}))
 
 (defn draw-impl [^Canvas canvas viewport-width viewport-height]
-  (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @*state
+  (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @state/*state
 
         font-default (Font. face-default (float (* 24 zoom)))
         fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
@@ -206,7 +207,7 @@
         render? (> (- now last-render) render-ms)]
     ;; slowing render down
     (when render?
-      (swap! *state on-render now))
+      (swap! state/*state on-render now))
 
     (.clear canvas (unchecked-int 0xFFFFFBBB))
 
@@ -262,7 +263,7 @@
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
 
 (defn on-key-pressed-impl [{:keys [key pressed? event] :as raw-event}]
-  (let [state @*state
+  (let [state @state/*state
         move (fn [[x1 y1]] (fn [[x2 y2]] [(+ x1 x2) (+ y1 y2)]))]
 
     ;; mouse
@@ -273,7 +274,7 @@
             [screen-x screen-y] ((juxt :x :y) (:hui.event/pos raw-event))
             loc-x (+ (int (- (quot screen-x cell) half-vw)) camera-x)
             loc-y (+ (int (- (quot screen-y cell) half-vh)) camera-y)]
-        (swap! *state assoc :hovering {:world [loc-x loc-y] :screen [screen-x screen-y]})))
+        (swap! state/*state assoc :hovering {:world [loc-x loc-y] :screen [screen-x screen-y]})))
 
     (when (= event :hui/mouse-button)
       (println :panel raw-event)
@@ -282,25 +283,25 @@
     ;; keyboard
     (when (and (= event :key) pressed?)
       (println :panel key)
-      (println (:peep @*state))
+      (println (:peep @state/*state))
       (condp contains? key
         #{:d :right}
-        (doto *state
+        (doto state/*state
           (swap! update :peep (move [1 0]))
           (swap! update :camera (move [1 0])))
 
         #{:a :left}
-        (doto *state
+        (doto state/*state
           (swap! update :peep (move [-1 0]))
           (swap! update :camera (move [-1 0])))
 
         #{:s :down}
-        (doto *state
+        (doto state/*state
           (swap! update :peep (move [0 1]))
           (swap! update :camera (move [0 1])))
 
         #{:w :up}
-        (doto *state
+        (doto state/*state
           (swap! update :peep (move [0 -1]))
           (swap! update :camera (move [0 -1])))
 
@@ -312,7 +313,7 @@
               viewport-height' (inc (quot canvas-height cell'))
               half-vw' (quot viewport-width' 2)
               half-vh' (quot viewport-height' 2)]
-          (swap! *state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
+          (swap! state/*state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
 
         #{:equals}
         (let [{:keys [scale zoom init-cell canvas-width canvas-height]} state
@@ -322,7 +323,7 @@
               viewport-height' (inc (quot canvas-height cell'))
               half-vw' (quot viewport-width' 2)
               half-vh' (quot viewport-height' 2)]
-          (swap! *state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
+          (swap! state/*state assoc :zoom zoom' :cell cell' :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh'))
 
         ;; (println :panel key)
         nil))))
@@ -331,7 +332,7 @@
   "Render for small panel, this will be a sort of global render
   context to ensure stuff like ticks still keep happening"
   [^Canvas canvas window-width window-height]
-  (let [{:keys [tick tick-ms last-tick paused?] :as _state} @*state
+  (let [{:keys [tick tick-ms last-tick paused?] :as _state} @state/*state
         now (System/currentTimeMillis)
         fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
 
@@ -349,7 +350,7 @@
     (when (and
             (not paused?)
             (> (- now last-tick) tick-ms))
-      (swap! *state on-tick now))
+      (swap! state/*state on-tick now))
 
     #_(println :mini-panel tick)
 
@@ -361,7 +362,7 @@
 (declare on-resize)
 
 (defn on-key-pressed-mini-panel-impl [{:keys [key pressed? event] :as raw-event}]
-  (let [state @*state]
+  (let [state @state/*state]
 
     ;; mouse
     #_#_
@@ -374,36 +375,36 @@
     ;; keyboard
     (when (and (= event :key) pressed?)
       (println :mini-panel key)
-      (println (:peep @*state))
+      (println (:peep @state/*state))
       (condp contains? key
         #{:q}
         (let [history-index (get state :history-index)
               history (data/history-log-entries (:world-db state))
               history-size (count history)]
-          (swap! *state assoc :history-index (min (dec history-size) (inc history-index))))
+          (swap! state/*state assoc :history-index (min (dec history-size) (inc history-index))))
 
         #{:e}
         (let [history-index (get state :history-index)]
-          (swap! *state assoc :history-index (max 0 (dec history-index))))
+          (swap! state/*state assoc :history-index (max 0 (dec history-index))))
 
         #{:t}
-        (swap! *state update :economy? not)
+        (swap! state/*state update :economy? not)
 
         #{:y}
-        (swap! *state update :world-db data/step-economy)
+        (swap! state/*state update :world-db data/step-economy)
 
         #{:p}
-        (swap! *state update :paused? not)
+        (swap! state/*state update :paused? not)
 
         #{:close-bracket}
         (let [civ-index (get state :civ-index)
               size (data/civ-count (:world-db state))]
-          (swap! *state assoc :civ-index (rem (inc civ-index) size)))
+          (swap! state/*state assoc :civ-index (rem (inc civ-index) size)))
 
         #{:open-bracket}
         (let [civ-index (get state :civ-index)
               size (data/civ-count (:world-db state))]
-          (swap! *state assoc :civ-index (rem (+ (dec civ-index) size) size)))
+          (swap! state/*state assoc :civ-index (rem (+ (dec civ-index) size) size)))
 
         ;#{:digit5}
         ;(let [civ-index (get state :civ-index)
@@ -414,7 +415,7 @@
         ;      controlling-civ-id (nth ordered-civs civ-index)
         ;      controlling-civ' (data/entity (:world-db state) controlling-civ-id)]
         ;  (when controlling-civ
-        ;    (-> *state
+        ;    (-> state/*state
         ;      (swap! update :world civ-actions/grow-pop controlling-civ)
         ;      (swap! update :world-db civ-actions/grow-pop' controlling-civ'))))
         ;
@@ -430,25 +431,25 @@
         ;      controlling-civ' (data/entity (:world-db state) controlling-civ-id)
         ;      _ (println :controlling-civ controlling-civ)]
         ;  (when controlling-civ
-        ;    (swap! *state update :world civ-actions/expand-territory controlling-civ)))
+        ;    (swap! state/*state update :world civ-actions/expand-territory controlling-civ)))
         ;
         ;#{:digit7}
         ;(let [civ-index (get state :civ-index)
         ;      civ-name->civ (get-in state [:world ::land/civ-name->civ])
         ;      controlling-civ (nth (vals civ-name->civ) civ-index)]
         ;  (when controlling-civ
-        ;    (swap! *state update :world civ-actions/improve-tech-level controlling-civ)))
+        ;    (swap! state/*state update :world civ-actions/improve-tech-level controlling-civ)))
 
         #{:r}
         (do
-          (reset! *state (new-state))
+          (reset! state/*state (new-state))
           (on-resize @*window))
 
         ;; (println :mini-panel key)
         nil))))
 
 (defn on-key-pressed-svg-impl [{:keys [key pressed? event] :as raw-event}]
-  (let [state @*state]
+  (let [state @state/*state]
 
     ;; mouse
     #_#_
@@ -465,32 +466,32 @@
         #{:d :right}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 0] + 20))
+          (swap! state/*state update-in [:svg-xyz 0] + 20))
 
         #{:a :left}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 0] - 20))
+          (swap! state/*state update-in [:svg-xyz 0] - 20))
 
         #{:s :down}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 1] + 20))
+          (swap! state/*state update-in [:svg-xyz 1] + 20))
 
         #{:w :up}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 1] - 20))
+          (swap! state/*state update-in [:svg-xyz 1] - 20))
 
         #{:minus}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 2] - 0.1))
+          (swap! state/*state update-in [:svg-xyz 2] - 0.1))
 
         #{:equals}
         (let [svg-xyz (get state :svg-xyz)]
           (println :svg-xyz svg-xyz)
-          (swap! *state update-in [:svg-xyz 2] + 0.1))
+          (swap! state/*state update-in [:svg-xyz 2] + 0.1))
 
         ;; (println :tech-ui-panel key)
         nil))))
@@ -606,19 +607,19 @@
          (ui/fill fill-yellow
            (ui/row
              (ui/padding 10 10
-               (ui/dynamic ctx [tick (:tick @*state)]
+               (ui/dynamic ctx [tick (:tick @state/*state)]
                  (ui/label (str "Day " (inc tick)) {:font font-small :paint fill-black})))
              [:stretch 1 nil]
              (ui/fill fill-white
                (ui/clickable
-                 #(reset! *state (new-state))
+                 #(reset! state/*state (new-state))
                  (ui/padding 10 10
                    (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
 
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
-      (ui/dynamic ctx [{:keys [world-db svg-xyz]} @*state]
+      (ui/dynamic ctx [{:keys [world-db svg-xyz]} @state/*state]
         (let [{::land/keys [economy]} (data/land-data world-db)
               [svg-x svg-y svg-z] svg-xyz]
           (ui/column
@@ -643,8 +644,8 @@
 
 (def world-map
   (ui/dynamic ctx [{:keys [scale x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
-                   {:keys [world-db tick camera zoom] :as state} @*state]
     (let [{::land/keys [terrain units area->units] :as d} (data/land-data world-db)
+                   {:keys [world-db tick camera zoom map-view] :as state} @state/*state]
           territory (into #{} (map :area) (data/land-claims world-db))
 
           canvas-width (int (* x-scale *canvas-width*))
@@ -686,9 +687,8 @@
                   (ui/hoverable
                     (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                       (let [_ (when hovered?
-                                (swap! *state assoc :hover-loc [x-idx y-idx]))
-                            tile (get-in terrain [y-idx x-idx])
-                            [glyph tile-colour font] (unit-data tile x-idx y-idx)]
+                                (swap! state/*state assoc :hover-loc [x-idx y-idx]))
+                            [glyph tile-colour font] (unit-data x-idx y-idx)]
                         (ui/fill (if hovered?
                                    (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
                                    (paint/fill tile-colour))
@@ -702,7 +702,7 @@
   (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale font-small fill-white fill-black fill-green fill-dark-gray fill-light-gray]} ctx
-                       {:keys [camera tick]} @*state]
+                       {:keys [camera tick]} @state/*state]
         (ui/column
           top-bar-ui
           (ui/gap 0 padding)
@@ -782,7 +782,7 @@
   (ui/dynamic ctx [{:keys [scale x-scale y-scale
                            font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow
                            green-colour yellow-colour dark-gray-colour]} ctx
-                   {:keys [camera tick zoom]} @*state
+                   {:keys [camera tick zoom]} @state/*state
                    world @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
@@ -932,7 +932,7 @@
 
 (def game-screen
   (ui/dynamic ctx [scale (:scale ctx)
-                   player-hp (:player-hp @*state)]
+                   player-hp (:player-hp @state/*state)]
     (let [font-ui (Font. face-default (float (* 13 scale)))
           leading (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
           emoji-font (Font. emoji-face (float 72))
@@ -968,7 +968,7 @@
 
 (def start-screen
   (ui/dynamic ctx [{:keys [scale x-scale y-scale]} ctx
-                   {:keys [camera tick zoom]} @*state
+                   {:keys [camera tick zoom]} @state/*state
                    {:keys [started?]} @state/*menu
                    {:keys [world-db]} @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
@@ -1024,7 +1024,7 @@
                                                     gov-eid (:db/id government)]
                                                 (ui/clickable
                                                   #(do
-                                                     (swap! *state assoc :camera coord)
+                                                     (swap! state/*state assoc :camera coord)
                                                      (swap! basic/*world assoc :player-eid gov-eid))
                                                   (ui/clip-rrect 4
                                                     (ui/dynamic ctx [{:keys [hui/active? hui/hovered?]} ctx]
@@ -1063,7 +1063,8 @@
                         (and history? (not viable?))
                         (ui/label "Everything Died, Try again?")))))))))))))
 
-(reset! state/*menu (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false}))
+(when (nil? @state/*menu)
+  (reset! state/*menu (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false})))
 
 #_  ;; For debugging start-screen
 (reset! state/*menu {:screen start-screen :started? false})
@@ -1141,7 +1142,7 @@
         [window-width window-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) (window/window-rect window))
         bounds (window/content-rect window)
         [content-width content-height] ((juxt #(.getWidth ^IRect %) #(.getHeight ^IRect %)) bounds)
-        {:keys [init-cell zoom]} @*state
+        {:keys [init-cell zoom]} @state/*state
         scale (max (float (/ *canvas-width* content-width)) (float (/ *canvas-height* content-height)))
         {screen :work-area} (app/primary-screen)
         x-scale (float (/ (.getWidth ^IRect bounds) (.getWidth ^IRect screen)))
@@ -1157,8 +1158,8 @@
         viewport-height' (inc (quot canvas-height' cell'))
         half-vw' (quot viewport-width' 2)
         half-vh' (quot viewport-height' 2)]
-    (swap! *state assoc
       :scale scale :cell cell' :canvas-width canvas-width' :canvas-height canvas-height'
+    (swap! state/*state assoc
       :viewport-width viewport-width' :viewport-height viewport-height' :half-vw half-vw' :half-vh half-vh')
     (window/set-window-size window (max window-width min-width) (max window-height min-height))))
 
@@ -1203,12 +1204,12 @@
 (def clock (atom nil))
 
 (defn tick-clock []
-  (let [{:keys [tick-ms last-tick paused?]} @*state
+  (let [{:keys [tick-ms last-tick paused?]} @state/*state
         now (System/currentTimeMillis)]
     (when (and
             (not paused?)
             (> (- now last-tick) tick-ms))
-      (swap! *state on-tick now))))
+      (swap! state/*state on-tick now))))
 
 (defn start-clock [ms]
   (reset! clock (set-interval tick-clock ms)))

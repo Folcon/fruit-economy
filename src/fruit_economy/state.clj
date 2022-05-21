@@ -2,3 +2,5 @@
 
 
 (defonce *menu (atom nil))
+
+(defonce *state (atom nil))
