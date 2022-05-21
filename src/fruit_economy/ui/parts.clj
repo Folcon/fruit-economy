@@ -87,7 +87,7 @@
              time-controls
              (ui/fill fill-white
                (ui/clickable
-                 #(reset! basic/*world (basic/reset-world))
+                 #(reset! state/*world (basic/reset-world))
                  (ui/padding 10 10
                    (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
 
