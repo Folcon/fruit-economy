@@ -566,26 +566,13 @@
             (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-black})))))))
 
 
-(def messages-ui-view
-  (ui/on-key-down on-key-pressed-impl
-    (ui/padding padding padding
-      (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
-        (ui/column
-          ui.parts/top-bar-ui
-          [:stretch 1
-           (ui/vscrollbar
-             (ui/vscroll
-               (ui/column
-                 (ui.parts/message-log-ui))))])))))
-
-
 (def ui-views
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
   (array-map
     "Map" map-ui-view
     "Economy" economy-ui-view
     "Basic" ui.views/basic-ui-view
-    "Log" messages-ui-view))
+    "Log" ui.views/messages-ui-view))
 
 (reset! state/*selected-ui-view (ffirst ui-views))
 

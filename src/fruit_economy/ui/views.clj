@@ -3,7 +3,8 @@
             [fruit-economy.state :as state]
             [fruit-economy.db.core :as db]
             [fruit-economy.data.core :as data]
-            [fruit-economy.ui.bits :as ui.bits :refer [show-map-ui]]
+            [fruit-economy.ui.bits :as ui.bits :refer [padding show-map-ui]]
+            [fruit-economy.ui.parts :as ui.parts]
             [fruit-economy.ui.controls :refer [on-key-pressed-impl]]
             [fruit-economy.screen-ui :as screen-ui]
             [fruit-economy.sim.basic :as basic])
@@ -173,3 +174,15 @@
                                                    (ui/gap 0 4))
                                         (for [market cities]
                                           (show-map-ui market font-small fill-black))))))))))))))))))))))
+
+(def messages-ui-view
+  (ui/on-key-down on-key-pressed-impl
+    (ui/padding padding padding
+      (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
+        (ui/column
+          ui.parts/top-bar-ui
+          [:stretch 1
+           (ui/vscrollbar
+             (ui/vscroll
+               (ui/column
+                 (ui.parts/message-log-ui))))])))))
