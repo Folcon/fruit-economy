@@ -937,6 +937,44 @@
 (defn viable-world? [world-db]
   (seq (lookup-avet world-db :kind :city)))
 
+(def time-controls
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-yellow fill-dark-gray]} ctx]
+    (ui/row
+      (ui/clickable
+        #(reset! *world (reset-world))
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "RESET!" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        do-tick-world
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 1 Day" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        tick-world-10x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 10 Days" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        tick-world-100x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 100 Days" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        tick-world-1000x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))))
 
 (def ui-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
@@ -954,42 +992,7 @@
                     (for [settlement (settlements-q world-db nil)]
                       (ui/padding 4
                         (city-view settlement))))))))))
-      (ui/row
-        (ui/clickable
-          #(reset! *world (reset-world))
-          (ui/hoverable
-            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-yellow fill-dark-gray)
-                (ui/padding 10 10
-                  (ui/label "RESET!" {:font font-small :paint fill-white}))))))
-        (ui/clickable
-          do-tick-world
-          (ui/hoverable
-            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-yellow fill-dark-gray)
-                (ui/padding 10 10
-                  (ui/label "+ 1 Day" {:font font-small :paint fill-white}))))))
-        (ui/clickable
-          tick-world-10x
-          (ui/hoverable
-            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-yellow fill-dark-gray)
-                (ui/padding 10 10
-                  (ui/label "+ 10 Days" {:font font-small :paint fill-white}))))))
-        (ui/clickable
-          tick-world-100x
-          (ui/hoverable
-            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-yellow fill-dark-gray)
-                (ui/padding 10 10
-                  (ui/label "+ 100 Days" {:font font-small :paint fill-white}))))))
-        (ui/clickable
-          tick-world-1000x
-          (ui/hoverable
-            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (if hovered? fill-yellow fill-dark-gray)
-                (ui/padding 10 10
-                  (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))
+      time-controls
       (ui/row
         (ui/clickable
           #(swap! *world assoc :map-view :default-view)
