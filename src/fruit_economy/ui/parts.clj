@@ -2,24 +2,41 @@
   (:require [io.github.humbleui.ui :as ui]
             [fruit-economy.state :as state]
             [fruit-economy.data.core :as data]
-            [fruit-economy.ui.bits :as ui.bits :refer [padding]])
+            [fruit-economy.ui.bits :as ui.bits :refer [padding]]
+            [fruit-economy.sim.basic :as basic])
   (:import [io.github.humbleui.skija Paint PaintMode]))
 
 
+;; TODO: Create a UI element + add button when nil to select player
+(def player-stats-ui
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black world-db player-eid]} ctx]
+    (if player-eid
+      (let [player (data/entity world-db player-eid)]
+        (ui/row
+          (ui/padding 10 10
+            (ui/label (str "Nation " (get-in player [:governs :settlement/name])) {:font font-small :paint fill-black}))
+          (ui/padding 10 10
+            (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))))
+      (ui/fill fill-white
+        (ui/clickable
+          #(swap! state/*menu assoc :screen nil)
+          (ui/padding 10 10
+            (ui/label "Select Player" {:font font-small :paint fill-black})))))))
+
 (def top-bar-ui
-  (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow day]} ctx]
     (ui/column
       [:stretch 1
        (ui/padding 0 0 0 10
          (ui/fill fill-yellow
            (ui/row
              (ui/padding 10 10
-               (ui/dynamic ctx [tick (:tick @state/*state)]
-                 (ui/label (str "Day " (inc tick)) {:font font-small :paint fill-black})))
+               (ui/label (str "Day " day) {:font font-small :paint fill-black}))
+             player-stats-ui
              [:stretch 1 nil]
              (ui/fill fill-white
                (ui/clickable
-                 #(reset! state/*state (new-state))
+                 #(reset! basic/*world (basic/reset-world))
                  (ui/padding 10 10
                    (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
 

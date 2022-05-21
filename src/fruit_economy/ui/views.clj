@@ -65,7 +65,7 @@
           world)
         (ui/on-key-down on-key-pressed-impl
           (ui/column
-            screen-ui/top-bar-ui
+            ui.parts/top-bar-ui
             (ui/padding 20
               basic/ui-view)
             (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} ctx]
