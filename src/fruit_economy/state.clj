@@ -14,3 +14,5 @@
 (def *selected-ui-view (atom nil))
 
 (defonce *floating (atom false))
+
+(defonce *clock (atom nil))

@@ -738,8 +738,6 @@
 (defn set-interval [callback ms]
   (future (while true (do (Thread/sleep ms) (callback)))))
 
-(def clock (atom nil))
-
 (defn tick-clock []
   (let [{:keys [tick-ms last-tick paused?]} @state/*state
         now (System/currentTimeMillis)]
@@ -749,10 +747,10 @@
       (swap! state/*state on-tick now))))
 
 (defn start-clock [ms]
-  (reset! clock (set-interval tick-clock ms)))
+  (reset! state/*clock (set-interval tick-clock ms)))
 
 (defn stop-clock []
-  (future-cancel @clock))
+  (future-cancel @state/*clock))
 
 
 (defn -main [& args]
