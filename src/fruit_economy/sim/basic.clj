@@ -458,22 +458,22 @@
                   (let [{:keys [min-food min-clothes food clothes] :as peep} (d/entity db peep-eid)
                         base-labour 10 ;; reset labour
 
-                        food-rem (- food min-food)
-                        clothes-rem (- clothes min-clothes)
+                        food-rem (max (- food min-food) 0)
+                        clothes-rem (max (- clothes min-clothes) 0)
 
                         food-had (- food food-rem)
                         clothes-had (- clothes clothes-rem)
 
-                        enough-food? (>= food-had 0)
-                        enough-clothes? (>= clothes-had 0)
+                        enough-food? (>= food-had min-food)
+                        enough-clothes? (>= clothes-had min-clothes)
                         hometown (:hometown peep)
                         hometown-eid (:db/id hometown)
                         labour-supply (:labour/supply hometown)
                         labour-produced (:labour/produced hometown)
                         food-consumed (:food/consumed hometown)
                         clothes-consumed (:clothes/consumed hometown)]
-                    (cond-> [[:db/add peep-eid :food (max food-rem 0)]
-                             [:db/add peep-eid :clothes (max clothes-rem 0)]
+                    (cond-> [[:db/add peep-eid :food food-rem]
+                             [:db/add peep-eid :clothes clothes-rem]
                              [:db/add peep-eid :labour base-labour]
                              [:db/add peep-eid :labour/produced (+ (:labour/produced peep) base-labour)]
                              [:db/add peep-eid :food/consumed (+ (:food/consumed peep) food-had)]
