@@ -746,8 +746,8 @@
             (> (- now last-tick) tick-ms))
       (swap! state/*state on-tick now))))
 
-(defn start-clock [ms]
-  (reset! state/*clock (set-interval tick-clock ms)))
+(defn start-clock [ms tick-fn]
+  (reset! state/*clock (set-interval tick-fn ms)))
 
 (defn stop-clock []
   (future-cancel @state/*clock))
@@ -759,7 +759,7 @@
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
-  (start-clock 1000)
+  (start-clock 1000 tick-clock)
   (app/start #(reset! *window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
