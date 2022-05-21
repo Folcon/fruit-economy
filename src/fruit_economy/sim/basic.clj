@@ -3,6 +3,7 @@
             [io.github.humbleui.ui :as ui]
             [io.github.humbleui.paint :as paint]
             [datascript.core :as d]
+            [fruit-economy.state :as state]
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.land :refer [render-tile-colour]]
             [fruit-economy.colour :refer [colour colour-noise]]
@@ -140,7 +141,8 @@
       (conj dbs world-db)
       dbs)))
 
-(defonce *world (atom (reset-world)))
+(when (nil? @state/*world)
+  (reset! state/*world (reset-world)))
 
 (defn touch [e]
   (if e
@@ -777,7 +779,7 @@
 
 (def map-ui-view
   (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
-                   {:keys [world-db map-view]} @*world]
+                   {:keys [world-db map-view]} @state/*world]
     (let [[left right top bottom] lrtb
           terrain-tint (condp = map-view
                          :temp-view (fn [tile] (colour (colour-noise (get tile :temp)) 0 0))
@@ -826,7 +828,7 @@
 
 (def chart-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-green fill-yellow fill-dark-gray]} ctx
-                   {:keys [world-db]} @*world]
+                   {:keys [world-db]} @state/*world]
     (let [units (units-q world-db nil)
           wealth-freqs (->> units
                          (map :wealth)
@@ -874,7 +876,7 @@
 
 (defn city-view [settlement]
   (ui/dynamic ctx [{:keys [font-small fill-black]} ctx
-                   {:keys [world-db map-view]} @*world]
+                   {:keys [world-db map-view]} @state/*world]
     (ui/column
       (ui/column
         (interpose (ui/gap 4 0)
@@ -917,7 +919,7 @@
   (identity @*sim-broken))
 
 (defn do-tick-world []
-  (swap! *world tick-world))
+  (swap! state/*world tick-world))
 
 (defn tick-world-10x []
   (dotimes [_ 10]
@@ -939,7 +941,7 @@
 
 (def ui-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
-                   {:keys [world-db map-view]} @*world]
+                   {:keys [world-db map-view]} @state/*world]
     (ui/column
       (ui/row
         map-ui-view
@@ -955,42 +957,42 @@
                         (city-view settlement))))))))))
       (ui/row
         (ui/clickable
-          #(swap! *world assoc :map-view :default-view)
+          #(swap! state/*world assoc :map-view :default-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🗺️" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world assoc :map-view :temp-view)
+          #(swap! state/*world assoc :map-view :temp-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌡" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world assoc :map-view :elev-view)
+          #(swap! state/*world assoc :map-view :elev-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "📏" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world assoc :map-view :climate-view)
+          #(swap! state/*world assoc :map-view :climate-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌍" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world assoc :map-view :forage-view)
+          #(swap! state/*world assoc :map-view :forage-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🚜" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          #(swap! *world assoc :map-view :mine-view)
+          #(swap! state/*world assoc :map-view :mine-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
