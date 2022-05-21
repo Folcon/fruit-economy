@@ -932,11 +932,11 @@
         (window/set-z-order window :normal)))))
 
 (def game-screen
-  (ui/dynamic ctx [scale (:scale ctx)
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face]} ctx
                    player-hp (:player-hp @state/*state)]
-    (let [font-ui (Font. face-default (float (* 13 scale)))
+    (let [font-ui (Font. ^Typeface face-default (float (* 13 scale)))
           leading (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
-          emoji-font (Font. emoji-face (float 72))
+          emoji-font (Font. ^Typeface emoji-face (float 72))
           fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
       (ui/with-context {:face-ui face-default
                         :font-ui font-ui
@@ -968,12 +968,12 @@
              (ui-views name))])))))
 
 (def start-screen
-  (ui/dynamic ctx [{:keys [scale x-scale y-scale]} ctx
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale]} ctx
                    {:keys [camera tick zoom]} @state/*state
                    {:keys [started?]} @state/*menu
                    {:keys [world-db]} @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
-          emoji-font (Font. emoji-face (float (* scale 8 zoom)))
+          emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
           canvas-width (int (* x-scale *canvas-width*))
           canvas-height (int (* y-scale *canvas-height*))
@@ -1084,7 +1084,9 @@
           green-colour 0xFF6AAA64
           yellow-colour 0xFFC9B457
           red-colour 0xFFD53F3F]
-      (ui/with-context {:face-ui        face-default
+      (ui/with-context {:face-default   face-default
+                        :emoji-face     emoji-face
+                        :face-ui        face-default
                         :font-ui        font-ui
                         :leading        leading
                         :fill-text      fill-text
