@@ -477,7 +477,7 @@
   ([] (message-log-ui nil))
   ([limit]
    (ui/dynamic ctx [{:keys [font-small fill-light-gray fill-black scale]} ctx
-                    {:keys [world-db]} @*state]
+                    {:keys [world-db]} @state/*state]
      (let [message-log (data/history-log-entries world-db)
            message-log' (if limit (take limit message-log) message-log)]
        (ui/column
