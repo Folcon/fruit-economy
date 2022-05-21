@@ -735,8 +735,6 @@
       (window-size-fn work-area)
       (window/set-visible true))))
 
-(defn set-interval [callback ms]
-  (future (while true (do (Thread/sleep ms) (callback)))))
 
 (defn tick-clock []
   (let [{:keys [tick-ms last-tick paused?]} @state/*state
@@ -745,12 +743,6 @@
             (not paused?)
             (> (- now last-tick) tick-ms))
       (swap! state/*state on-tick now))))
-
-(defn start-clock [ms tick-fn]
-  (reset! state/*clock (set-interval tick-fn ms)))
-
-(defn stop-clock []
-  (future-cancel @state/*clock))
 
 
 (defn -main [& args]
