@@ -919,7 +919,7 @@
     "Economy" economy-ui-view
     "Log" messages-ui-view))
 
-(def *selected-ui-view (atom (ffirst ui-views)))
+(reset! state/*selected-ui-view (ffirst ui-views))
 
 (defonce *floating (atom false))
 
@@ -951,8 +951,8 @@
                  (ui/column
                    (for [[name _ui] ui-views]
                      (ui/clickable
-                       #(reset! *selected-ui-view name)
-                       (ui/dynamic ctx [selected? (= name @*selected-ui-view)
+                       #(reset! state/*selected-ui-view name)
+                       (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
                                         hovered? (:hui/hovered? ctx)]
                          (let [label (ui/padding 20 leading
                                        (ui/label name {:font font-ui :paint fill-text}))]
@@ -963,7 +963,7 @@
             (ui/padding 10 10
               (cui/atom-checkbox *floating "On top")))
           [:stretch 1
-           (ui/dynamic _ [name @*selected-ui-view]
+           (ui/dynamic _ [name @state/*selected-ui-view]
              (ui-views name))])))))
 
 (def start-screen
