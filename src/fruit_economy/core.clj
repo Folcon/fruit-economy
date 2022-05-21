@@ -770,7 +770,7 @@
            :cell cell
            :tick tick}
           world)
-        (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
+        (ui/on-key-down on-key-pressed-impl
           (ui/column
             screen-ui/top-bar-ui
             (ui/padding 20
