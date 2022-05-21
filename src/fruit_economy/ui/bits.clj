@@ -33,3 +33,31 @@
         half-x (quot width 2) half-y (quot height 2)]
     {:w w :h h :wv wv :hv hv :cell cell :width width :height height :half-x half-x :half-y half-y :size [width height] :center [half-x half-y :+ camera] :lrtb [(- (first camera) half-x) (+ (first camera) half-x) (- (second camera) half-y) (+ (second camera) half-y)]}))
 
+(defn nested-limit
+  ([coll limit] (nested-limit coll limit nil))
+  ([coll limit elide-str]
+   (let [cond-add-elide (fn [v] (if elide-str (conj v elide-str) v))]
+     (reduce
+       (fn [[rem v] item]
+         (let [size (count item)
+               rem' (- rem size)]
+           (cond
+             (< rem size) (reduced (conj v (cond-add-elide (into [] (take rem) item))))
+             (> rem' 0) [rem' (conj v item)]
+             (zero? rem') (reduced (conj v item)))))
+       [limit []]
+       coll))))
+
+(comment
+  ;; Can turn to tests later...
+  (let [;; 3 => [[1 2] [3]]
+        ;; 4 => [[1 2] [3 4]]
+        coll [[1 2] [3 4] [5 6]]
+        coll' [[1 2] [3 4 5 6 7 8 9 10]]]
+    (and
+      (= [[1 2] [3]]
+        (nested-limit coll 3))
+      (= [[1 2] [3 4]]
+        (nested-limit coll 4))
+      (= [[1 2] [3 4]]
+        (nested-limit coll' 4)))))

@@ -473,35 +473,6 @@
               (ui/padding 10
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-text})))))))))
 
-(defn nested-limit
-  ([coll limit] (nested-limit coll limit nil))
-  ([coll limit elide-str]
-   (let [cond-add-elide (fn [v] (if elide-str (conj v elide-str) v))]
-     (reduce
-       (fn [[rem v] item]
-         (let [size (count item)
-               rem' (- rem size)]
-           (cond
-             (< rem size) (reduced (conj v (cond-add-elide (into [] (take rem) item))))
-             (> rem' 0) [rem' (conj v item)]
-             (zero? rem') (reduced (conj v item)))))
-       [limit []]
-       coll))))
-
-(comment
-  ;; Can turn to tests later...
-  (let [;; 3 => [[1 2] [3]]
-        ;; 4 => [[1 2] [3 4]]
-        coll [[1 2] [3 4] [5 6]]
-        coll' [[1 2] [3 4 5 6 7 8 9 10]]]
-    (and
-      (= [[1 2] [3]]
-        (nested-limit coll 3))
-      (= [[1 2] [3 4]]
-        (nested-limit coll 4))
-      (= [[1 2] [3 4]]
-        (nested-limit coll' 4)))))
-
 (defn message-log-ui
   ([] (message-log-ui nil))
   ([limit]
