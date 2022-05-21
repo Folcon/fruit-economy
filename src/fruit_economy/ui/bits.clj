@@ -24,3 +24,12 @@
          (ui/label (str k) {:font font :paint fill})
          (ui/gap 10 5)
          (show-val-ui v font fill lead-col?)))))))
+
+(defn camera->viewport [camera zoom content-width content-height]
+  (let [w content-width h content-height
+        vp 0.1 wv (* w vp zoom) hv (* h vp zoom)
+        cell (int (* 10 zoom))
+        width (quot content-width (* cell 2)) height (quot content-height (* cell 2)) #_(int (quot zoom 1.25))
+        half-x (quot width 2) half-y (quot height 2)]
+    {:w w :h h :wv wv :hv hv :cell cell :width width :height height :half-x half-x :half-y half-y :size [width height] :center [half-x half-y :+ camera] :lrtb [(- (first camera) half-x) (+ (first camera) half-x) (- (second camera) half-y) (+ (second camera) half-y)]}))
+
