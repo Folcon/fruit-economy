@@ -23,6 +23,45 @@
           (ui/padding 10 10
             (ui/label "Select Player" {:font font-small :paint fill-black})))))))
 
+(def time-controls
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-yellow fill-dark-gray]} ctx]
+    (ui/row
+      (ui/clickable
+        #(reset! basic/*world (basic/reset-world))
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "RESET!" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        basic/do-tick-world
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 1 Day" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        basic/tick-world-10x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 10 Days" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        basic/tick-world-100x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 100 Days" {:font font-small :paint fill-white}))))))
+      (ui/clickable
+        basic/tick-world-1000x
+        (ui/hoverable
+          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+            (ui/fill (if hovered? fill-yellow fill-dark-gray)
+              (ui/padding 10 10
+                (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))))
+
 (def top-bar-ui
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow day]} ctx]
     (ui/column
@@ -34,6 +73,7 @@
                (ui/label (str "Day " day) {:font font-small :paint fill-black}))
              player-stats-ui
              [:stretch 1 nil]
+             time-controls
              (ui/fill fill-white
                (ui/clickable
                  #(reset! basic/*world (basic/reset-world))
