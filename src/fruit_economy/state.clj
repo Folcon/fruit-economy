@@ -6,3 +6,5 @@
 (defonce *state (atom nil))
 
 (def *selected-ui-view (atom nil))
+
+(defonce *floating (atom false))

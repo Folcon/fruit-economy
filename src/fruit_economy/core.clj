@@ -921,9 +921,10 @@
 
 (reset! state/*selected-ui-view (ffirst ui-views))
 
-(defonce *floating (atom false))
+(when (nil? @state/*floating)
+  (reset! state/*floating false))
 
-(add-watch *floating ::window
+(add-watch state/*floating ::window
   (fn [_ _ _ floating]
     (when-some [window @*window]
       (if floating
@@ -961,7 +962,7 @@
                              hovered? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
                              :else label))))))))]
             (ui/padding 10 10
-              (cui/atom-checkbox *floating "On top")))
+              (cui/atom-checkbox state/*floating "On top")))
           [:stretch 1
            (ui/dynamic _ [name @state/*selected-ui-view]
              (ui-views name))])))))
