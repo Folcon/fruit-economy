@@ -10,6 +10,7 @@
    [io.github.humbleui.paint :as paint]
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
+   [fruit-economy.state :as state]
    [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.components :as cui]
    [fruit-economy.colour :refer [colour]]
@@ -929,8 +930,6 @@
         (window/set-z-order window :floating)
         (window/set-z-order window :normal)))))
 
-(declare *menu)
-
 (def game-screen
   (ui/dynamic ctx [scale (:scale ctx)
                    player-hp (:player-hp @*state)]
@@ -970,7 +969,7 @@
 (def start-screen
   (ui/dynamic ctx [{:keys [scale x-scale y-scale]} ctx
                    {:keys [camera tick zoom]} @*state
-                   {:keys [started?]} @*menu
+                   {:keys [started?]} @state/*menu
                    {:keys [world-db]} @basic/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. emoji-face (float (* scale 8 zoom)))
@@ -988,7 +987,7 @@
                   (ui/label "Fruit Economy"))))
             (if started?
               (ui/button
-                #(swap! *menu assoc :started? true)
+                #(swap! state/*menu assoc :started? true)
                 (ui/padding 80 10 80 10
                   (ui/label "New Game")))
               (ui/with-context {:map-font map-font
@@ -1054,7 +1053,7 @@
                                       (select-city-btn city)))))))
                           (ui/gap 0 10)
                           (ui/button
-                            #(swap! *menu assoc :screen game-screen)
+                            #(swap! state/*menu assoc :screen game-screen)
                             (ui/padding 80 10 80 10
                               (ui/label "Start"))))
 
@@ -1064,10 +1063,10 @@
                         (and history? (not viable?))
                         (ui/label "Everything Died, Try again?")))))))))))))
 
-(defonce *menu (atom (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false})))
+(reset! state/*menu (if (debug?) {:screen game-screen :started? true} {:screen start-screen :started? false}))
 
 #_  ;; For debugging start-screen
-(reset! *menu {:screen start-screen :started? false})
+(reset! state/*menu {:screen start-screen :started? false})
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
@@ -1115,7 +1114,7 @@
 
                         :stroke-light-gray (paint/stroke 0xFFD4D6DA (* 2 scale))
                         :stroke-dark-gray (paint/stroke 0xFF777C7E (* 2 scale))}
-        (ui/dynamic ctx [{:keys [screen]} @*menu]
+        (ui/dynamic ctx [{:keys [screen]} @state/*menu]
           screen)))))
 
 (comment
