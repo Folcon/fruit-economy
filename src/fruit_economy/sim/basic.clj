@@ -922,6 +922,14 @@
   (dotimes [_ 10]
     (do-tick-world)))
 
+(defn tick-world-100x []
+  (dotimes [_ 100]
+    (do-tick-world)))
+
+(defn tick-world-1000x []
+  (dotimes [_ 1000]
+    (do-tick-world)))
+
 (defn history-started? [world-db]
   (< 30 (lookup-day world-db)))
 
@@ -966,7 +974,21 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/fill (if hovered? fill-yellow fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "+ 10 Day" {:font font-small :paint fill-white})))))))
+                  (ui/label "+ 10 Days" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          tick-world-100x
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "+ 100 Days" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          tick-world-1000x
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))
       (ui/row
         (ui/clickable
           #(swap! *world assoc :map-view :default-view)
