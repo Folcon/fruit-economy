@@ -50,7 +50,7 @@
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
-          canvas-width (int (* x-scale state/*canvas-height*))
+          canvas-width (int (* x-scale state/*canvas-width*))
           canvas-height (int (* y-scale state/*canvas-height*))
 
           {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)]
