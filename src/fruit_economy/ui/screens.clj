@@ -51,7 +51,7 @@
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale]} ctx
                    {:keys [camera tick zoom]} @state/*state
                    {:keys [started?]} @state/*menu
-                   {:keys [world-db]} @basic/*world]
+                   {:keys [world-db]} @state/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
@@ -81,14 +81,14 @@
                   (ui/halign 0.5
                     (ui/row
                       (ui/button
-                        #(reset! basic/*world (basic/reset-world))
+                        #(reset! state/*world (basic/reset-world))
                         (ui/padding 20 10 20 10
                           (ui/label "Gen World")))
                       (ui/gap 10 0)
                       (ui/button
                         #(dotimes [_ 50]
                            (suppress-print
-                             (swap! basic/*world basic/tick-world)))
+                             (swap! state/*world basic/tick-world)))
                         (ui/padding 20 10 20 10
                           (ui/label "Simulate History")))))
                   (ui/gap 0 10)
@@ -97,7 +97,7 @@
                           viable? (basic/viable-world? world-db)
                           select-city-btn (fn [city]
                                             (ui/dynamic ctx [{:keys [leading]} ctx
-                                                             {:keys [player]} @basic/*world]
+                                                             {:keys [player]} @state/*world]
                                               (let [{name :settlement/name
                                                      governed-by :_governs} city
                                                     government (first governed-by)
@@ -106,7 +106,7 @@
                                                 (ui/clickable
                                                   #(do
                                                      (swap! state/*state assoc :camera coord)
-                                                     (swap! basic/*world assoc :player-eid gov-eid))
+                                                     (swap! state/*world assoc :player-eid gov-eid))
                                                   (ui/clip-rrect 4
                                                     (ui/dynamic ctx [{:keys [hui/active? hui/hovered?]} ctx]
                                                       (ui/fill

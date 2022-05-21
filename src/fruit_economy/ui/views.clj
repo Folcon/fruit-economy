@@ -82,7 +82,7 @@
                           (ui/with-context
                             {:hui/active? (= selected-city eid)}
                             (ui/button
-                              #(swap! basic/*world assoc :selected-city eid)
+                              #(swap! state/*world assoc :selected-city eid)
                               {:bg-active green-colour
                                :bg-hovered yellow-colour
                                :bg dark-gray-colour
@@ -96,7 +96,7 @@
                             (ui/with-context
                               {:hui/active? (= selected-market market)}
                               (ui/button
-                                #(swap! basic/*world assoc :selected-market market)
+                                #(swap! state/*world assoc :selected-market market)
                                 {:bg-active green-colour
                                  :bg-hovered yellow-colour
                                  :bg dark-gray-colour
