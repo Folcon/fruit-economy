@@ -25,6 +25,7 @@
    [fruit-economy.economy :as economy]
    [fruit-economy.sim.basic :as basic]
    [fruit-economy.ui.bits :as ui.bits :refer [padding show-map-ui]]
+   [fruit-economy.ui.parts :as ui.parts]
    [fruit-economy.ui.views :as ui.views]
    [fruit-economy.ui.controls :refer [on-key-pressed-impl]]
    [fruit-economy.screen-ui :as screen-ui]
@@ -473,36 +474,6 @@
               (ui/padding 10
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-text})))))))))
 
-(defn message-log-ui
-  ([] (message-log-ui nil))
-  ([limit]
-   (ui/dynamic ctx [{:keys [font-small fill-light-gray fill-black scale]} ctx
-                    {:keys [world-db]} @state/*state]
-     (let [message-log (data/history-log-entries world-db)
-           message-log' (if limit (take limit message-log) message-log)]
-       (ui/column
-         (ui/gap 0 padding)
-         (ui/halign 0.5
-           (ui/label "[ Message Log ]" {:font font-small :paint fill-black}))
-         (ui/gap 0 (* padding 2))
-         (ui/halign 0.5
-           (ui/halign 0.5
-             (ui/column
-               [:stretch 1
-                (ui/column
-                  (interpose (ui/gap 2 padding)
-                    (map
-                      (fn [message]
-                        (let [border (doto (Paint.)
-                                       (.setColor (unchecked-int 0xFF000000))
-                                       (.setMode PaintMode/STROKE)
-                                       (.setStrokeWidth (* 1 scale)))]
-                          (ui/halign 0.5
-                            (ui/fill border
-                              (ui/padding 5 5
-                                (ui/label (str message) {:font font-small :paint fill-black}))))))
-                      message-log')))]))))))))
-
 (def top-bar-ui
   (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
     (ui/column
@@ -622,7 +593,7 @@
            (ui/vscrollbar
              (ui/vscroll
                (ui/column
-                 (message-log-ui))))])))))
+                 (ui.parts/message-log-ui))))])))))
 
 
 (def ui-views
