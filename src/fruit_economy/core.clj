@@ -566,15 +566,7 @@
             (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-black})))))))
 
 
-(def ui-views
-  ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
-  (array-map
-    "Map" map-ui-view
-    "Economy" economy-ui-view
-    "Basic" ui.views/basic-ui-view
-    "Log" ui.views/messages-ui-view))
-
-(reset! state/*selected-ui-view (ffirst ui-views))
+(reset! state/*selected-ui-view (ffirst ui.views/ui-views))
 
 (when (nil? @state/*floating)
   (reset! state/*floating false))
@@ -605,7 +597,7 @@
              (ui/vscrollbar
                (ui/vscroll
                  (ui/column
-                   (for [[name _ui] ui-views]
+                   (for [[name _ui] ui.views/ui-views]
                      (ui/clickable
                        #(reset! state/*selected-ui-view name)
                        (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
@@ -620,7 +612,7 @@
               (cui/atom-checkbox state/*floating "On top")))
           [:stretch 1
            (ui/dynamic _ [name @state/*selected-ui-view]
-             (ui-views name))])))))
+             (ui.views/ui-views name))])))))
 
 (def start-screen
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale]} ctx

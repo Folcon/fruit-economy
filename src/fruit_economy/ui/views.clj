@@ -186,3 +186,10 @@
              (ui/vscroll
                (ui/column
                  (ui.parts/message-log-ui))))])))))
+
+
+(def ui-views
+  ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
+  (array-map
+    "Basic" basic-ui-view
+    "Log" messages-ui-view))
