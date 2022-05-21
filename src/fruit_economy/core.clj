@@ -571,7 +571,7 @@
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
         (ui/column
-          parts/top-bar-ui
+          ui.parts/top-bar-ui
           [:stretch 1
            (ui/vscrollbar
              (ui/vscroll
