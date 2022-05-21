@@ -7,7 +7,8 @@
             [fruit-economy.land :refer [render-tile-colour]]
             [fruit-economy.colour :refer [colour colour-noise]]
             [fruit-economy.data.core :refer [lookup-avet]]
-            [fruit-economy.humble-ui :as custom-ui])
+            [fruit-economy.humble-ui :as custom-ui]
+            [taoensso.timbre :refer [log]])
   (:import [io.github.humbleui.skija Paint]))
 
 
@@ -410,9 +411,9 @@
                 clothes-factories (into [] (filter #(= (:good %) :clothes)) (:_hometown home))
                 food-orders (gen-orders food-want food-price (shuffle food-factories))
                 clothes-orders (gen-orders clothes-want clothes-price (shuffle clothes-factories))
-                _ (println :home home food-factories)
-                _ (println :food-orders food-orders)
-                _ (println :clothes-orders clothes-orders)
+                _ (log :info :home home food-factories)
+                _ (log :info :food-orders food-orders)
+                _ (log :info :clothes-orders clothes-orders)
                 food-bought (reduce (fn [val order] (+ val (:buy order))) 0 food-orders)
                 clothes-bought (reduce (fn [val order] (+ val (:buy order))) 0 clothes-orders)
                 factory-earnings-tx (reduce
@@ -429,9 +430,9 @@
                                                    [:db/add eid :earned (+ (:earned peep) earning)]])))
                                       []
                                       (into food-orders clothes-orders))]
-            (println peep-eid :shop food-want clothes-want :food-bought food-bought food :clothes-bought clothes-bought clothes (d/touch peep))
-            (println :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
-            (println (mapv d/touch (lookup-avet db :good nil)))
+            (log :info peep-eid :shop food-want clothes-want :food-bought food-bought food :clothes-bought clothes-bought clothes (d/touch peep))
+            (log :info :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
+            (log :info (mapv d/touch (lookup-avet db :good nil)))
             (into
               [[:db/add (:db/id home) :food/demand (+ (:food/demand home) food-want)]
                [:db/add (:db/id home) :clothes/demand (+ (:clothes/demand home) clothes-want)]
@@ -552,7 +553,7 @@
 (def craft-rule
   (let [craft (fn [db factory-eid]
                 (let [{:keys [money sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
-                      _ (println :sold sold)
+                      _ (log :info :sold sold)
                       labour-plan (* min-labour planning 10)
                       {home-eid :db/id
                        labour-price :labour/price
@@ -570,8 +571,8 @@
 
                       peeps (into [] (filter #(= (:kind %) :peep)) (:_hometown home))
                       labour-orders (gen-orders labour-want labour-price (shuffle peeps))
-                      _ (println :home home peeps)
-                      _ (println :labour-orders labour-orders)
+                      _ (log :info :home home peeps)
+                      _ (log :info :labour-orders labour-orders)
                       labour-bought (reduce (fn [val order] (+ val (:buy order))) 0 labour-orders)
                       peep-earnings-tx (reduce
                                          (fn [v order]
@@ -586,8 +587,8 @@
                                                       [:db/add eid :earned (+ (:earned peep) earning)]])))
                                          []
                                          labour-orders)]
-                  (println factory-eid :craft labour-want :labour-bought labour-bought (d/touch factory))
-                  (println (:_hometown home) :tx peep-earnings-tx)
+                  (log :info factory-eid :craft labour-want :labour-bought labour-bought (d/touch factory))
+                  (log :info (:_hometown home) :tx peep-earnings-tx)
                   (cond-> [[:db/add home-eid good-supply-key (+ (good-supply-key home) produced)]
                            [:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
                            [:db/add home-eid :labour/demand (+ (:labour/demand home) labour-want)]
@@ -735,14 +736,14 @@
 (def state-tax-rule
   (let [tax (fn [db]
               (let [governments (lookup-avet db :governs nil)]
-                (println :state-tax)
+                (log :info :state-tax)
                 (reduce
                   (fn [v {gov-ent :db/id
                           gov-money :money
                           :keys [governs tax-rate] :as gov}]
                     (let [tax-rate (/ tax-rate 100)
                           tax-tx (gen-tax-tx gov-ent gov-money tax-rate (:_hometown governs))]
-                      (println (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
+                      (log :info (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
                       (into v tax-tx)))
                   []
                   governments)))]
@@ -799,8 +800,8 @@
 
                             {name :settlement/name :as settlement} (when tile (first (settlements-q world-db coord)))]
                         (when thing
-                          (println :wealth thing (get thing :wealth))
-                          (println :wealth settlement thing (get thing :wealth)))
+                          (log :info :wealth thing (get thing :wealth))
+                          (log :info :wealth settlement thing (get thing :wealth)))
                         (cond
                           thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
                           (seq settlement) [name (colour 0 0 155) map-font font-offset-x font-offset-y]
