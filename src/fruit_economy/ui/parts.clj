@@ -6,6 +6,23 @@
   (:import [io.github.humbleui.skija Paint PaintMode]))
 
 
+(def top-bar-ui
+  (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
+    (ui/column
+      [:stretch 1
+       (ui/padding 0 0 0 10
+         (ui/fill fill-yellow
+           (ui/row
+             (ui/padding 10 10
+               (ui/dynamic ctx [tick (:tick @state/*state)]
+                 (ui/label (str "Day " (inc tick)) {:font font-small :paint fill-black})))
+             [:stretch 1 nil]
+             (ui/fill fill-white
+               (ui/clickable
+                 #(reset! state/*state (new-state))
+                 (ui/padding 10 10
+                   (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
+
 (defn message-log-ui
   ([] (message-log-ui nil))
   ([limit]

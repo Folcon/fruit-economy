@@ -474,23 +474,6 @@
               (ui/padding 10
                 (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-text})))))))))
 
-(def top-bar-ui
-  (ui/dynamic ctx [{:keys [font-small fill-black fill-yellow fill-white scale]} ctx]
-    (ui/column
-      [:stretch 1
-       (ui/padding 0 0 0 10
-         (ui/fill fill-yellow
-           (ui/row
-             (ui/padding 10 10
-               (ui/dynamic ctx [tick (:tick @state/*state)]
-                 (ui/label (str "Day " (inc tick)) {:font font-small :paint fill-black})))
-             [:stretch 1 nil]
-             (ui/fill fill-white
-               (ui/clickable
-                 #(reset! state/*state (new-state))
-                 (ui/padding 10 10
-                   (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
-
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
     (ui/padding padding padding
@@ -498,7 +481,7 @@
         (let [{::land/keys [economy]} (data/land-data world-db)
               [svg-x svg-y svg-z] svg-xyz]
           (ui/column
-            top-bar-ui
+            ui.parts/top-bar-ui
             (ui/gap 0 padding)
             [:stretch 1
              (ui/row
@@ -571,7 +554,7 @@
       (ui/dynamic ctx [{:keys [scale font-small fill-white fill-black fill-green fill-dark-gray fill-light-gray]} ctx
                        {:keys [camera tick]} @state/*state]
         (ui/column
-          top-bar-ui
+          ui.parts/top-bar-ui
           (ui/gap 0 padding)
           [:stretch 1 nil]
           world-map
@@ -588,7 +571,7 @@
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale face-ui]} ctx]
         (ui/column
-          top-bar-ui
+          parts/top-bar-ui
           [:stretch 1
            (ui/vscrollbar
              (ui/vscroll
