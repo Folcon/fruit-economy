@@ -747,6 +747,10 @@
                   []
                   governments)))]
     {:when '[[?e :day ?day]
+             ;; TODO: Is this a good idea?
+             ;;   It may be nice to have players earn on a period, but the sim's don't know to save enough money for tax.
+             ;;   Which means either modelling debt, or taking money out of the system and only paying the tax as the end.
+             #_#_
              [(mod ?day 30) ?mod]
              [(zero? ?mod)]]
      :then '[[:db.fn/call tax]]
