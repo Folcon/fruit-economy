@@ -5,6 +5,8 @@
 (defonce ^:dynamic *canvas-height* 1200)
 
 
+(defonce *window (atom nil))
+
 (defonce *menu (atom nil))
 
 (defonce *world (atom nil))

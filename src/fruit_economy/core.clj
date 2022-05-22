@@ -94,8 +94,6 @@
   (reset! state/*state (new-state)))
 ;; END GAME STATE
 
-(defonce *window (atom nil))
-
 (defonce ^Typeface face-default
   (.matchFamiliesStyle ^FontMgr font-mgr (into-array String [".SF NS", "Helvetica Neue", "Arial"]) FontStyle/NORMAL))
 
@@ -381,7 +379,7 @@
         #{:r}
         (do
           (reset! state/*state (new-state))
-          (on-resize @*window))
+          (on-resize @state/*window))
 
         ;; (println :mini-panel key)
         nil))))
@@ -665,7 +663,7 @@
           screen)))))
 
 (comment
-  (window/request-frame @*window))
+  (window/request-frame @state/*window))
 
 (defn on-paint [window ^Canvas canvas]
   (canvas/clear canvas 0xFFF0F0F0)
@@ -736,7 +734,7 @@
         window-size-fn (if (debug?) small-window screen-sized-window)]
     (doto
       (window/make
-        {:on-close (if (debug?) #(reset! *window nil) #(System/exit 0))
+        {:on-close (if (debug?) #(reset! state/*window nil) #(System/exit 0))
          :on-paint #'on-paint
          :on-event #'on-event
          :on-resize #'on-resize})
@@ -761,24 +759,24 @@
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
   (clock/start-clock basic/do-tick-world)
-  (app/start #(reset! *window (make-window))))
+  (app/start #(reset! state/*window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
-(some-> @*window window/request-frame)
+(some-> @state/*window window/request-frame)
 
 (comment
   (do
-    (app/doui (some-> @*window window/close))
-    (reset! *window (app/doui (make-window))))
+    (app/doui (some-> @state/*window window/close))
+    (reset! state/*window (app/doui (make-window))))
 
-  (app/doui (window/set-z-order @*window :normal))
-  (app/doui (window/set-z-order @*window :floating)))
+  (app/doui (window/set-z-order @state/*window :normal))
+  (app/doui (window/set-z-order @state/*window :floating)))
 
 (comment
   (-main)
   (identity @*clicks)
-  (identity @*window)
   (get-in @*state [:world ::land/civ-name->civ])
+  (identity @state/*window)
 
   (let [civs (get-in @*state [:world #_::land/civ-name->civ ::land/area->manor])]
     #_(into #{} (comp (map (fn [[_k {::civ/keys [territory]}]] territory)) cat) civs))
