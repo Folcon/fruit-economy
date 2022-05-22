@@ -827,7 +827,7 @@
                                   (ui/label glyph {:font font :paint fill-white}))))))))))))))))))
 
 (def chart-view
-  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-green fill-yellow fill-dark-gray]} ctx
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-green fill-yellow fill-light-gray fill-dark-gray]} ctx
                    {:keys [world-db]} @state/*world]
     (let [units (units-q world-db nil)
           wealth-freqs (->> units
@@ -846,33 +846,43 @@
                           (float (/ total size))))
           padding 4]
       (ui/padding 10
-        (if-not (seq units)
-          (ui/gap 0 0)
-          (ui/column
-            (ui/row
-              (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
-              (ui/gap padding 2)
-              (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
-              (ui/gap padding 2)
-              (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
-              (ui/gap 2 padding))
-            (ui/padding 5
+        (ui/column
+          (ui/fill fill-light-gray
+            (ui/padding 4
+              (ui/label "Meganeura Info")))
+          (ui/gap 0 2)
+          (ui/tooltip
+            (ui/fill fill-light-gray
+              (ui/padding 10
+                (ui/column
+                  (ui/label "These are the titanic creatures beneath who's trails new settlements can form" {:font font-small}))))
+            (if-not (seq units)
+              (ui/gap 0 0)
               (ui/column
-                (interpose (ui/gap padding 2)
-                  (for [entry wealth-freqs-filtered
-                        :let [[_wealth quantity] entry]]
-                    (ui/row
-                      (interpose (ui/gap padding 0)
-                        (into
-                          (if (number? quantity)
-                            (custom-ui/<>
-                              (ui/fill (paint/fill (colour 150 150 150))
-                                (ui/gap (* quantity 2) 2)))
-                            (custom-ui/<>
-                              (ui/gap 0 0)))
-                          (for [val entry]
-                            (ui/width 20
-                              (ui/label (str val) {:font font-small :paint fill-black}))))))))))))))))
+                (ui/row
+                  (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
+                  (ui/gap padding 2)
+                  (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
+                  (ui/gap padding 2)
+                  (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
+                  (ui/gap 2 padding))
+                (ui/padding 5
+                  (ui/column
+                    (interpose (ui/gap padding 2)
+                      (for [entry wealth-freqs-filtered
+                            :let [[_wealth quantity] entry]]
+                        (ui/row
+                          (interpose (ui/gap padding 0)
+                            (into
+                              (if (number? quantity)
+                                (custom-ui/<>
+                                  (ui/fill (paint/fill (colour 150 150 150))
+                                    (ui/gap (* quantity 2) 2)))
+                                (custom-ui/<>
+                                  (ui/gap 0 0)))
+                              (for [val entry]
+                                (ui/width 20
+                                  (ui/label (str val) {:font font-small :paint fill-black}))))))))))))))))))
 
 (defn city-view [settlement]
   (ui/dynamic ctx [{:keys [font-small fill-black]} ctx
