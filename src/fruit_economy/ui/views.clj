@@ -164,6 +164,7 @@
                                   (ui/padding 20
                                     (ui/label (str "Total Used: " consumed))))))
 
+                            #_#_#_
                             (ui/label "Cities:")
                             (ui/gap 0 2)
                             (ui/height 100
