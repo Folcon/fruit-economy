@@ -41,6 +41,85 @@
 (def kind->emoji
   {:food-factory "🍲🏭" :clothes-factory "👚🏭" :peep "🧑"})
 
+(def market-production-view
+  (ui/dynamic ctx [{:keys [world-db cities selected-city selected-market fill-dark-gray fill-light-gray]} ctx]
+     (let [city (db/entity world-db selected-city)
+
+           producers (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :producers))
+           demanders (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :demanders))
+
+           label (market-label-fn selected-market)
+           price ((market-keys-fn selected-market :price) city)
+           price-history ((market-keys-fn selected-market :price-history) city)
+           produced ((market-keys-fn selected-market :last-produced) city)
+           consumed ((market-keys-fn selected-market :last-consumed) city)
+           total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)
+           percent-of-production (if (zero? total-production) 0 (* (/ produced total-production) 100))]
+       (ui/column
+         (ui/row
+           (ui/padding 20
+             (ui/column
+               (ui/label label)
+               (ui/gap 0 5)
+               (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production))))
+           (ui/with-context
+             {:price price :price-history price-history}
+             screen-ui/price-chart-ui))
+         (ui/row
+           (ui/padding 20
+             (ui/column
+               (ui/label "Produced by:")
+               (ui/gap 0 4)
+               (ui/height 100
+                 (ui/row
+                   (ui/vscrollbar
+                     (ui/vscroll
+                       (ui/column
+                         (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                           (for [producer producers]
+                             (ui/tooltip {:anchor :top-right :shackle :top-right}
+                               (ui/label (pr-str producer))
+                               (ui/fill fill-light-gray
+                                 (ui/padding 150 20 150 20
+                                   (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
+               (ui/padding 20
+                 (ui/label (str "Total Produced: " produced)))))
+           (ui/padding 20
+             (ui/column
+               (ui/label "Used by:")
+               (ui/gap 0 4)
+               (ui/height 100
+                 (ui/row
+                   (ui/vscrollbar
+                     (ui/vscroll
+                       (ui/column
+                         (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                           (for [demander demanders]
+                             (ui/tooltip {:anchor :top-right :shackle :top-right}
+                               (ui/label (pr-str demander))
+                               (ui/fill fill-light-gray
+                                 (ui/padding 150 20 150 20
+                                   (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
+               (ui/padding 20
+                 (ui/label (str "Total Used: " consumed))))))
+
+         #_#_#_
+         (ui/label "Cities:")
+         (ui/gap 0 2)
+         (ui/height 100
+           (ui/row
+             (ui/vscrollbar
+               (ui/vscroll
+                 (ui/column
+                   (interpose (ui/fill fill-dark-gray
+                                (ui/gap 0 4))
+                     (for [{:keys [settlement/name] :as market} cities]
+                       (ui/column
+                         (ui/label name)
+                         (ui/gap 0 2)
+                         ;;(ui/label (pr-str (db/touch market)))
+                         ;;(ui/gap 0 2)
+                         (show-map-ui market font-small fill-black)))))))))))))
 
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
@@ -103,84 +182,9 @@
                                  :p 10 :border-radius 0}
                                 (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))
                     (when (and selected-city selected-market)
-                      (ui/dynamic ctx [{:keys [world-db selected-city selected-market]} ctx]
-                        (let [city (db/entity world-db selected-city)
-
-                              producers (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :producers))
-                              demanders (into [] (comp (map (lookup-by-kind world-db)) cat (map db/touch)) (market-keys-fn selected-market :demanders))
-
-                              label (market-label-fn selected-market)
-                              price ((market-keys-fn selected-market :price) city)
-                              price-history ((market-keys-fn selected-market :price-history) city)
-                              produced ((market-keys-fn selected-market :last-produced) city)
-                              consumed ((market-keys-fn selected-market :last-consumed) city)
-                              total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)
-                              percent-of-production (if (zero? total-production) 0 (* (/ produced total-production) 100))]
-                          (ui/column
-                            (ui/row
-                              (ui/padding 20
-                                (ui/column
-                                  (ui/label label)
-                                  (ui/gap 0 5)
-                                  (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production))))
-                              (ui/with-context
-                                {:price price :price-history price-history}
-                                screen-ui/price-chart-ui))
-                            (ui/row
-                              (ui/padding 20
-                                (ui/column
-                                  (ui/label "Produced by:")
-                                  (ui/gap 0 4)
-                                  (ui/height 100
-                                    (ui/row
-                                      (ui/vscrollbar
-                                        (ui/vscroll
-                                          (ui/column
-                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
-                                              (for [producer producers]
-                                                (ui/tooltip {:anchor :top-right :shackle :top-right}
-                                                  (ui/label (pr-str producer))
-                                                  (ui/fill fill-light-gray
-                                                    (ui/padding 150 20 150 20
-                                                      (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
-                                  (ui/padding 20
-                                    (ui/label (str "Total Produced: " produced)))))
-                              (ui/padding 20
-                                (ui/column
-                                  (ui/label "Used by:")
-                                  (ui/gap 0 4)
-                                  (ui/height 100
-                                    (ui/row
-                                      (ui/vscrollbar
-                                        (ui/vscroll
-                                          (ui/column
-                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
-                                              (for [demander demanders]
-                                                (ui/tooltip {:anchor :top-right :shackle :top-right}
-                                                  (ui/label (pr-str demander))
-                                                  (ui/fill fill-light-gray
-                                                    (ui/padding 150 20 150 20
-                                                      (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
-                                  (ui/padding 20
-                                    (ui/label (str "Total Used: " consumed))))))
-
-                            #_#_#_
-                            (ui/label "Cities:")
-                            (ui/gap 0 2)
-                            (ui/height 100
-                              (ui/row
-                                (ui/vscrollbar
-                                  (ui/vscroll
-                                    (ui/column
-                                      (interpose (ui/fill fill-dark-gray
-                                                   (ui/gap 0 4))
-                                        (for [{:keys [settlement/name] :as market} cities]
-                                          (ui/column
-                                            (ui/label name)
-                                            (ui/gap 0 2)
-                                            ;;(ui/label (pr-str (db/touch market)))
-                                            ;;(ui/gap 0 2)
-                                            (show-map-ui market font-small fill-black)))))))))))))))))))))))
+                      (ui/with-context
+                        {:cities cities}
+                        market-production-view))))))))))))
 
 (def messages-ui-view
   (ui/on-key-down on-key-pressed-impl
