@@ -872,7 +872,7 @@
                       (for [entry wealth-freqs-filtered
                             :let [[_wealth quantity] entry]]
                         (ui/row
-                          (interpose (ui/gap padding 0)
+                          (interpose (ui/gap 12 0)
                             (into
                               (if (number? quantity)
                                 (custom-ui/<>
