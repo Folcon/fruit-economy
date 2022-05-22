@@ -35,7 +35,7 @@ jobs:
           lein: latest
 
       - name: download jwm artifact jars
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v2.19.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repo: HumbleUI/JWM
