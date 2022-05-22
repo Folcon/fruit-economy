@@ -610,10 +610,10 @@
 
 
 (when (nil? @state/*menu)
-  (reset! state/*menu (if (debug?) {:screen ui.screens/game-screen :started? true :speed-ms 5000} {:screen ui.screens/start-screen :started? false :speed-ms 5000})))
+  (reset! state/*menu (if (debug?) {:screen ui.screens/game-screen :started? true :paused? true :speed-ms 5000} {:screen ui.screens/start-screen :started? false :paused? true :speed-ms 5000})))
 
 #_  ;; For debugging start-screen
-(reset! state/*menu {:screen ui.screens/start-screen :started? false :speed-ms 5000})
+(reset! state/*menu {:screen ui.screens/start-screen :started? false :paused? true :speed-ms 5000})
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
@@ -763,7 +763,6 @@
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
-  (clock/start-clock clock-tick-fn)
   (app/start #(reset! state/*window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
