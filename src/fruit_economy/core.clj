@@ -591,7 +591,7 @@
 
 (add-watch state/*floating ::window
   (fn [_ _ _ floating]
-    (when-some [window @*window]
+    (when-some [window @state/*window]
       (if floating
         (window/set-z-order window :floating)
         (window/set-z-order window :normal)))))
