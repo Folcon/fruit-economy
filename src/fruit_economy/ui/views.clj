@@ -192,4 +192,5 @@
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
   (array-map
     "World" basic-ui-view
+    #_#_
     "Log" messages-ui-view))
