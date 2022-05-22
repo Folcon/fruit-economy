@@ -599,10 +599,10 @@
         (window/set-z-order window :normal)))))
 
 (when (nil? @state/*menu)
-  (reset! state/*menu (if (debug?) {:screen ui.screens/game-screen :started? true} {:screen ui.screens/start-screen :started? false})))
+  (reset! state/*menu (if (debug?) {:screen ui.screens/game-screen :started? true :speed-ms 5000} {:screen ui.screens/start-screen :started? false :speed-ms 5000})))
 
 #_  ;; For debugging start-screen
-(reset! state/*menu {:screen ui.screens/start-screen :started? false})
+(reset! state/*menu {:screen ui.screens/start-screen :started? false :speed-ms 5000})
 
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
