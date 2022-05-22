@@ -67,12 +67,26 @@
                     (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))
         (ui/row
           (ui/clickable
-            basic/tick-world-10x
+            #(swap! state/*menu assoc :speed-ms 5000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/fill (if hovered? fill-yellow fill-white)
                   (ui/padding 10 10
-                    (ui/label "+" {:font font-small :paint fill-white})))))))))))
+                    (ui/label "+" {:font font-small :paint fill-black}))))))
+          (ui/clickable
+            #(swap! state/*menu assoc :speed-ms 3000)
+            (ui/hoverable
+              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                (ui/fill (if hovered? fill-yellow fill-white)
+                  (ui/padding 10 10
+                    (ui/label "++" {:font font-small :paint fill-black}))))))
+          (ui/clickable
+            #(swap! state/*menu assoc :speed-ms 2000)
+            (ui/hoverable
+              (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                (ui/fill (if hovered? fill-yellow fill-white)
+                  (ui/padding 10 10
+                    (ui/label "+++" {:font font-small :paint fill-black})))))))))))
 
 (def top-bar-ui
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow day]} ctx]
