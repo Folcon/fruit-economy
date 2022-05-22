@@ -6,6 +6,12 @@ dev:
 uberjar:
 	lein clean && lein uberjar
 
+run-jar:
+	java -jar target/fruit-economy-standalone.jar
+
+jar-test: uberjar run-jar
+	java -jar target/fruit-economy-standalone.jar
+
 prod: uberjar prod-mac # prod-win prod-linux ## Others can only be built on respective systems, so test later
 	echo "DONE"
 prod-mac:
