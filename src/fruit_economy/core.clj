@@ -598,6 +598,14 @@
         (window/set-z-order window :floating)
         (window/set-z-order window :normal)))))
 
+(add-watch state/*menu ::speed
+  (fn [_ _ {old-paused? :paused? :as old} {new-paused? :paused? :as new}]
+    (when (not= old-paused? new-paused?)
+      (if new-paused?
+        (clock/stop-clock)
+        (clock/start-clock basic/do-tick-world)))))
+
+
 (when (nil? @state/*menu)
   (reset! state/*menu (if (debug?) {:screen ui.screens/game-screen :started? true :speed-ms 5000} {:screen ui.screens/start-screen :started? false :speed-ms 5000})))
 

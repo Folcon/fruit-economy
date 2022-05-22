@@ -1,6 +1,7 @@
 (ns fruit-economy.ui.parts
   (:require [io.github.humbleui.ui :as ui]
             [fruit-economy.state :as state]
+            [fruit-economy.clock :as clock]
             [fruit-economy.data.core :as data]
             [fruit-economy.ui.bits :as ui.bits :refer [padding]]
             [fruit-economy.sim.basic :as basic])
@@ -24,7 +25,7 @@
             (ui/label "Select Player" {:font font-small :paint fill-black})))))))
 
 (def time-controls
-  (ui/dynamic ctx [{:keys [font-small fill-white fill-yellow fill-dark-gray]} ctx
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow fill-dark-gray]} ctx
                    {:keys [paused?]} @state/*menu]
     (ui/row
       (ui/clickable
@@ -33,7 +34,7 @@
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
             (ui/fill (cond paused? fill-dark-gray hovered? fill-yellow :else fill-white)
               (ui/padding 10 10
-                (ui/label (if paused? "⏸️" "▶️") {:font font-small :paint fill-white}))))))
+                (ui/label (if paused? "▶️" "⏸️") {:font font-small :paint fill-black}))))))
       (if paused?
         (ui/row
           (ui/clickable
