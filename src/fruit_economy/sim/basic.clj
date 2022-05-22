@@ -845,44 +845,43 @@
                         (let [[total size] (reduce (fn [v [val count]] (-> v (update 0 + (* val count)) (update 1 + count))) [0 0] freq)]
                           (float (/ total size))))
           padding 4]
-      (ui/padding 10
-        (ui/column
+      (ui/column
+        (ui/fill fill-light-gray
+          (ui/padding 4
+            (ui/label "Meganeura Info")))
+        (ui/gap 0 2)
+        (ui/tooltip
           (ui/fill fill-light-gray
-            (ui/padding 4
-              (ui/label "Meganeura Info")))
-          (ui/gap 0 2)
-          (ui/tooltip
-            (ui/fill fill-light-gray
-              (ui/padding 10
-                (ui/column
-                  (ui/label "These are the titanic creatures beneath who's trails new settlements can form" {:font font-small}))))
-            (if-not (seq units)
-              (ui/gap 0 0)
+            (ui/padding 10
               (ui/column
-                (ui/row
-                  (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
-                  (ui/gap padding 2)
-                  (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
-                  (ui/gap padding 2)
-                  (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
-                  (ui/gap 2 padding))
-                (ui/padding 5
-                  (ui/column
-                    (interpose (ui/gap padding 2)
-                      (for [entry wealth-freqs-filtered
-                            :let [[_wealth quantity] entry]]
-                        (ui/row
-                          (interpose (ui/gap 12 0)
-                            (into
-                              (if (number? quantity)
-                                (custom-ui/<>
-                                  (ui/fill (paint/fill (colour 150 150 150))
-                                    (ui/gap (* quantity 2) 2)))
-                                (custom-ui/<>
-                                  (ui/gap 0 0)))
-                              (for [val entry]
-                                (ui/width 20
-                                  (ui/label (str val) {:font font-small :paint fill-black}))))))))))))))))))
+                (ui/label "These are the titanic creatures beneath who's trails new settlements can form" {:font font-small}))))
+          (if-not (seq units)
+            (ui/gap 0 0)
+            (ui/column
+              (ui/row
+                (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
+                (ui/gap padding 2)
+                (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
+                (ui/gap padding 2)
+                (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
+                (ui/gap 2 padding))
+              (ui/padding 5
+                (ui/column
+                  (interpose (ui/gap padding 2)
+                    (for [entry wealth-freqs-filtered
+                          :let [[_wealth quantity] entry]]
+                      (ui/row
+                        (interpose (ui/gap 12 0)
+                          (into
+                            (if (number? quantity)
+                              (custom-ui/<>
+                                (ui/fill (paint/fill (colour 150 150 150))
+                                  (ui/gap (* quantity 2) 2)))
+                              (custom-ui/<>
+                                (ui/gap 0 0)))
+                            (for [val entry]
+                              (ui/width 20
+                                (ui/label (str val) {:font font-small :paint fill-black})))))))))))))))))
 
 (defn compare->fill [m key-a key-b {:keys [<-fill >-fill =-fill]}]
   (let [a (get m key-a) b (get m key-b) diff (- a b)] (cond (< diff 0) <-fill (> diff 0) >-fill (zero? diff) =-fill)))
@@ -975,19 +974,20 @@
     (ui/column
       (ui/row
         map-ui-view
-        (ui/height 200
-          (ui/column
-            chart-view
-            (ui/fill fill-light-gray
-              (ui/padding 4
-                (ui/label "Settlement Info")))
-            (ui/vscrollbar
-              (ui/vscroll
-                (ui/column
-                  (interpose (ui/gap 4 0)
-                    (for [settlement (settlements-q world-db nil)]
-                      (ui/padding 4
-                        (city-view settlement))))))))))
+        (ui/padding 10
+          (ui/height 200
+            (ui/column
+              chart-view
+              (ui/fill fill-light-gray
+                (ui/padding 4
+                  (ui/label "Settlement Info")))
+              (ui/vscrollbar
+                (ui/vscroll
+                  (ui/column
+                    (interpose (ui/gap 4 0)
+                      (for [settlement (settlements-q world-db nil)]
+                        (ui/padding 4
+                          (city-view settlement)))))))))))
       (ui/row
         (ui/clickable
           #(swap! state/*world assoc :map-view :default-view)
