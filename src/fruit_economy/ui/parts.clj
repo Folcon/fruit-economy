@@ -20,7 +20,8 @@
             (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))))
       (ui/fill fill-white
         (ui/clickable
-          #(swap! state/*menu assoc :screen nil)
+          ;; Prevent circular dependency by only requiring later
+          #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))
           (ui/padding 10 10
             (ui/label "Select Player" {:font font-small :paint fill-black})))))))
 
