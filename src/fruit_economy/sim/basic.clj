@@ -950,7 +950,7 @@
   (seq (lookup-avet world-db :kind :city)))
 
 (def ui-view
-  (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-dark-gray]} ctx
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-light-gray fill-dark-gray]} ctx
                    {:keys [world-db map-view]} @state/*world]
     (ui/column
       (ui/row
@@ -958,6 +958,9 @@
         (ui/height 200
           (ui/column
             chart-view
+            (ui/fill fill-light-gray
+              (ui/padding 4
+                (ui/label "Settlement Info")))
             (ui/vscrollbar
               (ui/vscroll
                 (ui/column
