@@ -596,12 +596,17 @@
         (window/set-z-order window :floating)
         (window/set-z-order window :normal)))))
 
+(defn clock-tick-fn []
+  (do
+    (basic/do-tick-world)
+    (window/request-frame @state/*window)))
+
 (add-watch state/*menu ::speed
   (fn [_ _ {old-paused? :paused? :as old} {new-paused? :paused? :as new}]
     (when (not= old-paused? new-paused?)
       (if new-paused?
         (clock/stop-clock)
-        (clock/start-clock basic/do-tick-world)))))
+        (clock/start-clock clock-tick-fn)))))
 
 
 (when (nil? @state/*menu)
@@ -758,7 +763,7 @@
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
-  (clock/start-clock basic/do-tick-world)
+  (clock/start-clock clock-tick-fn)
   (app/start #(reset! state/*window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
