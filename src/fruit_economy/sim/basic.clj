@@ -977,18 +977,22 @@
         (ui/padding 10
           (ui/height 200
             (ui/column
-              (ui/fill fill-light-gray
-                (ui/padding 4
-                  (ui/label "Settlement Info")))
-              (ui/vscrollbar
-                (ui/vscroll
+              (ui/dynamic ctx [settlements (settlements-q world-db nil)]
+                (if-not (seq settlements)
+                  chart-view
                   (ui/column
-                    (interpose (ui/gap 4 0)
-                      (for [settlement (settlements-q world-db nil)]
-                        (ui/padding 4
-                          (city-view settlement)))))))
-              (ui/gap 0 10)
-              chart-view))))
+                    (ui/fill fill-light-gray
+                      (ui/padding 4
+                        (ui/label "Settlement Info")))
+                    (ui/vscrollbar
+                      (ui/vscroll
+                        (ui/column
+                          (interpose (ui/gap 4 0)
+                            (for [settlement settlements]
+                              (ui/padding 4
+                                (city-view settlement)))))))
+                    (ui/gap 0 10)
+                    chart-view)))))))
       (ui/row
         (ui/clickable
           #(swap! state/*world assoc :map-view :default-view)
