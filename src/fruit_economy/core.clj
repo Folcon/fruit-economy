@@ -11,6 +11,7 @@
    [io.github.humbleui.window :as window]
    [io.github.humbleui.ui :as ui]
    [fruit-economy.state :as state]
+   [fruit-economy.clock :as clock]
    [fruit-economy.humble-ui :as custom-ui]
    [fruit-economy.components :as cui]
    [fruit-economy.colour :refer [colour]]
@@ -751,7 +752,7 @@
   (when (debug?)
     ;; Swap to require and resolve in one step!
     (future (apply (requiring-resolve 'nrepl.cmdline/-main) args)))
-  (start-clock 1000 tick-clock)
+  (clock/start-clock basic/do-tick-world)
   (app/start #(reset! *window (make-window))))
 
 ;; Helps with REPL dev, on ns load forces a redraw
