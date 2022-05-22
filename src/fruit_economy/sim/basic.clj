@@ -977,7 +977,6 @@
         (ui/padding 10
           (ui/height 200
             (ui/column
-              chart-view
               (ui/fill fill-light-gray
                 (ui/padding 4
                   (ui/label "Settlement Info")))
@@ -987,7 +986,9 @@
                     (interpose (ui/gap 4 0)
                       (for [settlement (settlements-q world-db nil)]
                         (ui/padding 4
-                          (city-view settlement)))))))))))
+                          (city-view settlement)))))))
+              (ui/gap 0 10)
+              chart-view))))
       (ui/row
         (ui/clickable
           #(swap! state/*world assoc :map-view :default-view)
