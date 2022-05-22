@@ -25,14 +25,14 @@
             (ui/label "Select Player" {:font font-small :paint fill-black})))))))
 
 (def time-controls
-  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow fill-dark-gray]} ctx
-                   {:keys [paused?]} @state/*menu]
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow fill-green fill-dark-gray]} ctx
+                   {:keys [paused? speed-ms]} @state/*menu]
     (ui/row
       (ui/clickable
         #(swap! state/*menu update :paused? not)
         (ui/hoverable
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-            (ui/fill (cond paused? fill-dark-gray hovered? fill-yellow :else fill-white)
+            (ui/fill (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
               (ui/padding 10 10
                 (ui/label (if paused? "▶️" "⏸️") {:font font-small :paint fill-black}))))))
       (if paused?
@@ -70,21 +70,21 @@
             #(swap! state/*menu assoc :speed-ms 5000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-white)
+                (ui/fill (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "+" {:font font-small :paint fill-black}))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 3000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-white)
+                (ui/fill (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "++" {:font font-small :paint fill-black}))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 2000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-white)
+                (ui/fill (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "+++" {:font font-small :paint fill-black})))))))))))
 
