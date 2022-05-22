@@ -888,10 +888,6 @@
   (ui/dynamic ctx [{:keys [font-small fill-black]} ctx
                    {:keys [world-db map-view]} @state/*world]
     (ui/column
-      (ui/column
-        (interpose (ui/gap 4 0)
-          (for [peep (mapv d/touch (lookup-avet world-db :hometown (:db/id settlement)))]
-            (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning])) {:font font-small :paint fill-black}))))
       (ui/row
         (interpose (ui/gap 4 0)
           (for [k [:settlement/name :settlement/place]]
@@ -907,7 +903,12 @@
                   (for [k columns
                         :let [label (if (string? k) k (str (get settlement k)))]]
                     (ui/padding 0 0 40 0
-                      (ui/label label {:font font-small :paint fill-black}))))))))))))
+                      (ui/label label {:font font-small :paint fill-black})))))))
+          (ui/padding 10
+            (ui/column
+              (interpose (ui/gap 4 0)
+                (for [peep (mapv d/touch (lookup-avet world-db :hometown (:db/id settlement)))]
+                  (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning])) {:font font-small :paint fill-black}))))))))))
 
 (def *sim-broken (atom nil))
 
