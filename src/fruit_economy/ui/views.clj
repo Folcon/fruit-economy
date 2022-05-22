@@ -164,7 +164,8 @@
                                   (ui/padding 20
                                     (ui/label (str "Total Used: " consumed))))))
 
-                            (ui/label (pr-str city))
+                            (ui/label "Cities:")
+                            (ui/gap 0 2)
                             (ui/height 100
                               (ui/row
                                 (ui/vscrollbar
@@ -172,8 +173,13 @@
                                     (ui/column
                                       (interpose (ui/fill fill-dark-gray
                                                    (ui/gap 0 4))
-                                        (for [market cities]
-                                          (show-map-ui market font-small fill-black))))))))))))))))))))))
+                                        (for [{:keys [settlement/name] :as market} cities]
+                                          (ui/column
+                                            (ui/label name)
+                                            (ui/gap 0 2)
+                                            ;;(ui/label (pr-str (db/touch market)))
+                                            ;;(ui/gap 0 2)
+                                            (show-map-ui market font-small fill-black)))))))))))))))))))))))
 
 (def messages-ui-view
   (ui/on-key-down on-key-pressed-impl
