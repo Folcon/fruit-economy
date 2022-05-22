@@ -54,7 +54,7 @@ jobs:
 
       - name: install jwm to maven repo
         shell: bash
-        run: mvn install:install-file -Dfile=jwm-09a13996ee.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
+        run: mvn install:install-file -Dfile=jwm-fddcb1dc07.jar -DpomFile=maven/META-INF/maven/io.github.humbleui/jwm/pom.xml
 
       - name: build uberjar
         run: lein uberjar
