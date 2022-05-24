@@ -623,22 +623,28 @@
 (def price-history-limit (* 30 36))
 
 (def update-prices-rule
-  (let [update-price-velocity (fn [supply demand price-velocity]
+  (let [;; Post some experimentation growth factor should probably sit between 1.0001 and 1.001,
+        ;;   which gives us between 5.4% and 37.78% price increase in a year in conditions of constant demand.
+        ;;   We'll set it at 1.0005 for now, which is 11.35%.
+        ;; I'll defer doing the same for the deflation until I have a better situation to build a model for it.
+        inflate-by 1.0005
+        deflate-by -0.5
+        update-price-velocity (fn [supply demand price-velocity]
                                 (let [more-demand? (> demand supply)
                                       more-supply? (< demand supply)]
                                   (cond
                                     (and more-demand? (> price-velocity 0))
                                     ;; TODO: use whole numbers instead of
-                                    (max (* price-velocity 1.5) 0.01)
+                                    (max (* price-velocity inflate-by) 0.01)
 
                                     more-demand?
-                                    (max (* price-velocity -0.5) 0.01)
+                                    (max (* price-velocity deflate-by) 0.01)
 
                                     (and more-supply? (< price-velocity 0))
-                                    (min (* price-velocity 1.5) -0.01)
+                                    (min (* price-velocity inflate-by) -0.01)
 
                                     more-supply?
-                                    (min (* price-velocity -0.5) -0.01)
+                                    (min (* price-velocity deflate-by) -0.01)
 
                                     :else 0)))
         #_#_
