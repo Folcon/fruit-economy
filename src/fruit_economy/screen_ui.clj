@@ -55,7 +55,7 @@
                     (map (fn [h]
                            [:dali/stack
                             {:direction :up :gap 6}
-                            [:rect {:stroke :none :fill :darkorchid} :_ [20 (scale-fn h)]]
+                            [:rect {:stroke :none :fill (if (pos? h) :darkorchid :darkorange)} :_ [20 (scale-fn (abs h))]]
                             [:text {:text-family "Verdana" :font-size 12} (str h)]])
                       ys')])]]
       (ui/dynamic ctx [{:keys [fill-dark-gray fill-light-gray]} ctx
