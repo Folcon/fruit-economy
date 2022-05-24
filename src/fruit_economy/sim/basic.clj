@@ -635,7 +635,7 @@
                                     (max (* price-velocity -0.5) 0.01)
 
                                     (and more-supply? (< price-velocity 0))
-                                    (max (* price-velocity 1.5) -0.01)
+                                    (min (* price-velocity 1.5) -0.01)
 
                                     more-supply?
                                     (min (* price-velocity -0.5) -0.01)
@@ -653,7 +653,7 @@
                                     (max (- (quot price-velocity 2)) 1)
 
                                     (and more-supply? (< price-velocity 0))
-                                    (max (+ (quot price-velocity 2) price-velocity) -1)
+                                    (min (+ (quot price-velocity 2) price-velocity) -1)
 
                                     more-supply?
                                     (min (- (quot price-velocity 2)) -1)
