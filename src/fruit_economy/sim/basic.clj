@@ -313,6 +313,7 @@
               [[:db/add (- idx 100) :kind :peep]
                [:db/add (- idx 100) :hometown -1]
                [:db/add (- idx 100) :money 10000]
+               [:db/add (- idx 100) :owed-tax 0]
                [:db/add (- idx 100) :labour 10]
                [:db/add (- idx 100) :health 10]
                [:db/add (- idx 100) :food 10]
@@ -339,6 +340,7 @@
                [:db/add (- idx 200) :decay 0.98]
                [:db/add (- idx 200) :production 0.7]
                [:db/add (- idx 200) :money 10000]
+               [:db/add (- idx 200) :owed-tax 0]
                [:db/add (- idx 200) :inventory 0]
                [:db/add (- idx 200) :sold 0]
                [:db/add (- idx 200) :last-sold 0]
@@ -360,6 +362,7 @@
                [:db/add (- idx 300) :decay 0.9]
                [:db/add (- idx 300) :production 2]
                [:db/add (- idx 300) :money 10000]
+               [:db/add (- idx 300) :owed-tax 0]
                [:db/add (- idx 300) :inventory 0]
                [:db/add (- idx 300) :sold 0]
                [:db/add (- idx 300) :last-sold 0]
@@ -725,44 +728,49 @@
      :then '[[:db.fn/call update-prices ?e]]
      :call {'update-prices update-prices}}))
 
-(defn gen-tax-tx [gov-ent gov-money tax-rate citizens]
+(defn gen-tax-tx [gov-ent gov-money tax-rate tax-day? citizens]
   (let [{:keys [pay-tx tax-earnings]} (reduce
                                         (fn [state ent]
                                           (let [ent-id (:db/id ent)
                                                 money (:money ent)
                                                 earned (:earned ent)
-                                                tax (long (* tax-rate earned))]
+                                                owed-tax (:earned ent)
+                                                tax (long (* tax-rate earned))
+                                                owed-tax' (+ owed-tax tax)
+                                                peep-tax-tx (cond-> [[:db/add ent-id :money (- money tax)]
+                                                                     [:db/add ent-id :earned 0]
+                                                                     [:db/add ent-id :last-earned earned]]
+                                                              (not tax-day?)
+                                                              (conj [:db/add ent-id :owed-tax owed-tax'])
+                                                              tax-day?
+                                                              (conj [:db/add ent-id :owed-tax 0]))]
+                                            (log :info :money-tax! :eid ent-id :money money :tax tax :ent (touch ent))
                                             (-> state
-                                              (update :pay-tx into [[:db/add ent-id :money (- money tax)]
-                                                                    [:db/add ent-id :earned 0]
-                                                                    [:db/add ent-id :last-earned earned]])
-                                              (update :tax-earnings + tax))))
+                                              (update :pay-tx into peep-tax-tx)
+                                              (cond->
+                                                tax-day?
+                                                (update :tax-earnings + owed-tax')))))
                                         {:pay-tx [] :tax-earnings 0}
                                         citizens)]
     (conj pay-tx [:db/add gov-ent :money (+ gov-money tax-earnings)])))
 
 (def state-tax-rule
-  (let [tax (fn [db]
-              (let [governments (lookup-avet db :governs nil)]
+  (let [tax (fn [db day]
+              (let [governments (lookup-avet db :governs nil)
+                    tax-day? (zero? (mod day 30))]
                 (log :info :state-tax)
                 (reduce
                   (fn [v {gov-ent :db/id
                           gov-money :money
                           :keys [governs tax-rate] :as gov}]
                     (let [tax-rate (/ tax-rate 100)
-                          tax-tx (gen-tax-tx gov-ent gov-money tax-rate (:_hometown governs))]
+                          tax-tx (gen-tax-tx gov-ent gov-money tax-rate tax-day? (:_hometown governs))]
                       (log :info (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
                       (into v tax-tx)))
                   []
                   governments)))]
-    {:when '[[?e :day ?day]
-             ;; TODO: Is this a good idea?
-             ;;   It may be nice to have players earn on a period, but the sim's don't know to save enough money for tax.
-             ;;   Which means either modelling debt, or taking money out of the system and only paying the tax as the end.
-             #_#_
-             [(mod ?day 30) ?mod]
-             [(zero? ?mod)]]
-     :then '[[:db.fn/call tax]]
+    {:when '[[?e :day ?day]]
+     :then '[[:db.fn/call tax ?day]]
      :call {'tax tax}}))
 
 (def decision-rules
