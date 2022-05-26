@@ -387,7 +387,7 @@
       (fn [[orders to-buy] {:keys [inventory labour] :as from}]
         (let [buyable (or inventory labour)]
           (cond
-            (zero? buyable) [orders to-buy]
+            (< buyable 1) [orders to-buy]
             (> to-buy 0)
             (let [buying (min to-buy buyable)
                   rem (- to-buy buying)
