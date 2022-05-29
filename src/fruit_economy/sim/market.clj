@@ -27,6 +27,10 @@
       (> limit 100)
       order-book
 
+      ;; nothing to match against
+      (or (nil? sell-order) (nil? buy-order))
+      order-book
+
       ;; stuff for sale is too expensive
       (< buy-price sell-price)
       order-book
