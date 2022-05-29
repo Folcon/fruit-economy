@@ -12,10 +12,10 @@
 (def small-buyer {:price 1 :size 1 :side :buys :id :small-buyer})
 (def medium-buyer {:price 1 :size 2 :side :buys :id :medium-buyer})
 (def rich-buyer {:price 2 :size 1 :side :buys :id :rich-buyer})
-(def small-seller {:price 1 :size 1 :side :sells :id :small-seller})
-(def medium-seller {:price 1 :size 2 :side :sells :id :medium-seller})
-(def pricey-seller {:price 1.5 :size 2 :side :sells :id :pricy-seller})
-(def large-seller {:price 2 :size 3 :side :sells :id :large-seller})
+(def small-seller {:price 1 :size 1 :side :sell :id :small-seller})
+(def medium-seller {:price 1 :size 2 :side :sell :id :medium-seller})
+(def pricey-seller {:price 1.5 :size 2 :side :sell :id :pricy-seller})
+(def large-seller {:price 2 :size 3 :side :sell :id :large-seller})
 
 
 (deftest orders-add-on-correct-side-test
@@ -23,16 +23,16 @@
     (let [orders [small-buyer rich-buyer small-seller]
           order-book (load-orders (empty-order-book) orders)]
       (is (= 2 (count (:buys order-book))))
-      (is (= 1 (count (:sells order-book)))))))
+      (is (= 1 (count (:sell order-book)))))))
 
 (deftest orders-prioritised-by-price-test
   (testing "cheaper sells first and more expensive buys first"
     (let [orders [small-buyer medium-buyer rich-buyer small-seller medium-seller large-seller]
           order-book (load-orders (empty-order-book) orders)]
-      (is (= [[:small-seller {:price 1, :size 1, :side :sells, :id :small-seller}]
-              [:medium-seller {:price 2, :size 1.5, :side :sells, :id :medium-seller}]
-              [:large-seller {:price 3, :size 2, :side :sells, :id :large-seller}]]
-             (reduce conj [] (:sells order-book))))
+      (is (= [[:small-seller {:price 1, :size 1, :side :sell, :id :small-seller}]
+              [:medium-seller {:price 2, :size 1.5, :side :sell, :id :medium-seller}]
+              [:large-seller {:price 3, :size 2, :side :sell, :id :large-seller}]]
+             (reduce conj [] (:sell order-book))))
       (is (= [[:rich-buyer {:price 2, :size 1, :side :buys, :id :rich-buyer}]
               [:small-buyer {:price 1, :size 1, :side :buys, :id :small-buyer}]
               [:medium-buyer {:price 1, :size 2, :side :buys, :id :medium-buyer}]]
@@ -44,13 +44,13 @@
           order-book (load-orders (empty-order-book) orders)
           order-book' (match-orders order-book)]
       (is (zero? (count (:buys order-book'))))
-      (is (zero? (count (:sells order-book'))))
+      (is (zero? (count (:sell order-book'))))
       (is (= [{:price 1
                :size 1
                :seller :small-seller
                :buyer :small-buyer
                :buy-order {:price 1 :size 1 :side :buys :id :small-buyer}
-               :sell-order {:price 1 :size 1 :side :sells :id :small-seller}}]
+               :sell-order {:price 1 :size 1 :side :sell :id :small-seller}}]
              (:matched order-book')))))
 
   (testing "Test equal sized orders with different prices on opposite sides match"
@@ -58,13 +58,13 @@
           order-book (load-orders (empty-order-book) orders)
           order-book' (match-orders order-book)]
       (is (zero? (count (:buys order-book'))))
-      (is (zero? (count (:sells order-book'))))
+      (is (zero? (count (:sell order-book'))))
       (is (= [{:price 1
                :size 1
                :seller :small-seller
                :buyer :rich-buyer
                :buy-order {:price 2 :size 1 :side :buys :id :rich-buyer}
-               :sell-order {:price 1 :size 1 :side :sells :id :small-seller}}]
+               :sell-order {:price 1 :size 1 :side :sell :id :small-seller}}]
              (:matched order-book')))))
 
   (testing "Test multiple orders can match as long as all buyer prices are over seller prices"
@@ -73,19 +73,19 @@
           order-book (load-orders (empty-order-book) orders)
           order-book' (match-orders order-book)]
       (is (zero? (count (:buys order-book'))))
-      (is (zero? (count (:sells order-book'))))
+      (is (zero? (count (:sell order-book'))))
       (is (= [{:price 1
                :size 1
                :seller :medium-seller
                :buyer :rich-buyer
                :buy-order {:price 2 :size 1 :side :buys :id :rich-buyer}
-               :sell-order {:price 1 :size 2 :side :sells :id :medium-seller}}
+               :sell-order {:price 1 :size 2 :side :sell :id :medium-seller}}
               {:price 1
                :size 1
                :seller :medium-seller
                :buyer :small-buyer
                :buy-order {:price 1 :size 1 :side :buys :id :small-buyer}
-               :sell-order {:price 1 :size 1 :side :sells :id :medium-seller}}]
+               :sell-order {:price 1 :size 1 :side :sell :id :medium-seller}}]
              (:matched order-book')))))
 
   (testing "Test sellers with too high a price will not find buyers"
@@ -94,7 +94,7 @@
           order-book (load-orders (empty-order-book) orders)
           order-book' (match-orders order-book)]
       (is (= 1 (count (:buys order-book'))))
-      (is (= 1 (count (:sells order-book'))))
+      (is (= 1 (count (:sell order-book'))))
       (is (= []
              (:matched order-book'))))))
 
