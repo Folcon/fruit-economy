@@ -12,12 +12,11 @@
    :sell (empty-sells)
    :matched []})
 
+(defn load-order [order-book {:keys [side id] :as order}]
+  (assoc-in order-book [side id] order))
+
 (defn load-orders [order-book orders]
-  (reduce
-    (fn [book {:keys [side id] :as order}]
-      (assoc-in book [side id] order))
-    order-book
-    orders))
+  (reduce load-order order-book orders))
 
 (defn match-orders [order-book]
   (loop [{seller-id :id sell-price :price sell-size :size :as sell-order} (second (peek (:sell order-book)))
