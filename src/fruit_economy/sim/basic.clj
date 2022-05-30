@@ -269,6 +269,8 @@
              [:db/add -1 :kind :city]
              [:db/add -1 :settlement/name ?name]
              [:db/add -1 :settlement/place ?place]
+             [:db/add -1 :food/market ?empty-order-book]
+             [:db/add -1 :clothes/market ?empty-order-book]
              [:db/add -1 :labour/market ?empty-order-book]
              [:db/add -1 :labour/market-price 0]
              [:db/add -1 :food/price 1]
@@ -411,46 +413,20 @@
         (fn [db peep-eid]
           (let [{:keys [money planning min-food min-clothes food clothes] :as peep} (d/entity db peep-eid)
                 food-plan (* min-food planning) clothes-plan (* min-clothes planning)
-                {food-price :food/price
+                {home-eid :db/id
+                 food-price :food/price
                  clothes-price :clothes/price
+                 food-market :food/market
+                 clothes-market :clothes/market
                  :as home} (get peep :hometown)
                 food-like (like-to-buy money food-price 0.4)
                 clothes-like (like-to-buy money clothes-price 0.2)
-                food-want (min food-like food-plan) clothes-want (min clothes-like clothes-plan)
-                food-cost (* food-want food-price) clothes-cost (* clothes-want clothes-price)
-                food-factories (into [] (filter #(= (:good %) :food)) (:_hometown home))
-                clothes-factories (into [] (filter #(= (:good %) :clothes)) (:_hometown home))
-                food-orders (gen-orders food-want food-price (shuffle food-factories))
-                clothes-orders (gen-orders clothes-want clothes-price (shuffle clothes-factories))
-                _ (log :info :home home food-factories)
-                _ (log :info :food-orders food-orders)
-                _ (log :info :clothes-orders clothes-orders)
-                food-bought (reduce (fn [val order] (+ val (:buy order))) 0 food-orders)
-                clothes-bought (reduce (fn [val order] (+ val (:buy order))) 0 clothes-orders)
-                factory-earnings-tx (reduce
-                                      (fn [v order]
-                                        (let [factory (:from order)
-                                              eid (:db/id factory)
-                                              money (:money factory)
-                                              buying (:buy order)
-                                              price (:price order)
-                                              sold (:sold factory)
-                                              earning (* buying price)]
-                                          (into v [[:db/add eid :money (+ money earning)]
-                                                   [:db/add eid :sold (+ sold buying)]
-                                                   [:db/add eid :earned (+ (:earned peep) earning)]])))
-                                      []
-                                      (into food-orders clothes-orders))]
-            (log :info peep-eid :shop food-want clothes-want :food-bought food-bought food :clothes-bought clothes-bought clothes (d/touch peep))
+                food-want (min food-like food-plan) clothes-want (min clothes-like clothes-plan)]
+            (log :info peep-eid :shop food-want clothes-want (d/touch peep))
             (log :info :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
             (log :info (mapv d/touch (lookup-avet db :good nil)))
-            (into
-              [[:db/add (:db/id home) :food/demand (+ (:food/demand home) food-want)]
-               [:db/add (:db/id home) :clothes/demand (+ (:clothes/demand home) clothes-want)]
-               [:db/add peep-eid :money (- money food-cost clothes-cost)]
-               [:db/add peep-eid :food (+ food food-bought)]
-               [:db/add peep-eid :clothes (+ clothes clothes-bought)]]
-              factory-earnings-tx)))]
+            [[:db/add home-eid :food/market (load-order food-market {:price food-price :size food-want :side :buys :id peep-eid :good-kw :food})]
+             [:db/add home-eid :clothes/market (load-order clothes-market {:price clothes-price :size clothes-want :side :buys :id peep-eid :good-kw :clothes})]]))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :food ?food]
@@ -593,21 +569,20 @@
                        :as home} (get factory :hometown)
                       produced (long (* production (Math/log (+ labour-bought 1))))
                       decayed-inventory (long (* inventory decay))
-                      good-supply-key (condp = good :food :food/supply :clothes :clothes/supply)
+                      inventory' (+ decayed-inventory produced)
+                      good-market-key (condp = good :food :food/market :clothes :clothes/market)
+                      good-price-key (condp = good :food :food/price :clothes :clothes/price)
                       good-produced-key (condp = good :food :food/produced :clothes :clothes/produced)]
                   (log :info factory-eid :craft :labour-bought labour-bought (d/touch factory))
-                  (cond-> [[:db/add home-eid good-supply-key (+ (good-supply-key home) produced)]
+                  (cond-> [[:db/add home-eid good-market-key (load-order (good-market-key home) {:price (good-price-key home) :size inventory' :side :sell :id factory-eid :good-kw :inventory})]
                            [:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
-                           [:db/add factory-eid :inventory (+ decayed-inventory produced)]]
+                           [:db/add factory-eid :inventory inventory']]
 
                     (>= labour-bought min-labour)
-                    (into cat
-                      [[[:db/add home-eid :labour/supply (- labour-supply labour-bought)]
-                        [:db/add factory-eid :money (- money labour-cost)]
-                        [:db/add home-eid :labour/consumed (+ labour-consumed labour-bought)]
-                        [:db/add factory-eid :labour/consumed (+ (:labour/consumed factory) labour-bought)]
-                        [:db/add factory-eid good-produced-key (+ (good-produced-key factory) produced)]]
-                       peep-earnings-tx]))))]
+                    (into
+                      [[:db/add home-eid :labour/consumed (+ labour-consumed labour-bought)]
+                       [:db/add factory-eid :labour/consumed (+ (:labour/consumed factory) labour-bought)]
+                       [:db/add factory-eid good-produced-key (+ (good-produced-key factory) produced)]]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :inventory ?inventory]
@@ -637,7 +612,9 @@
   (let [match-market
         (fn [db town-eid]
           (println :match-market)
-          (let [{labour-market :labour/market
+          (let [{food-market :food/market
+                 clothes-market :clothes/market
+                 labour-market :labour/market
                  :as town} (d/entity db town-eid)
                 market->tx (fn [town-eid market {:keys [market-key sold-key demand-key supply-key market-price-key]}]
                              (let [{matched :matched :keys [sold current-price] :as market'} (match-orders market)
@@ -654,8 +631,14 @@
                                   [:db/add town-eid market-price-key current-price]])))]
             ;; TODO: Just have this running once? So we only have one market match, but for now maybe run it twice
             (println :town town)
-            (market->tx town-eid labour-market {:market-key :labour/market :sold-key :sold :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})))]
-    {:when '[[?e :food/market ?market]]
+            (into []
+              cat
+              [(market->tx town-eid food-market {:market-key :food/market :sold-key :sold :demand-key :food/demand :supply-key :food/supply :market-price-key :food/market-price})
+               (market->tx town-eid clothes-market {:market-key :clothes/market :sold-key :sold :demand-key :clothes/demand :supply-key :clothes/supply :market-price-key :clothes/market-price})
+               (market->tx town-eid labour-market {:market-key :labour/market :sold-key :sold :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})])))]
+    {:when '[[?e :food/market ?food-market]
+             [?e :clothes/market ?clothes-market]
+             [?e :labour/market ?labour-market]]
      :then '[[:db.fn/call match-market ?e]]
      :call {'match-market match-market}}))
 
