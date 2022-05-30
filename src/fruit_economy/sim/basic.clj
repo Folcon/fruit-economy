@@ -272,6 +272,8 @@
              [:db/add -1 :food/market ?empty-order-book]
              [:db/add -1 :clothes/market ?empty-order-book]
              [:db/add -1 :labour/market ?empty-order-book]
+             [:db/add -1 :food/market-price 0]
+             [:db/add -1 :clothes/market-price 0]
              [:db/add -1 :labour/market-price 0]
              [:db/add -1 :food/price 1]
              [:db/add -1 :food/price-float 1]
