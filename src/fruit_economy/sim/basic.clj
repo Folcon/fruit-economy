@@ -639,7 +639,7 @@
           (println :match-market)
           (let [{labour-market :labour/market
                  :as town} (d/entity db town-eid)
-                market->tx (fn [town-eid market {:keys [market-key consumed-key demand-key supply-key market-price-key]}]
+                market->tx (fn [town-eid market {:keys [market-key sold-key demand-key supply-key market-price-key]}]
                              (let [{matched :matched :keys [sold current-price] :as market'} (match-orders market)
                                    process-matched-tx (process-matched db matched)
                                    market'' (assoc market' :matched [] :sold 0)
@@ -648,13 +648,13 @@
                                (println market-key market'' :town-eid town-eid demand supply)
                                (into process-matched-tx
                                  [[:db/add town-eid market-key market'']
-                                  [:db/add town-eid consumed-key sold]
+                                  [:db/add town-eid sold-key sold]
                                   [:db/add town-eid demand-key demand]
                                   [:db/add town-eid supply-key supply]
                                   [:db/add town-eid market-price-key current-price]])))]
             ;; TODO: Just have this running once? So we only have one market match, but for now maybe run it twice
             (println :town town)
-            (market->tx town-eid labour-market {:market-key :labour/market :consumed-key :labour/consumed :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})))]
+            (market->tx town-eid labour-market {:market-key :labour/market :sold-key :sold :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})))]
     {:when '[[?e :food/market ?market]]
      :then '[[:db.fn/call match-market ?e]]
      :call {'match-market match-market}}))
