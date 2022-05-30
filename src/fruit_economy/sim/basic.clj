@@ -639,15 +639,15 @@
           (println :match-market)
           (let [{labour-market :labour/market
                  :as town} (d/entity db town-eid)
-                {:keys [matched sold current-price] :as labour-market'} (match-orders labour-market)
-                process-matched-tx (process-matched db matched)
+                {labour-matched :matched :keys [sold current-price] :as labour-market'} (match-orders labour-market)
+                process-labour-matched-tx (process-matched db labour-matched)
                 labour-market'' (assoc labour-market' :matched [] :sold 0)
                 [demand supply] ((juxt (comp count :buys) (comp count :sell)) labour-market'')]
             ;; TODO: Just have this running once? So we only have one market match, but for now maybe run it twice
             (println :town town)
             (println :labour-market' labour-market')
             (println :labour-market'' labour-market'' :town-eid town-eid demand supply)
-            (into process-matched-tx
+            (into process-labour-matched-tx
               [[:db/add town-eid :labour/market labour-market'']
                [:db/add town-eid :labour/consumed sold]
                [:db/add town-eid :labour/demand demand]
