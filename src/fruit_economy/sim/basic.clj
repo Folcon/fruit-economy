@@ -621,7 +621,7 @@
                  clothes-market :clothes/market
                  labour-market :labour/market
                  :as town} (d/entity db town-eid)
-                market->tx (fn [town-eid market {:keys [market-key sold-key demand-key supply-key market-price-key]}]
+                market->tx (fn [town-eid market {:keys [market-key demand-key supply-key market-price-key]}]
                              (let [{matched :matched :keys [sold current-price] :as market'} (match-orders market)
                                    process-matched-tx (process-matched db matched)
                                    market'' (assoc market' :matched [] :sold 0)
@@ -630,7 +630,6 @@
                                (println market-key market'' :town-eid town-eid demand supply)
                                (into process-matched-tx
                                  [[:db/add town-eid market-key market'']
-                                  [:db/add town-eid sold-key sold]
                                   [:db/add town-eid demand-key demand]
                                   [:db/add town-eid supply-key supply]
                                   [:db/add town-eid market-price-key current-price]])))]
@@ -638,9 +637,9 @@
             (println :town town)
             (into []
               cat
-              [(market->tx town-eid food-market {:market-key :food/market :sold-key :sold :demand-key :food/demand :supply-key :food/supply :market-price-key :food/market-price})
-               (market->tx town-eid clothes-market {:market-key :clothes/market :sold-key :sold :demand-key :clothes/demand :supply-key :clothes/supply :market-price-key :clothes/market-price})
-               (market->tx town-eid labour-market {:market-key :labour/market :sold-key :sold :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})])))]
+              [(market->tx town-eid food-market {:market-key :food/market :demand-key :food/demand :supply-key :food/supply :market-price-key :food/market-price})
+               (market->tx town-eid clothes-market {:market-key :clothes/market :demand-key :clothes/demand :supply-key :clothes/supply :market-price-key :clothes/market-price})
+               (market->tx town-eid labour-market {:market-key :labour/market :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})])))]
     {:when '[[?e :food/market ?food-market]
              [?e :clothes/market ?clothes-market]
              [?e :labour/market ?labour-market]]
