@@ -576,9 +576,11 @@
                       good-price-key (condp = good :food :food/price :clothes :clothes/price)
                       good-produced-key (condp = good :food :food/produced :clothes :clothes/produced)]
                   (log :info factory-eid :craft :labour-bought labour-bought (d/touch factory))
-                  (cond-> [[:db/add home-eid good-market-key (load-order (good-market-key home) {:price (good-price-key home) :size inventory' :side :sell :id factory-eid :good-kw :inventory})]
-                           [:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
+                  (cond-> [[:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
                            [:db/add factory-eid :inventory inventory']]
+
+                    (> inventory' 0)
+                    (conj [:db/add home-eid good-market-key (load-order (good-market-key home) {:price (good-price-key home) :size inventory' :side :sell :id factory-eid :good-kw :inventory})])
 
                     (>= labour-bought min-labour)
                     (into
