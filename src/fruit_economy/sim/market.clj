@@ -1,6 +1,13 @@
 (ns fruit-economy.sim.market
-  (:require [clojure.data.priority-map :refer [priority-map-keyfn priority-map-keyfn-by]]))
+  (:require [clojure.spec.alpha :as s]
+            [clojure.data.priority-map :refer [priority-map-keyfn priority-map-keyfn-by]]))
 
+
+(s/def :order/id (s/or :num number? :kw keyword?))
+(s/def :order/price pos-int?)
+(s/def :order/size pos-int?)
+(s/def :order/side #{:buys :sell})
+(s/def :order/order (s/keys :req-un [:order/id :order/price :order/size :order/side]))
 
 (defn empty-buys [] (priority-map-keyfn-by :price (comp - compare)))
 (defn empty-sells [] (priority-map-keyfn :price))
@@ -13,6 +20,7 @@
    :matched []})
 
 (defn load-order [order-book {:keys [side id] :as order}]
+  {:pre [(s/valid? :order/order order)]}
   (assoc-in order-book [side id] order))
 
 (defn load-orders [order-book orders]
