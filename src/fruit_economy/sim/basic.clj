@@ -664,6 +664,7 @@
       v')))
 
 (def price-history-limit (* 30 36))
+(def max-price (long 1e12))
 
 (def update-prices-rule
   (let [;; Post some experimentation growth factor should probably sit between 1.0001 and 1.001,
@@ -720,12 +721,12 @@
                               labour-price-velocity' (update-price-velocity labour-supply labour-demand labour-price-velocity)
                               labour-price-float' (+ labour-price-float labour-price-velocity')
 
-                              food-price-float'' (max food-price-float' 1)
-                              food-price' (max (long food-price-float') 1)
-                              clothes-price-float'' (max clothes-price-float' 1)
-                              clothes-price' (max (long clothes-price-float') 1)
-                              labour-price-float'' (max labour-price-float' 1)
-                              labour-price' (max (long labour-price-float') 1)]
+                              food-price-float'' (min (max food-price-float' 1) max-price)
+                              food-price' (min (max (long food-price-float') 1) max-price)
+                              clothes-price-float'' (min (max clothes-price-float' 1) max-price)
+                              clothes-price' (min (max (long clothes-price-float') 1) max-price)
+                              labour-price-float'' (min (max labour-price-float' 1) max-price)
+                              labour-price' (min (max (long labour-price-float') 1) max-price)]
                           [[:db/add town-eid :food/price-velocity food-price-velocity']
                            #_[:db/add town-eid :food/price-float (max food-price-float' 1)]
                            #_[:db/add town-eid :food/price (max (quot food-price-float' 100) 1)]
