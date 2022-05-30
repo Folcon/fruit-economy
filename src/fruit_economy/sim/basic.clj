@@ -639,12 +639,16 @@
             (println :town town)
             (into []
               cat
-              [(market->tx town-eid food-market {:market-key :food/market :demand-key :food/demand :supply-key :food/supply :market-price-key :food/market-price})
-               (market->tx town-eid clothes-market {:market-key :clothes/market :demand-key :clothes/demand :supply-key :clothes/supply :market-price-key :clothes/market-price})
-               (market->tx town-eid labour-market {:market-key :labour/market :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price})])))]
-    {:when '[[?e :food/market ?food-market]
-             [?e :clothes/market ?clothes-market]
-             [?e :labour/market ?labour-market]]
+              [(when (seq food-market)
+                 (market->tx town-eid food-market {:market-key :food/market :demand-key :food/demand :supply-key :food/supply :market-price-key :food/market-price}))
+               (when (seq clothes-market)
+                 (market->tx town-eid clothes-market {:market-key :clothes/market :demand-key :clothes/demand :supply-key :clothes/supply :market-price-key :clothes/market-price}))
+               (when (seq labour-market)
+                 (market->tx town-eid labour-market {:market-key :labour/market :demand-key :labour/demand :supply-key :labour/supply :market-price-key :labour/market-price}))])))]
+    {:when '[(or
+               [?e :food/market _]
+               [?e :clothes/market _]
+               [?e :labour/market _])]
      :then '[[:db.fn/call match-market ?e]]
      :call {'match-market match-market}}))
 
