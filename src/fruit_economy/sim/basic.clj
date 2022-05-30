@@ -9,6 +9,7 @@
             [fruit-economy.colour :refer [colour colour-noise]]
             [fruit-economy.data.core :refer [lookup-avet]]
             [fruit-economy.humble-ui :as custom-ui]
+            [fruit-economy.sim.market :refer [empty-order-book load-order load-orders match-orders]]
             [taoensso.timbre :refer [log]])
   (:import [io.github.humbleui.skija Paint]))
 
