@@ -17,7 +17,8 @@
    :buys  (empty-buys)
    ;; order from cheap => expensive
    :sell (empty-sells)
-   :matched []})
+   :matched []
+   :current-price 1})
 
 (defn load-order [order-book {:keys [side id] :as order}]
   {:pre [(s/valid? :order/order order)]}
