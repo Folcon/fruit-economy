@@ -615,6 +615,24 @@
      :then '[[:db.fn/call craft ?e]]
      :call {'craft craft}}))
 
+(defn process-matched [db matches]
+  (reduce
+    (fn [tx {:keys [buyer seller size price] :as order}]
+      (let [buyer-ent (d/entity db buyer)
+            seller-ent (d/entity db seller)
+            cost (* size price)
+            bought-kw (get-in order [:buy-order :good-kw])
+            sold-kw (get-in order [:sell-order :good-kw])]
+        (into tx
+          [[:db/add seller :money (+ (:money seller-ent) cost)]
+           [:db/add seller :sold (+ (:sold seller-ent) size)]
+           [:db/add seller :earned (+ (:earned seller-ent) cost)]
+           [:db/add seller sold-kw (- (sold-kw seller-ent) size)]
+           [:db/add buyer :money (- (:money buyer-ent) cost)]
+           [:db/add buyer bought-kw (+ (bought-kw buyer-ent) size)]])))
+    []
+    matches))
+
 (def match-markets-rule
   (let [match-market
         (fn [db town-eid]
@@ -622,23 +640,6 @@
           (let [{labour-market :labour/market
                  :as town} (d/entity db town-eid)
                 {:keys [matched sold current-price] :as labour-market'} (match-orders labour-market)
-                process-matched (fn [db matches]
-                                  (reduce
-                                    (fn [tx {:keys [buyer seller size price] :as order}]
-                                      (let [buyer-ent (d/entity db buyer)
-                                            seller-ent (d/entity db seller)
-                                            cost (* size price)
-                                            bought-kw (get-in order [:buy-order :good-kw])
-                                            sold-kw (get-in order [:sell-order :good-kw])]
-                                        (into tx
-                                          [[:db/add seller :money (+ (:money seller-ent) cost)]
-                                           [:db/add seller :sold (+ (:sold seller-ent) size)]
-                                           [:db/add seller :earned (+ (:earned seller-ent) cost)]
-                                           [:db/add seller sold-kw (- (sold-kw seller-ent) size)]
-                                           [:db/add buyer :money (- (:money buyer-ent) cost)]
-                                           [:db/add buyer bought-kw (+ (bought-kw buyer-ent) size)]])))
-                                    []
-                                    matches))
                 process-matched-tx (process-matched db matched)
                 labour-market'' (assoc labour-market' :matched [] :sold 0)
                 [demand supply] ((juxt (comp count :buys) (comp count :sell)) labour-market'')]
