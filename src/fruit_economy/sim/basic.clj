@@ -626,17 +626,18 @@
                  labour-market :labour/market
                  :as town} (d/entity db town-eid)
                 market->tx (fn [town-eid market {:keys [market-key demand-key supply-key market-price-key]}]
-                             (let [{matched :matched :keys [sold current-price] :as market'} (match-orders market)
-                                   process-matched-tx (process-matched db matched)
-                                   market'' (assoc market' :matched [] :sold 0)
-                                   [demand supply] ((juxt (comp count :buys) (comp count :sell)) market'')]
-                               (println market-key market')
-                               (println market-key market'' :town-eid town-eid demand supply)
-                               (into process-matched-tx
-                                 [[:db/add town-eid market-key market'']
-                                  [:db/add town-eid demand-key demand]
-                                  [:db/add town-eid supply-key supply]
-                                  [:db/add town-eid market-price-key current-price]])))]
+                             (let [{matched :matched :keys [sold current-price] :as market'} (match-orders market)]
+                               (if (and (= market market') (empty? matched))
+                                 ;; There's no change
+                                 []
+                                 (let [process-matched-tx (process-matched db matched)
+                                       market'' (assoc market' :matched [] :sold 0)
+                                       [demand supply] ((juxt (comp count :buys) (comp count :sell)) market'')]
+                                   (into process-matched-tx
+                                     [[:db/add town-eid market-key market'']
+                                      [:db/add town-eid demand-key demand]
+                                      [:db/add town-eid supply-key supply]
+                                      [:db/add town-eid market-price-key current-price]])))))]
             ;; TODO: Just have this running once? So we only have one market match, but for now maybe run it twice
             (println :town town)
             (into []
