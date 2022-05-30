@@ -491,7 +491,7 @@
                              [:db/add peep-eid :labour/produced (+ (:labour/produced peep) base-labour)]
                              [:db/add peep-eid :food/consumed (+ (:food/consumed peep) food-had)]
                              [:db/add peep-eid :clothes/consumed (+ (:clothes/consumed peep) clothes-had)]
-                             [:db/add hometown-eid :labour/market (load-order labour-market {:price labour-price :size base-labour :side :sell :id peep-eid})]
+                             [:db/add hometown-eid :labour/market (load-order labour-market {:price labour-price :size base-labour :side :sell :id peep-eid :good-kw :labour})]
                              [:db/add hometown-eid :labour/produced (+ labour-produced base-labour)]
                              [:db/add hometown-eid :food/consumed (+ food-consumed food-had)]
                              [:db/add hometown-eid :clothes/consumed (+ clothes-consumed clothes-had)]]
@@ -575,7 +575,7 @@
                      labour-like (like-to-buy money labour-price 0.8)
                      labour-want (min labour-like labour-plan)
                      _ (log :info :hire :labour-like labour-like :money money :labour-want labour-want)]
-                 [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price :size labour-want :side :buys :id factory-eid})]]))]
+                 [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]]))]
     ;; This models ad-hoc labour, finding work, which could be dice roll based etc, is separate to this, peeps keep doing ad-hoc work while "looking" for a job until they find one, then they stop, unless they switch again.
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
@@ -627,12 +627,16 @@
                                     (fn [tx {:keys [buyer seller size price] :as order}]
                                       (let [buyer-ent (d/entity db buyer)
                                             seller-ent (d/entity db seller)
-                                            cost (* size price)]
+                                            cost (* size price)
+                                            bought-kw (get-in order [:buy-order :good-kw])
+                                            sold-kw (get-in order [:sell-order :good-kw])]
                                         (into tx
                                           [[:db/add seller :money (+ (:money seller-ent) cost)]
                                            [:db/add seller :sold (+ (:sold seller-ent) size)]
                                            [:db/add seller :earned (+ (:earned seller-ent) cost)]
-                                           [:db/add buyer :money (- (:money buyer-ent) cost)]])))
+                                           [:db/add seller sold-kw (- (sold-kw seller-ent) size)]
+                                           [:db/add buyer :money (- (:money buyer-ent) cost)]
+                                           [:db/add buyer bought-kw (+ (bought-kw buyer-ent) size)]])))
                                     []
                                     matches))
                 process-matched-tx (process-matched db matched)
