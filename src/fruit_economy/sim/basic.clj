@@ -590,21 +590,26 @@
      :then '[[:db.fn/call craft ?e]]
      :call {'craft craft}}))
 
+(defn update-attrs [db eid attr-fn-vals]
+  (let [ent (d/entity db eid)]
+    (into []
+      (map (fn [[attr f val]]
+             [:db/add eid attr (f (get ent attr) val)]))
+      attr-fn-vals)))
+
 (defn process-matched [db matches]
   (reduce
     (fn [tx {:keys [buyer seller size price] :as order}]
-      (let [buyer-ent (d/entity db buyer)
-            seller-ent (d/entity db seller)
-            cost (* size price)
+      (let [cost (* size price)
             bought-kw (get-in order [:buy-order :good-kw])
             sold-kw (get-in order [:sell-order :good-kw])]
         (into tx
-          [[:db/add seller :money (+ (:money seller-ent) cost)]
-           [:db/add seller :sold (+ (:sold seller-ent) size)]
-           [:db/add seller :earned (+ (:earned seller-ent) cost)]
-           [:db/add seller sold-kw (- (sold-kw seller-ent) size)]
-           [:db/add buyer :money (- (:money buyer-ent) cost)]
-           [:db/add buyer bought-kw (+ (bought-kw buyer-ent) size)]])))
+          [[:db.fn/call update-attrs seller [[:money + cost]
+                                             [:sold + size]
+                                             [:earned + cost]
+                                             [sold-kw - size]]]
+           [:db.fn/call update-attrs buyer [[:money - cost]
+                                            [bought-kw + size]]]])))
     []
     matches))
 
