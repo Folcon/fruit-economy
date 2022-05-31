@@ -1,9 +1,13 @@
 (ns fruit-economy.ui.parts
   (:require [io.github.humbleui.ui :as ui]
+            [io.github.humbleui.paint :as paint]
             [fruit-economy.state :as state]
             [fruit-economy.clock :as clock]
+            [fruit-economy.colour :refer [colour colour-noise]]
+            [fruit-economy.humble-ui :as custom-ui]
             [fruit-economy.data.core :as data]
             [fruit-economy.ui.bits :as ui.bits :refer [padding]]
+            [fruit-economy.land :as land]
             [fruit-economy.sim.basic :as basic])
   (:import [io.github.humbleui.skija Paint PaintMode]))
 
@@ -136,3 +140,110 @@
                               (ui/padding 5 5
                                 (ui/label (str message) {:font font-small :paint fill-black}))))))
                       message-log')))]))))))))
+
+(def map-ui-view
+ (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black cell tick lrtb map-font emoji-font]} ctx
+                  {:keys [world-db map-view]} @state/*world]
+   (let [[left right top bottom] lrtb
+         terrain-tint (condp = map-view
+                        :temp-view (fn [tile] (colour (colour-noise (get tile :temp)) 0 0))
+                        :elev-view (fn [tile] (colour 0 (colour-noise (get tile :elev)) 0))
+                        :climate-view (fn [tile] (colour (colour-noise (get tile :temp)) (colour-noise (get tile :elev)) 0))
+                        :forage-view (fn [tile] (colour 0 (* (get tile :food 0) 40) 0))
+                        :mine-view (fn [tile] (colour 0 (* (get tile :rock 0) 40) 0))
+                        (fn [tile] (land/render-tile-colour (get tile :biome))))
+         unit-data (fn [x y]
+                     (let [;; pixel-x and pixel-y
+                           coord-x x
+                           coord-y y
+                           coord [coord-x coord-y]
+
+                           tile (basic/coord-q world-db coord)
+
+                           things (when tile (basic/units-q world-db coord))
+                           size (count things)
+                           {:keys [glyph] :as thing} (when-not (zero? size) (nth things (rem tick size)))
+
+                           {name :settlement/name :as settlement} (when tile (first (basic/settlements-q world-db coord)))]
+                       (when thing
+                         (log :info :wealth thing (get thing :wealth))
+                         (log :info :wealth settlement thing (get thing :wealth)))
+                       (cond
+                         thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
+                         (seq settlement) [name (colour 0 0 155) map-font font-offset-x font-offset-y]
+                         :else ["" (terrain-tint tile) map-font font-offset-x font-offset-y])))]
+     (ui/column
+       (interpose (ui/gap 0 0)
+         (for [y-idx (range top bottom)]
+           (ui/row
+             (interpose (ui/gap 0 0)
+               (for [x-idx (range left right)]
+                 (ui/hoverable
+                   (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                     (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
+                       (ui/fill (if hovered?
+                                  (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
+                                  (paint/fill tile-colour))
+                         (ui/width cell
+                           (ui/halign 0.5
+                             (ui/height cell
+                               (ui/valign 0.5
+                                 (ui/label glyph {:font font :paint fill-white}))))))))))))))))))
+
+(def chart-view
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-green fill-yellow fill-light-gray fill-dark-gray]} ctx
+                   {:keys [world-db]} @state/*world]
+    (let [units (basic/units-q world-db nil)
+          wealth-freqs (->> units
+                         (map :wealth)
+                         (frequencies)
+                         (into (sorted-map))
+                         (vec))
+          size (count wealth-freqs)
+          mx 30
+          wealth-freqs-filtered (into [["$" "#"]]
+                                  (if (< mx size)
+                                    (into (subvec wealth-freqs 0 (- mx 3)) cat [[["" ""] ["..." (str (- size (dec mx)) "+")] ["" ""]] (subvec wealth-freqs (- size 2) size)])
+                                    wealth-freqs))
+          freq-avg-fn (fn [freq]
+                        (let [[total size] (reduce (fn [v [val count]] (-> v (update 0 + (* val count)) (update 1 + count))) [0 0] freq)]
+                          (float (/ total size))))
+          padding 4]
+      (ui/column
+        (ui/fill fill-light-gray
+          (ui/padding 4
+            (ui/label "Meganeura Info")))
+        (ui/gap 0 2)
+        (ui/tooltip
+          (ui/fill fill-light-gray
+            (ui/padding 10
+              (ui/column
+                (ui/label "These are the titanic creatures beneath who's trails new settlements can form" {:font font-small}))))
+          (if-not (seq units)
+            (ui/gap 0 0)
+            (ui/column
+              (ui/row
+                (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
+                (ui/gap padding 2)
+                (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
+                (ui/gap padding 2)
+                (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
+                (ui/gap 2 padding))
+              (ui/padding 5
+                (ui/column
+                  (interpose (ui/gap padding 2)
+                    (for [entry wealth-freqs-filtered
+                          :let [[_wealth quantity] entry]]
+                      (ui/row
+                        (interpose (ui/gap 12 0)
+                          (into
+                            (if (number? quantity)
+                              (custom-ui/<>
+                                (ui/fill (paint/fill (colour 150 150 150))
+                                  (ui/gap (* quantity 2) 2)))
+                              (custom-ui/<>
+                                (ui/gap 0 0)))
+                            (for [val entry]
+                              (ui/width 20
+                                (ui/label (str val) {:font font-small :paint fill-black})))))))))))))))))
+
