@@ -427,8 +427,11 @@
             (log :info peep-eid :shop food-want clothes-want (d/touch peep))
             (log :info :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
             (log :info (mapv d/touch (lookup-avet db :good nil)))
-            [[:db/add home-eid :food/market (load-order food-market {:price food-price :size food-want :side :buys :id peep-eid :good-kw :food})]
-             [:db/add home-eid :clothes/market (load-order clothes-market {:price clothes-price :size clothes-want :side :buys :id peep-eid :good-kw :clothes})]]))]
+            (cond-> []
+              (> food-want 0)
+              (conj [:db/add home-eid :food/market (load-order food-market {:price food-price :size food-want :side :buys :id peep-eid :good-kw :food})])
+              (> clothes-want 0)
+              (conj [:db/add home-eid :clothes/market (load-order clothes-market {:price clothes-price :size clothes-want :side :buys :id peep-eid :good-kw :clothes})]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :food ?food]
@@ -553,7 +556,8 @@
                      labour-like (like-to-buy money labour-price 0.8)
                      labour-want (min labour-like labour-plan)
                      _ (log :info :hire :labour-like labour-like :money money :labour-want labour-want)]
-                 [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]]))]
+                 (when (> labour-want 0)
+                   [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]])))]
     ;; This models ad-hoc labour, finding work, which could be dice roll based etc, is separate to this, peeps keep doing ad-hoc work while "looking" for a job until they find one, then they stop, unless they switch again.
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
