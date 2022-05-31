@@ -121,6 +121,75 @@
                          ;;(ui/gap 0 2)
                          (show-map-ui market font-small fill-black)))))))))))))
 
+(def ui-view
+  (ui/dynamic ctx [{:keys [font-small fill-white fill-green fill-yellow fill-light-gray fill-dark-gray]} ctx
+                   {:keys [world-db map-view]} @state/*world]
+    (ui/column
+      (ui/row
+        basic/map-ui-view
+        (ui/padding 10
+          (ui/height 200
+            (ui/column
+              (ui/dynamic ctx [settlements (basic/settlements-q world-db nil)]
+                (if-not (seq settlements)
+                  basic/chart-view
+                  (ui/column
+                    (ui/fill fill-light-gray
+                      (ui/padding 4
+                        (ui/label "Settlement Info")))
+                    (ui/vscrollbar
+                      (ui/vscroll
+                        (ui/column
+                          (interpose (ui/gap 4 0)
+                            (for [settlement settlements]
+                              (ui/padding 4
+                                (basic/city-view settlement)))))))
+                    (ui/gap 0 10)
+                    basic/chart-view)))))))
+      (ui/row
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :default-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🗺️" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :temp-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🌡" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :elev-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "📏" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :climate-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🌍" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :forage-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "🚜" {:font font-small :paint fill-white}))))))
+        (ui/clickable
+          #(swap! state/*world assoc :map-view :mine-view)
+          (ui/hoverable
+            (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+              (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
+                (ui/padding 10 10
+                  (ui/label "⛏️" {:font font-small :paint fill-white}))))))))))
+
 (def basic-ui-view
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
                            font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow
@@ -146,7 +215,7 @@
           (ui/column
             ui.parts/top-bar-ui
             (ui/padding 20
-              basic/ui-view)
+              ui-view)
             (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} ctx]
               (let [db world-db
                     cities (data/lookup-avet db :kind :city)]
