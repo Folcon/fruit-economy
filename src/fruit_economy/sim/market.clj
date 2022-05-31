@@ -29,6 +29,9 @@
 (defn load-orders [order-book orders]
   (reduce load-order order-book orders))
 
+(defn remove-order [order-book side id]
+  (update order-book side dissoc id))
+
 (defn match-orders [order-book]
   (loop [{seller-id :id sell-price :price sell-size :size :as sell-order} (second (peek (:sell order-book)))
          {buyer-id :id buy-price :price buy-size :size :as buy-order} (second (peek (:buys order-book)))
