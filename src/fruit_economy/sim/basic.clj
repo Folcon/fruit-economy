@@ -546,8 +546,8 @@
 (def hire-rule
   (let [hire (fn [db factory-eid]
                (println :hire)
-               (let [{:keys [money sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
-                     _ (log :info :sold sold)
+               (let [{:keys [money last-sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
+                     _ (log :info :sold last-sold)
                      labour-plan (* min-labour planning 10)
                      {home-eid :db/id
                       labour-price :labour/price
@@ -568,8 +568,8 @@
 
 (def craft-rule
   (let [craft (fn [db factory-eid]
-                (let [{:keys [money sold min-labour labour-bought inventory decay production good] :as factory} (d/entity db factory-eid)
-                      _ (log :info :sold sold)
+                (let [{:keys [money last-sold min-labour labour-bought inventory decay production good] :as factory} (d/entity db factory-eid)
+                      _ (log :info :sold last-sold)
                       {home-eid :db/id
                        labour-consumed :labour/consumed
                        :as home} (get factory :hometown)
