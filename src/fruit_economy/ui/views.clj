@@ -136,15 +136,15 @@
           (ui/gap 0 2)
           (ui/row
             [:stretch 4 (ui/label "Food")]
-            [:stretch 2 (ui/label (str (get settlement :food/price) "g") {:paint (basic/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
+            [:stretch 2 (ui/label (str (get settlement :food/price) "g") {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
             [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
             [:stretch 1 nil]
             [:stretch 4 (ui/label "Clothes")]
-            [:stretch 2 (ui/label (str (get settlement :clothes/price) "g") {:paint (basic/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
+            [:stretch 2 (ui/label (str (get settlement :clothes/price) "g") {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
             [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
             [:stretch 1 nil]
             [:stretch 4 (ui/label "Labour")]
-            [:stretch 2 (ui/label (str (get settlement :labour/price) "g") {:paint (basic/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
+            [:stretch 2 (ui/label (str (get settlement :labour/price) "g") {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
             [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
             [:stretch 1 nil])
           (ui/gap 0 2)

@@ -1014,9 +1014,6 @@
                               (ui/width 20
                                 (ui/label (str val) {:font font-small :paint fill-black})))))))))))))))))
 
-(defn compare->fill [m key-a key-b {:keys [<-fill >-fill =-fill]}]
-  (let [a (get m key-a) b (get m key-b) diff (- a b)] (cond (< diff 0) <-fill (> diff 0) >-fill (zero? diff) =-fill)))
-
 (def *sim-broken (atom nil))
 
 (defn tick-world [*world]

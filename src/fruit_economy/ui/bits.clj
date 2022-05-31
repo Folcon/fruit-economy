@@ -61,3 +61,7 @@
         (nested-limit coll 4))
       (= [[1 2] [3 4]]
         (nested-limit coll' 4)))))
+
+(defn compare->fill [m key-a key-b {:keys [<-fill >-fill =-fill]}]
+  (let [a (get m key-a) b (get m key-b) diff (- a b)] (cond (< diff 0) <-fill (> diff 0) >-fill (zero? diff) =-fill)))
+
