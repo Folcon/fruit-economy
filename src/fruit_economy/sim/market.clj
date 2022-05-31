@@ -20,8 +20,10 @@
    :matched []
    :current-price 1})
 
+(s/fdef load-order
+  :args (s/cat :order-book any? :order :order/order))
+
 (defn load-order [order-book {:keys [side id] :as order}]
-  {:pre [(s/valid? :order/order order)]}
   (assoc-in order-book [side id] order))
 
 (defn load-orders [order-book orders]

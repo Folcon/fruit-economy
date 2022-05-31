@@ -50,6 +50,9 @@
 
 (defonce font-mgr (FontMgr/getDefault))
 
+(when (debug?)
+  (let [instrument (requiring-resolve 'clojure.spec.test.alpha/instrument)]
+    (instrument 'fruit-economy.sim.market/load-order)))
 
 
 (defn init-world [world-name width height]
