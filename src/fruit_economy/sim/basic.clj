@@ -1017,48 +1017,6 @@
 (defn compare->fill [m key-a key-b {:keys [<-fill >-fill =-fill]}]
   (let [a (get m key-a) b (get m key-b) diff (- a b)] (cond (< diff 0) <-fill (> diff 0) >-fill (zero? diff) =-fill)))
 
-(defn city-view [settlement]
-  (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green]} ctx
-                   {:keys [world-db map-view]} @state/*world]
-    (ui/column
-      (ui/row
-        (interpose (ui/gap 4 0)
-          (for [k [:settlement/name :settlement/place]]
-            (ui/label (str (get settlement k)) {:font font-small :paint fill-black}))))
-      (ui/gap 0 4)
-      (ui/row
-        (ui/column
-          (ui/label (str "Money " (:money (first (get settlement :_governs)))))
-          (ui/gap 0 2)
-          (ui/row
-            [:stretch 4 (ui/label "Food")]
-            [:stretch 2 (ui/label (str (get settlement :food/price) "g") {:paint (compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
-            [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-            [:stretch 1 nil]
-            [:stretch 4 (ui/label "Clothes")]
-            [:stretch 2 (ui/label (str (get settlement :clothes/price) "g") {:paint (compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
-            [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-            [:stretch 1 nil]
-            [:stretch 4 (ui/label "Labour")]
-            [:stretch 2 (ui/label (str (get settlement :labour/price) "g") {:paint (compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})})]
-            [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-            [:stretch 1 nil])
-          (ui/gap 0 2)
-          #_
-          (interpose (ui/gap 0 4)
-            (for [columns [["" "Food" "Clothes" "Labour"] ["Price" :food/price :clothes/price :labour/price] ["Float" :food/price-float :clothes/price-float :labour/price-float] ["Velocity" :food/price-velocity :clothes/price-velocity :labour/price-velocity] ["Demand" :food/last-demand :clothes/last-demand :labour/last-demand] ["Supply" :food/last-supply :clothes/last-supply :labour/last-supply]]]
-              (ui/row
-                (interpose (ui/gap 4 0)
-                  (for [k columns
-                        :let [label (if (string? k) k (str (get settlement k)))]]
-                    (ui/padding 0 0 40 0
-                      (ui/label label {:font font-small :paint fill-black})))))))
-          (ui/padding 10
-            (ui/column
-              (interpose (ui/gap 4 0)
-                (for [peep (mapv d/touch (lookup-avet world-db :hometown (:db/id settlement)))]
-                  (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])) {:font font-small :paint fill-black}))))))))))
-
 (def *sim-broken (atom nil))
 
 (defn tick-world [*world]
