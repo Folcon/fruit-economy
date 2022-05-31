@@ -48,12 +48,11 @@
 (when-not (debug?)
   (set-level! :warn))
 
-(defonce font-mgr (FontMgr/getDefault))
-
 (when (debug?)
   (let [instrument (requiring-resolve 'clojure.spec.test.alpha/instrument)]
     (instrument 'fruit-economy.sim.market/load-order)))
 
+(defonce font-mgr (FontMgr/getDefault))
 
 (defn init-world [world-name width height]
   (-> (land/make-land world-name width height)
