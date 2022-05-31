@@ -421,17 +421,28 @@
                  food-market :food/market
                  clothes-market :clothes/market
                  :as home} (get peep :hometown)
-                food-like (like-to-buy money food-price 0.4)
-                clothes-like (like-to-buy money clothes-price 0.2)
+
+                existing-food-order? (get-in food-market [:buys peep-eid])
+                food-price' (if existing-food-order?
+                              (inc food-price)
+                              (rand-nth [food-price (max (dec food-price) 1)]))
+
+                existing-clothes-order? (get-in clothes-market [:buys peep-eid])
+                clothes-price' (if existing-clothes-order?
+                                 (inc clothes-price)
+                                 (rand-nth [clothes-price (max (dec clothes-price) 1)]))
+
+                food-like (like-to-buy money food-price' 0.4)
+                clothes-like (like-to-buy money clothes-price' 0.2)
                 food-want (min food-like food-plan) clothes-want (min clothes-like clothes-plan)]
             (log :info peep-eid :shop food-want clothes-want (d/touch peep))
             (log :info :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
             (log :info (mapv d/touch (lookup-avet db :good nil)))
             (cond-> []
               (> food-want 0)
-              (conj [:db/add home-eid :food/market (load-order food-market {:price food-price :size food-want :side :buys :id peep-eid :good-kw :food})])
+              (conj [:db/add home-eid :food/market (load-order food-market {:price food-price' :size food-want :side :buys :id peep-eid :good-kw :food})])
               (> clothes-want 0)
-              (conj [:db/add home-eid :clothes/market (load-order clothes-market {:price clothes-price :size clothes-want :side :buys :id peep-eid :good-kw :clothes})]))))]
+              (conj [:db/add home-eid :clothes/market (load-order clothes-market {:price clothes-price' :size clothes-want :side :buys :id peep-eid :good-kw :clothes})]))))]
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
              [?e :food ?food]
@@ -459,20 +470,33 @@
 
                         enough-food? (>= food-had min-food)
                         enough-clothes? (>= clothes-had min-clothes)
+                        sold (:last-sold peep)
                         hometown (:hometown peep)
                         hometown-eid (:db/id hometown)
                         labour-market (:labour/market hometown)
                         labour-price (:labour/price hometown)
                         labour-produced (:labour/produced hometown)
                         food-consumed (:food/consumed hometown)
-                        clothes-consumed (:clothes/consumed hometown)]
+                        clothes-consumed (:clothes/consumed hometown)
+
+                        existing-order? (get-in labour-market [:sell peep-eid])
+                        no-work? (zero? sold)
+                        fully-working? (and (not existing-order?) (> sold 0))
+                        labour-price' (cond
+                                        no-work?
+                                        (max (dec labour-price) 1)
+
+                                        fully-working?
+                                        (inc labour-price)
+
+                                        :else labour-price)]
                     (cond-> [[:db/add peep-eid :food food-rem]
                              [:db/add peep-eid :clothes clothes-rem]
                              [:db/add peep-eid :labour base-labour]
                              [:db/add peep-eid :labour/produced (+ (:labour/produced peep) base-labour)]
                              [:db/add peep-eid :food/consumed (+ (:food/consumed peep) food-had)]
                              [:db/add peep-eid :clothes/consumed (+ (:clothes/consumed peep) clothes-had)]
-                             [:db/add hometown-eid :labour/market (load-order labour-market {:price labour-price :size base-labour :side :sell :id peep-eid :good-kw :labour})]
+                             [:db/add hometown-eid :labour/market (load-order labour-market {:price labour-price' :size base-labour :side :sell :id peep-eid :good-kw :labour})]
                              [:db/add hometown-eid :labour/produced (+ labour-produced base-labour)]
                              [:db/add hometown-eid :food/consumed (+ food-consumed food-had)]
                              [:db/add hometown-eid :clothes/consumed (+ clothes-consumed clothes-had)]]
@@ -546,18 +570,31 @@
 (def hire-rule
   (let [hire (fn [db factory-eid]
                (println :hire)
-               (let [{:keys [money last-sold planning min-labour inventory decay production good] :as factory} (d/entity db factory-eid)
+               (let [{:keys [money last-sold planning min-labour labour-bought inventory decay production good] :as factory} (d/entity db factory-eid)
                      _ (log :info :sold last-sold)
                      labour-plan (* min-labour planning 10)
                      {home-eid :db/id
                       labour-price :labour/price
                       labour-market :labour/market
                       :as home} (get factory :hometown)
-                     labour-like (like-to-buy money labour-price 0.8)
+
+                     existing-order? (get-in labour-market [:buys factory-eid])
+                     no-hires? (zero? labour-bought)
+                     fully-hired? (and (not existing-order?) (> labour-bought 0))
+                     labour-price' (cond
+                                     fully-hired?
+                                     (max (dec labour-price) 1)
+
+                                     no-hires?
+                                     (inc labour-price)
+
+                                     :else labour-price)
+
+                     labour-like (like-to-buy money labour-price' 0.8)
                      labour-want (min labour-like labour-plan)
                      _ (log :info :hire :labour-like labour-like :money money :labour-want labour-want)]
                  (when (> labour-want 0)
-                   [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]])))]
+                   [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price' :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]])))]
     ;; This models ad-hoc labour, finding work, which could be dice roll based etc, is separate to this, peeps keep doing ad-hoc work while "looking" for a job until they find one, then they stop, unless they switch again.
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
@@ -581,16 +618,27 @@
                       good-produced-key (condp = good :food :food/produced :clothes :clothes/produced)
 
                       market (good-market-key home)
-                      existing-order-size (get-in market [:sell factory-eid :size])
-                      price (good-price-key home)]
+                      existing-order? (get-in market [:sell factory-eid])
+
+                      price (good-price-key home)
+                      sold-nothing? (zero? last-sold)
+                      sold-out? (and (not existing-order?) (> last-sold 0))
+                      price' (cond
+                               sold-nothing?
+                               (max (dec price) 1)
+
+                               sold-out?
+                               (inc price)
+
+                               :else price)]
                   (log :info factory-eid :craft :labour-bought labour-bought (d/touch factory))
                   (cond-> [[:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
                            [:db/add factory-eid :inventory inventory']]
 
                     (> inventory' 0)
-                    (conj [:db/add home-eid good-market-key (load-order market {:price price :size inventory' :side :sell :id factory-eid :good-kw :inventory})])
+                    (conj [:db/add home-eid good-market-key (load-order market {:price price' :size inventory' :side :sell :id factory-eid :good-kw :inventory})])
 
-                    (and (zero? inventory') existing-order-size)
+                    (and (zero? inventory') existing-order?)
                     (conj [:db/add home-eid good-market-key (remove-order market :sell factory-eid)])
 
                     (>= labour-bought min-labour)
@@ -774,15 +822,22 @@
                            [:db/add town-eid :labour/last-consumed labour-consumed]
 
                            ;#_#_#_#_#_#_#_#_#_
+                           #_#_
                            [:db/add town-eid :food/price-float food-price-float'']
                            [:db/add town-eid :food/price food-price']
                            [:db/add town-eid :food/price-history (conj-to-limit food-price-history price-history-limit food-price)]
+                           #_#_
                            [:db/add town-eid :clothes/price-float clothes-price-float'']
                            [:db/add town-eid :clothes/price clothes-price']
                            [:db/add town-eid :clothes/price-history (conj-to-limit clothes-price-history price-history-limit clothes-price)]
+                           #_#_
                            [:db/add town-eid :labour/price-float labour-price-float'']
                            [:db/add town-eid :labour/price labour-price']
-                           [:db/add town-eid :labour/price-history (conj-to-limit labour-price-history price-history-limit labour-price)]]))]
+                           [:db/add town-eid :labour/price-history (conj-to-limit labour-price-history price-history-limit labour-price)]
+
+                           [:db/add town-eid :food/price food-market-price]
+                           [:db/add town-eid :clothes/price clothes-market-price]
+                           [:db/add town-eid :labour/price labour-market-price]]))]
 
     {:when '[[?e :food/price _]]
      :then '[[:db.fn/call update-prices ?e]]
