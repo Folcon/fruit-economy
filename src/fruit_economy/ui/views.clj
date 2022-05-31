@@ -169,13 +169,13 @@
                    {:keys [world-db map-view]} @state/*world]
     (ui/column
       (ui/row
-        basic/map-ui-view
+        ui.parts/map-ui-view
         (ui/padding 10
           (ui/height 200
             (ui/column
               (ui/dynamic ctx [settlements (basic/settlements-q world-db nil)]
                 (if-not (seq settlements)
-                  basic/chart-view
+                  ui.parts/chart-view
                   (ui/column
                     (ui/fill fill-light-gray
                       (ui/padding 4
