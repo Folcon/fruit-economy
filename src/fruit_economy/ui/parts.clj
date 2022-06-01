@@ -49,28 +49,28 @@
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/fill (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+ 1 Day" {:font font-small :paint fill-white}))))))
+                    (ui/label "+1 Day" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-10x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/fill (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+ 10 Days" {:font font-small :paint fill-white}))))))
+                    (ui/label "+10 Days" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-100x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/fill (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+ 100 Days" {:font font-small :paint fill-white}))))))
+                    (ui/label "+100 Days" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-1000x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/fill (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+ 1000 Days" {:font font-small :paint fill-white})))))))
+                    (ui/label "+1000 Days" {:font font-small :paint fill-white})))))))
         (ui/row
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 5000)
