@@ -5,6 +5,7 @@
             [fruit-economy.data.core :as data]
             [fruit-economy.sim.basic :as basic]
             [fruit-economy.ui.bits :as ui.bits]
+            [fruit-economy.ui.parts :as ui.parts]
             [fruit-economy.ui.views :as ui.views]
             [fruit-economy.components :as cui]
             [fruit-economy.utils :refer [suppress-print]])
@@ -77,7 +78,7 @@
                                 :cell cell
                                 :tick tick}
                 (ui/column
-                  basic/map-ui-view
+                  ui.parts/map-ui-view
                   (ui/halign 0.5
                     (ui/row
                       (ui/button

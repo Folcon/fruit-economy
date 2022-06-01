@@ -186,9 +186,9 @@
                           (interpose (ui/gap 4 0)
                             (for [settlement settlements]
                               (ui/padding 4
-                                (basic/city-view settlement)))))))
+                                (city-view settlement)))))))
                     (ui/gap 0 10)
-                    basic/chart-view)))))))
+                    ui.parts/chart-view)))))))
       (ui/row
         (ui/clickable
           #(swap! state/*world assoc :map-view :default-view)
