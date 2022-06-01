@@ -8,7 +8,8 @@
             [fruit-economy.data.core :as data]
             [fruit-economy.ui.bits :as ui.bits :refer [padding]]
             [fruit-economy.land :as land]
-            [fruit-economy.sim.basic :as basic])
+            [fruit-economy.sim.basic :as basic]
+            [taoensso.timbre :refer [log]])
   (:import [io.github.humbleui.skija Paint PaintMode]))
 
 
