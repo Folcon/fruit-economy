@@ -32,6 +32,17 @@
 (defn remove-order [order-book side id]
   (update order-book side dissoc id))
 
+(defn market-stats
+  "track OHLCV stats for market"
+  [market price size]
+  (-> market
+    ;; effectively closing price
+    (assoc :current-price price)
+    (update :open-price (fn [open] (if (nil? open) price open)))
+    (update :high-price max price)
+    (update :low-price min price)
+    (update :sold + size)))
+
 (defn match-orders [order-book]
   (loop [{seller-id :id sell-price :price sell-size :size :as sell-order} (second (peek (:sell order-book)))
          {buyer-id :id buy-price :price buy-size :size :as buy-order} (second (peek (:buys order-book)))
@@ -54,8 +65,7 @@
                           (update :matched conj {:price sell-price :size buy-size :seller seller-id :buyer buyer-id :buy-order buy-order :sell-order sell-order})
                           (update :sell pop)
                           (update :buys pop)
-                          (assoc :current-price (:price sell-order))
-                          (update :sold + buy-size))
+                          (market-stats (:price sell-order) buy-size))
             sell-order' (second (peek (:sell order-book')))
             buy-order' (second (peek (:buys order-book')))]
         (if (and buy-order' sell-order')
@@ -72,8 +82,7 @@
                           (update :matched conj {:price sell-price :size buy-size :seller seller-id :buyer buyer-id :buy-order buy-order :sell-order sell-order})
                           (update :buys pop)
                           (update-in [:sell seller-id :size] - buy-size)
-                          (update :sold + buy-size)
-                          (assoc :current-price (:price sell-order)))
+                          (market-stats (:price sell-order) buy-size))
             sell-order' (second (peek (:sell order-book')))
             buy-order' (second (peek (:buys order-book')))]
         (if buy-order'
@@ -89,8 +98,7 @@
                           (update :matched conj {:price sell-price :size sell-size :seller seller-id :buyer buyer-id :buy-order buy-order :sell-order sell-order})
                           (update :sell pop)
                           (update-in [:buys buyer-id :size] - sell-size)
-                          (update :sold + sell-size)
-                          (assoc :current-price sell-price))
+                          (market-stats (:price sell-order) sell-size))
             sell-order' (second (peek (:sell order-book')))
             buy-order' (second (peek (:buys order-book')))]
         (if sell-order'
