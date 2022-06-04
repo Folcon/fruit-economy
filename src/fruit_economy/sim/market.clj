@@ -74,7 +74,7 @@
                           (update-in [:sell seller-id :size] - buy-size)
                           (update :sold + buy-size)
                           (assoc :current-price (:price sell-order)))
-            sell-order' (update sell-order :size - buy-size)
+            sell-order' (second (peek (:sell order-book')))
             buy-order' (second (peek (:buys order-book')))]
         (if buy-order'
           (recur
@@ -92,7 +92,7 @@
                           (update :sold + sell-size)
                           (assoc :current-price sell-price))
             sell-order' (second (peek (:sell order-book')))
-            buy-order' (update buy-order :size - sell-size)]
+            buy-order' (second (peek (:buys order-book')))]
         (if sell-order'
           (recur
             sell-order'
