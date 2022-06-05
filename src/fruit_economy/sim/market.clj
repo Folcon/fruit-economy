@@ -109,3 +109,38 @@
             (inc limit))
           order-book')))))
 
+(defn collect-price-levels [market-side]
+  (when (seq market-side)
+    (reduce
+      (fn [m [_ {:keys [price] :as order}]]
+        (update m price (fnil conj []) order))
+      (sorted-map)
+      market-side)))
+
+(defn collect-price-sizes [market-side]
+  (when (seq market-side)
+    (reduce
+      (fn [m [_ {:keys [price size] :as order}]]
+        (update m price (fnil + 0) size))
+      {}
+      market-side)))
+
+(defn collect-price-stats [market-side]
+  (when (seq market-side)
+    (let [high+low-price (into [] (comp (map (juxt (comp :price second))) cat) ((juxt first last) market-side))]
+      {:max (apply max high+low-price)
+       :min (apply min high+low-price)})))
+
+(defn market-summary [{:keys [buys sell] :as market}]
+  (cond-> market
+    (seq buys)
+    (->
+      (assoc-in [:summary :level :buys] (collect-price-levels buys))
+      (assoc-in [:summary :size :buys] (collect-price-sizes buys))
+      (assoc-in [:summary :stat :buys] (collect-price-stats buys)))
+    (seq sell)
+    (->
+      (assoc-in [:summary :level :sell] (collect-price-levels sell))
+      (assoc-in [:summary :size :sell] (collect-price-sizes sell))
+      (assoc-in [:summary :stat :sell] (collect-price-stats sell)))))
+
