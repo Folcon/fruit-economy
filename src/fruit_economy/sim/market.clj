@@ -39,8 +39,8 @@
     ;; effectively closing price
     (assoc :current-price price)
     (update :open-price (fn [open] (if (nil? open) price open)))
-    (update :high-price max price)
-    (update :low-price min price)
+    (update :high-price (fnil max Long/MIN_VALUE) price)
+    (update :low-price (fnil min Long/MAX_VALUE) price)
     (update :sold + size)))
 
 (defn match-orders [order-book]
