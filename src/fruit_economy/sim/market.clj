@@ -36,12 +36,30 @@
   "track OHLCV stats for market"
   [market price size]
   (-> market
-    ;; effectively closing price
-    (assoc :current-price price)
     (update :open-price (fn [open] (if (nil? open) price open)))
+    (assoc :close-price price)
     (update :high-price (fnil max Long/MIN_VALUE) price)
     (update :low-price (fnil min Long/MAX_VALUE) price)
     (update :sold + size)))
+
+(defn calculate-current-price [{:keys [matched high-price low-price close-price] :as market}]
+  (let [avg (fn [orders]
+              (let [[sum num] (reduce (fn [[n num] {:keys [price size]}] [(+ n (* price size)) (+ num size)]) [0 0] orders)
+                    q (quot sum num)
+                    r (rem sum num)]
+                (if (zero? r)
+                  q
+                  (inc q))))
+        matches? (seq matched)]
+    (cond
+      (and matches? (= high-price low-price))
+      (assoc market :current-price close-price)
+
+      matches?
+      (assoc market :current-price (avg matched))
+
+      :else
+      market)))
 
 (defn match-orders [order-book]
   (loop [{seller-id :id sell-price :price sell-size :size :as sell-order} (second (peek (:sell order-book)))
@@ -50,15 +68,15 @@
          limit 0]
     (cond
       (> limit 100)
-      order-book
+      (calculate-current-price order-book)
 
       ;; nothing to match against
       (or (nil? sell-order) (nil? buy-order))
-      order-book
+      (calculate-current-price order-book)
 
       ;; stuff for sale is too expensive
       (< buy-price sell-price)
-      order-book
+      (calculate-current-price order-book)
 
       (= sell-size buy-size)
       (let [order-book' (-> order-book
@@ -74,7 +92,7 @@
             buy-order'
             order-book'
             (inc limit))
-          order-book'))
+          (calculate-current-price order-book')))
 
 
       (> sell-size buy-size)
@@ -91,7 +109,7 @@
             buy-order'
             order-book'
             (inc limit))
-          order-book'))
+          (calculate-current-price order-book')))
 
       (< sell-size buy-size)
       (let [order-book' (-> order-book
@@ -107,7 +125,7 @@
             buy-order'
             order-book'
             (inc limit))
-          order-book')))))
+          (calculate-current-price order-book'))))))
 
 (defn collect-price-levels [market-side]
   (when (seq market-side)
