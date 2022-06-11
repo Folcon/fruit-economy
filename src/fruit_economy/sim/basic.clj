@@ -251,6 +251,25 @@
    :then '[[:db/add ?e :food ?gain-food]]
    :args {'grow-food grow-food}})
 
+(defn spawn-factory-tx [idx attrs]
+  (let [base-planning (rand-nth [1 3 5 8 15])]
+    (into [[:db/add idx :hometown -1]
+           [:db/add idx :money 10000]
+           [:db/add idx :owed-tax 0]
+           [:db/add idx :inventory 0]
+           [:db/add idx :sold 0]
+           [:db/add idx :last-sold 0]
+           [:db/add idx :earned 0]
+           [:db/add idx :last-earned 0]
+           [:db/add idx :min-labour 2]
+           [:db/add idx :labour-bought 0]
+           [:db/add idx :base-planning base-planning]
+           [:db/add idx :planning base-planning]
+           [:db/add idx :labour/consumed 0]
+           [:db/add idx :labour/last-consumed 0]]
+      (map (fn [[k v]] [:db/add idx k v]))
+      attrs)))
+
 (def create-settlement-rule
   {:when '[[?e :wealth ?wealth]
            [(get-else $ ?e :settlement :db/missing) ?s]
@@ -336,51 +355,13 @@
                [:db/add (- idx 100) :food/last-consumed 0]
                [:db/add (- idx 100) :clothes/last-consumed 0]])
             ;; food factories
-            (for [idx (range 1)
-                  :let [base-planning (rand-nth [1 3 5 8 15])]]
-              [[:db/add (- idx 200) :kind :food-factory]
-               [:db/add (- idx 200) :hometown -1]
-               [:db/add (- idx 200) :good :food]
-               [:db/add (- idx 200) :decay 0.98]
-               [:db/add (- idx 200) :production 0.7]
-               [:db/add (- idx 200) :money 10000]
-               [:db/add (- idx 200) :owed-tax 0]
-               [:db/add (- idx 200) :inventory 0]
-               [:db/add (- idx 200) :sold 0]
-               [:db/add (- idx 200) :last-sold 0]
-               [:db/add (- idx 200) :earned 0]
-               [:db/add (- idx 200) :last-earned 0]
-               [:db/add (- idx 200) :min-labour 2]
-               [:db/add (- idx 200) :labour-bought 0]
-               [:db/add (- idx 200) :base-planning base-planning]
-               [:db/add (- idx 200) :planning base-planning]
-               [:db/add (- idx 200) :food/produced 0]
-               [:db/add (- idx 200) :labour/consumed 0]
-               [:db/add (- idx 200) :food/last-produced 0]
-               [:db/add (- idx 200) :labour/last-consumed 0]])
+            (for [idx (range 5)]
+              (spawn-factory-tx (- idx 200) {:kind :food-factory :good :food :decay 0.98 :production 0.7
+                                             :food/produced 0 :food/last-produced 0}))
             ;; clothes factories
-            (for [idx (range 1)
-                  :let [base-planning (rand-nth [1 3 5 8 15])]]
-              [[:db/add (- idx 300) :kind :clothes-factory]
-               [:db/add (- idx 300) :hometown -1]
-               [:db/add (- idx 300) :good :clothes]
-               [:db/add (- idx 300) :decay 0.9]
-               [:db/add (- idx 300) :production 2]
-               [:db/add (- idx 300) :money 10000]
-               [:db/add (- idx 300) :owed-tax 0]
-               [:db/add (- idx 300) :inventory 0]
-               [:db/add (- idx 300) :sold 0]
-               [:db/add (- idx 300) :last-sold 0]
-               [:db/add (- idx 300) :earned 0]
-               [:db/add (- idx 300) :last-earned 0]
-               [:db/add (- idx 300) :min-labour 2]
-               [:db/add (- idx 300) :labour-bought 0]
-               [:db/add (- idx 300) :base-planning base-planning]
-               [:db/add (- idx 300) :planning base-planning]
-               [:db/add (- idx 300) :clothes/produced 0]
-               [:db/add (- idx 300) :labour/consumed 0]
-               [:db/add (- idx 300) :clothes/last-produced 0]
-               [:db/add (- idx 300) :labour/last-consumed 0]])])
+            (for [idx (range 5)]
+              (spawn-factory-tx (- idx 300) {:kind :clothes-factory :good :clothes :decay 0.9 :production 2
+                                             :clothes/produced 0 :clothes/last-produced 0}))])
    :args {'rand-nth rand-nth
           '?empty-order-book (empty-order-book)}})
 
