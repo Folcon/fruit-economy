@@ -16,3 +16,11 @@
   `(let []
      (binding [*out* (new StringWriter)]
        ~@body)))
+
+(defn weighted-rand [m]
+  "{:W 1 :U 10 :B 6 :R 10 :G 12}"
+  (if (= (count m) 1)
+    (ffirst m)
+    (let [w (reductions #(+ % %2) (vals m))
+          r (rand-int (last w))]
+      (nth (keys m) (count (take-while #(<= % r) w))))))
