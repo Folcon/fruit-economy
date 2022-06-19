@@ -108,9 +108,8 @@
                       {:glyph "🐞", :wealth 0, :vision 2, :hunger 1, :place [:coord [0 0]]}]
           db (ds/db-with (ds/empty-db schema)
                world-data)
-          conn (ds/create-conn schema)
+          conn (ds/conn-from-db db)
           _ (infer/posh-init! conn)
-          _ (infer/posh-transact! conn world-data)
           rules [hunt-rule try-eat-rule remove-starving-rule grow-food-rule]
           limit 10]
       (loop [db db
