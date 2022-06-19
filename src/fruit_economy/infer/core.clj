@@ -31,6 +31,16 @@
          (zero? max-iter) db
          :else (recur (ds/db-with db tx-data) (dec max-iter)))))))
 
+(defn infer-conn
+  ([conn rules] (infer-conn conn rules 100))
+  ([conn rules max-iter]
+   (let [db (ds/db conn)]
+     (loop [db db max-iter max-iter]
+       (let [tx-data (for [rule rules tx (rewrite rule db)] tx)]
+         (cond
+           (empty? tx-data) conn
+           (zero? max-iter) conn
+           :else (recur (do (ds/transact! conn tx-data) conn) (dec max-iter))))))))
 
 (def posh-init! pd/posh!)
 (def posh-q pd/q)
