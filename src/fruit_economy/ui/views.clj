@@ -578,6 +578,73 @@
                    (ui/row
                      (ui/gap 30 30))))])))))))
 
+(def control-center-area-ui
+  [:stretch 1
+   (ui/row
+     [:stretch 3
+      (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid]} ctx
+                       {:keys [world-db]} @state/*world]
+        (if player-eid
+          (let [tax-rate (:tax-rate (data/entity world-db player-eid))
+                min-rate 0
+                max-rate 50
+                inc-tax-by (fn [n] (min (+ tax-rate n) max-rate))
+                dec-tax-by (fn [n] (max (- tax-rate n) min-rate))]
+            (ui/column
+              (ui/row
+                (ui/padding 10 (ui/label "Tax Rate"))
+                (ui/button
+                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 5)]])
+                  {:border-radius 0}
+                  (ui/label "+5%"))
+                (ui/button
+                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 1)]])
+                  {:border-radius 0}
+                  (ui/label "+1%"))
+                (ui/padding 10 (ui/label (str tax-rate "%")))
+                (ui/button
+                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 1)]])
+                  {:border-radius 0}
+                  (ui/label "-1%"))
+                (ui/button
+                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 5)]])
+                  {:border-radius 0}
+                  (ui/label "-5%")))))
+          (ui/gap 0 0)))]
+     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
+                   city-ui-view)])])
+
+(def control-ui-view
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
+                           font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow]} ctx
+                   {:keys [camera tick zoom]} @state/*state
+                   {:keys [world-db map-view] :as world} @state/*world]
+    (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
+          emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
+
+          canvas-width (int (* x-scale state/*canvas-width*))
+          canvas-height (int (* y-scale state/*canvas-height*))
+
+          {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)]
+      (ui/with-context
+        (merge
+          {:map-font map-font
+           :emoji-font emoji-font
+           :lrtb lrtb
+           :cell cell
+           :tick tick}
+          world)
+        (ui/on-key-down on-key-pressed-impl
+          (ui/column
+            ui.parts/top-bar-ui
+            control-center-area-ui
+            (ui/column
+              [:stretch 1
+               (ui/padding 0 10 0 0
+                 (ui/fill fill-light-gray
+                   (ui/row
+                     (ui/gap 30 30))))])))))))
+
 (def messages-ui-view
   (ui/on-key-down on-key-pressed-impl
     (ui/padding padding padding
@@ -596,5 +663,6 @@
   (array-map
     "World" top-ui-view
     "Economy" economy-view
+    "City" control-ui-view
     #_#_
     "Log" messages-ui-view))
