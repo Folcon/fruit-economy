@@ -42,5 +42,6 @@
                    :env {:debug? "true"}
                    :dependencies  [[nrepl/nrepl "0.9.0"]
                                    [com.clojure-goes-fast/clj-async-profiler "1.0.0-alpha1"]]
-                   :main-opts   ["-m" "user" "--interactive"]}}
+                   :main-opts   ["-m" "user" "--interactive"]}
+             :prod {:env {:debug? "false"}}}
   :repl-options {:init-ns fruit-economy.core})

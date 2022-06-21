@@ -4,7 +4,7 @@ dev:
 	lein clean && lein with-profile +macos,+dev trampoline run
 
 local:
-	lein clean && lein with-profile +macos trampoline run
+	lein clean && lein with-profile +macos,+prod trampoline run
 
 uberjar:
 	lein clean && lein uberjar
