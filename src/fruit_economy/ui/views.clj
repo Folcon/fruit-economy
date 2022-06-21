@@ -579,9 +579,8 @@
                      (ui/gap 30 30))))])))))))
 
 (def tax-controls-ui
-  (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid]} ctx
-                   {:keys [world-db]} @state/*world]
-    (let [tax-rate (:tax-rate (data/entity world-db player-eid))
+  (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid player]} ctx]
+    (let [tax-rate (:tax-rate player)
           min-rate 0
           max-rate 50
           inc-tax-by (fn [n] (min (+ tax-rate n) max-rate))
@@ -614,7 +613,12 @@
       (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid]} ctx
                        {:keys [world-db]} @state/*world]
         (if player-eid
-          tax-controls-ui
+          (let [player (data/entity world-db player-eid)]
+            (ui/with-context
+              {:player player}
+              (ui/column
+                tax-controls-ui
+                building-controls-ui)))
           (ui/gap 0 0)))]
      [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
                    city-ui-view)])])
