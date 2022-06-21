@@ -878,6 +878,29 @@
         *world))
     *world))
 
+(defn transact-with-db [*world tx-data]
+  (try
+    (as-> *world $
+      (update $ :world-db d/db-with tx-data))
+    (catch Exception e
+      (println :BROKE!)
+      (reset! *sim-broken e)
+      *world)))
+
+(defn transact-with-conn [*world tx-data]
+  (try
+    (let [conn (:world-conn *world)]
+      (d/transact! conn tx-data)
+      (assoc *world :world-db (d/db conn)))
+    (catch Exception e
+      (println :BROKE!)
+      (reset! *sim-broken e)
+      *world)
+    (catch AssertionError e
+      (println :BROKE!)
+      (reset! *sim-broken e)
+      *world)))
+
 (comment
   (identity @*sim-broken))
 
