@@ -7,8 +7,8 @@
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.data.core :refer [lookup-avet]]
             [fruit-economy.sim.market :refer [empty-order-book load-order load-orders remove-order match-orders]]
-            [fruit-economy.infer.core :refer [rewrite infer]]
-            [taoensso.timbre :refer [log]])
+            [taoensso.timbre :refer [log]]
+            [fruit-economy.infer.core :refer [rewrite infer infer-conn]])
   (:import [io.github.humbleui.skija Paint]))
 
 
