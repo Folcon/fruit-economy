@@ -6,7 +6,7 @@
             [fruit-economy.state :as state]
             [fruit-economy.gen-land :refer [make-temp-noise-map make-elev-noise-map process-noise-map]]
             [fruit-economy.data.core :refer [lookup-avet]]
-            [fruit-economy.sim.market :refer [empty-order-book load-order load-orders match-orders]]
+            [fruit-economy.sim.market :refer [empty-order-book load-order load-orders remove-order match-orders]]
             [fruit-economy.infer.core :refer [rewrite infer]]
             [taoensso.timbre :refer [log]])
   (:import [io.github.humbleui.skija Paint]))
@@ -722,9 +722,9 @@
 
                                     :else 0)))
         update-prices (fn [db town-eid]
-                        (let [{food-price-float :food/price-float food-price-velocity :food/price-velocity food-price :food/price food-price-history :food/price-history food-supply :food/supply food-demand :food/demand food-produced :food/produced food-consumed :food/consumed
-                               clothes-price-float :clothes/price-float clothes-price-velocity :clothes/price-velocity clothes-price :clothes/price clothes-price-history :clothes/price-history clothes-supply :clothes/supply clothes-demand :clothes/demand clothes-produced :clothes/produced clothes-consumed :clothes/consumed
-                               labour-price-float :labour/price-float labour-price-velocity :labour/price-velocity labour-price :labour/price labour-price-history :labour/price-history labour-supply :labour/supply labour-demand :labour/demand labour-produced :labour/produced labour-consumed :labour/consumed
+                        (let [{food-price-float :food/price-float food-price-velocity :food/price-velocity food-price :food/price food-market-price :food/market-price food-price-history :food/price-history food-supply :food/supply food-demand :food/demand food-produced :food/produced food-consumed :food/consumed
+                               clothes-price-float :clothes/price-float clothes-price-velocity :clothes/price-velocity clothes-price :clothes/price clothes-market-price :clothes/market-price clothes-price-history :clothes/price-history clothes-supply :clothes/supply clothes-demand :clothes/demand clothes-produced :clothes/produced clothes-consumed :clothes/consumed
+                               labour-price-float :labour/price-float labour-price-velocity :labour/price-velocity labour-price :labour/price labour-market-price :labour/market-price labour-price-history :labour/price-history labour-supply :labour/supply labour-demand :labour/demand labour-produced :labour/produced labour-consumed :labour/consumed
                                :as town} (d/entity db town-eid)
                               food-price-velocity' (update-price-velocity food-supply food-demand food-price-velocity)
                               food-price-float' (+ food-price-float food-price-velocity')
