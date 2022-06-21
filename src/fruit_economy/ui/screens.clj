@@ -67,7 +67,7 @@
               (ui/valign 0.5
                 (ui/halign 0.5
                   (ui/label "Fruit Economy"))))
-            (if started?
+            (if-not started?
               (ui/button
                 #(swap! state/*menu assoc :started? true)
                 (ui/padding 80 10 80 10
