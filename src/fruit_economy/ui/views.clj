@@ -578,6 +578,35 @@
                    (ui/row
                      (ui/gap 30 30))))])))))))
 
+(def tax-controls-ui
+  (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid]} ctx
+                   {:keys [world-db]} @state/*world]
+    (let [tax-rate (:tax-rate (data/entity world-db player-eid))
+          min-rate 0
+          max-rate 50
+          inc-tax-by (fn [n] (min (+ tax-rate n) max-rate))
+          dec-tax-by (fn [n] (max (- tax-rate n) min-rate))]
+      (ui/column
+        (ui/row
+          (ui/padding 10 (ui/label "Tax Rate"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 5)]])
+            {:border-radius 0}
+            (ui/label "+5%"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 1)]])
+            {:border-radius 0}
+            (ui/label "+1%"))
+          (ui/padding 10 (ui/label (str tax-rate "%")))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 1)]])
+            {:border-radius 0}
+            (ui/label "-1%"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 5)]])
+            {:border-radius 0}
+            (ui/label "-5%")))))))
+
 (def control-center-area-ui
   [:stretch 1
    (ui/row
@@ -585,31 +614,7 @@
       (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid]} ctx
                        {:keys [world-db]} @state/*world]
         (if player-eid
-          (let [tax-rate (:tax-rate (data/entity world-db player-eid))
-                min-rate 0
-                max-rate 50
-                inc-tax-by (fn [n] (min (+ tax-rate n) max-rate))
-                dec-tax-by (fn [n] (max (- tax-rate n) min-rate))]
-            (ui/column
-              (ui/row
-                (ui/padding 10 (ui/label "Tax Rate"))
-                (ui/button
-                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 5)]])
-                  {:border-radius 0}
-                  (ui/label "+5%"))
-                (ui/button
-                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (inc-tax-by 1)]])
-                  {:border-radius 0}
-                  (ui/label "+1%"))
-                (ui/padding 10 (ui/label (str tax-rate "%")))
-                (ui/button
-                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 1)]])
-                  {:border-radius 0}
-                  (ui/label "-1%"))
-                (ui/button
-                  #(swap! state/*world basic/transact-with-conn [[:db/add player-eid :tax-rate (dec-tax-by 5)]])
-                  {:border-radius 0}
-                  (ui/label "-5%")))))
+          tax-controls-ui
           (ui/gap 0 0)))]
      [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
                    city-ui-view)])])
