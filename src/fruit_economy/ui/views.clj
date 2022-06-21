@@ -20,24 +20,27 @@
 
 (defn market-keys-fn [market key]
   (condp = [market key]
-    [:food :producers] [:food-factory]
+    [:food :producers] [:food-factory :farmer]
     [:food :demanders] [:peep]
     [:food :last-produced] :food/last-produced
     [:food :last-consumed] :food/last-consumed
     [:food :price] :food/price
     [:food :price-history] :food/price-history
+    [:food :price-belief] :belief/food-price
     [:clothes :producers] [:clothes-factory]
     [:clothes :demanders] [:peep]
     [:clothes :last-produced] :clothes/last-produced
     [:clothes :last-consumed] :clothes/last-consumed
     [:clothes :price] :clothes/price
     [:clothes :price-history] :clothes/price-history
+    [:clothes :price-belief] :belief/clothes-price
     [:labour :producers] [:peep]
     [:labour :demanders] [:food-factory :clothes-factory]
     [:labour :last-produced] :labour/last-produced
     [:labour :last-consumed] :labour/last-consumed
     [:labour :price] :labour/price
-    [:labour :price-history] :labour/price-history))
+    [:labour :price-history] :labour/price-history
+    [:labour :price-belief] :belief/labour-price))
 
 (defn lookup-by-kind [world-db] (fn [kind] (data/lookup-avet world-db :kind kind)))
 
@@ -440,6 +443,141 @@
                              (ui/padding 10 10
                                (ui/label "⛏️" {:font font-small :paint fill-white})))))))))])))))))
 
+(def economy-center-area-ui
+  [:stretch 1
+   (ui/row
+     [:stretch 3
+      (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick]} ctx
+                       {:keys [world-db selected-city selected-market]} @state/*world]
+        (let [cities (data/lookup-avet world-db :kind :city)]
+          (if-not (seq cities)
+            (ui/gap 0 0)
+            (ui/fill fill-light-gray
+              (ui/column
+                (ui/row
+                  (for [city cities
+                        :let [eid (:db/id city)]]
+                    (ui/with-context
+                      {:hui/active? (= selected-city eid)}
+                      (ui/button
+                        #(swap! state/*world assoc :selected-city eid)
+                        {:bg-active green-colour
+                         :bg-hovered yellow-colour
+                         :bg dark-gray-colour
+                         :p 10 :border-radius 0}
+                        (ui/label (:settlement/name city) {:font font-small :paint fill-white})))))
+                (ui/row
+                  (for [market [:food :clothes :labour]]
+                    (ui/with-context
+                      {:hui/active? (= selected-market market)}
+                      (ui/button
+                        #(swap! state/*world assoc :selected-market market)
+                        {:bg-active green-colour
+                         :bg-hovered yellow-colour
+                         :bg dark-gray-colour
+                         :p 10 :border-radius 0}
+                        (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))
+                [:stretch 1
+                 (ui/row
+                   [:stretch 1
+                    (ui/fill fill-white
+                      (when (and selected-city selected-market)
+                        (let [city (db/entity world-db selected-city)
+                              producers (into [] (filter #(contains? (set (market-keys-fn selected-market :producers)) (:kind %))) (:_hometown city))
+                              demanders (into [] (filter #(contains? (set (market-keys-fn selected-market :demanders)) (:kind %))) (:_hometown city))
+
+                              label (market-label-fn selected-market)
+                              price ((market-keys-fn selected-market :price) city)
+                              price-history ((market-keys-fn selected-market :price-history) city)
+                              produced ((market-keys-fn selected-market :last-produced) city)
+                              consumed ((market-keys-fn selected-market :last-consumed) city)
+                              total-production (reduce (fn [v m] (+ v ((market-keys-fn selected-market :last-produced) m))) 0 cities)
+                              percent-of-production (if (zero? total-production) 0 (* (/ produced total-production) 100))
+
+                              price-belief (market-keys-fn selected-market :price-belief)]
+                          (ui/column
+                            (ui/row
+                              (ui/padding 20
+                                (ui/column
+                                  (ui/label label)
+                                  (ui/gap 0 5)
+                                  (ui/label (clojure.pprint/cl-format nil "~,2f% of world production" percent-of-production)))))
+                            (ui/row
+                              (ui/with-context
+                                {:price price :price-history price-history}
+                                screen-ui/price-chart-ui))
+                            (ui/row
+                              [:stretch 1
+                               (ui/padding 20
+                                 (ui/column
+                                   (ui/label "Produced by:")
+                                   (ui/gap 0 4)
+                                   (ui/row
+                                     [:stretch 1
+                                      (ui/vscrollbar
+                                        (ui/vscroll
+                                          (ui/column
+                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                                              (for [producer producers]
+                                                (ui/fill fill-light-gray
+                                                  (ui/halign 0.5
+                                                    (ui/padding 150 20 150 20
+                                                      (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced #_:food/last-consumed #_:clothes/last-consumed #_:labour/last-consumed price-belief]))))))))))))])
+                                   (ui/padding 20
+                                     (ui/label (str "Total Produced: " produced)))))]
+                              [:stretch 1
+                               (ui/padding 20
+                                 (ui/column
+                                   (ui/label "Used by:")
+                                   (ui/gap 0 4)
+                                   (ui/row
+                                     [:stretch 1
+                                      (ui/vscrollbar
+                                        (ui/vscroll
+                                          (ui/column
+                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                                              (for [demander demanders]
+                                                (ui/fill fill-light-gray
+                                                  (ui/halign 0.5
+                                                    (ui/padding 150 20 150 20
+                                                      (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory #_:last-sold #_:food/last-produced #_:clothes/last-produced #_:labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed price-belief]))))))))))))])
+                                   (ui/padding 20
+                                     (ui/label (str "Total Used: " consumed)))))])))))])])))))]
+     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
+                   city-ui-view)])])
+
+
+(def economy-view
+  (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
+                           font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow]} ctx
+                   {:keys [camera tick zoom]} @state/*state
+                   {:keys [world-db map-view] :as world} @state/*world]
+    (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
+          emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
+
+          canvas-width (int (* x-scale state/*canvas-width*))
+          canvas-height (int (* y-scale state/*canvas-height*))
+
+          {:keys [cell lrtb]} (ui.bits/camera->viewport camera zoom canvas-width canvas-height)]
+      (ui/with-context
+        (merge
+          {:map-font map-font
+           :emoji-font emoji-font
+           :lrtb lrtb
+           :cell cell
+           :tick tick}
+          world)
+        (ui/on-key-down on-key-pressed-impl
+          (ui/column
+            ui.parts/top-bar-ui
+            economy-center-area-ui
+            (ui/column
+              [:stretch 1
+               (ui/padding 0 10 0 0
+                 (ui/fill fill-light-gray
+                   (ui/row
+                     (ui/gap 30 30))))])))))))
+
 (def messages-ui-view
   (ui/on-key-down on-key-pressed-impl
     (ui/padding padding padding
@@ -457,5 +595,6 @@
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
   (array-map
     "World" top-ui-view
+    "Economy" economy-view
     #_#_
     "Log" messages-ui-view))
