@@ -77,12 +77,13 @@
     (gen-bug-world bug-world-size bug-count)))
 
 (defn reset-world []
-  {:world-db (reset-world-db) :map-view :default-view :day 0})
+  (let [db (reset-world-db)]
+    {:world-db db :world-conn (d/conn-from-db db) :map-view :default-view :day 0}))
 
-(defn apply-rules [world-db decision-rules reaction-rules]
-  (-> world-db
-    (infer decision-rules 1)
-    (infer reaction-rules 1)))
+(defn apply-rules [world-conn decision-rules reaction-rules]
+  (-> world-conn
+    (infer-conn decision-rules 1)
+    (infer-conn reaction-rules 1)))
 
 (defn lookup-day [db]
   (:day (first (lookup-avet db :day nil))))
@@ -866,7 +867,8 @@
   (if (nil? @*sim-broken)
     (try
       (as-> *world $
-        (update $ :world-db apply-rules decision-rules reaction-rules)
+        (update $ :world-conn apply-rules decision-rules reaction-rules)
+        (assoc $ :world-db (d/db (:world-conn $)))
         (assoc $ :day (lookup-day (:world-db $)))
         (update $ :dbs (fnil track-db []) (:world-db $))
         (update $ :stats (fnil add-stats []) (:world-db $)))
