@@ -1,5 +1,6 @@
 (ns fruit-economy.ui.views
   (:require [io.github.humbleui.ui :as ui]
+            [io.github.humbleui.paint :as paint]
             [fruit-economy.state :as state]
             [fruit-economy.db.core :as db]
             [fruit-economy.data.core :as data]
@@ -7,7 +8,9 @@
             [fruit-economy.ui.parts :as ui.parts]
             [fruit-economy.ui.controls :refer [on-key-pressed-impl]]
             [fruit-economy.screen-ui :as screen-ui]
-            [fruit-economy.sim.basic :as basic])
+            [fruit-economy.sim.basic :as basic]
+            [fruit-economy.colour :refer [colour colour-noise]]
+            [fruit-economy.land :as land])
   (:import [io.github.humbleui.skija Font Typeface]))
 
 
@@ -40,6 +43,25 @@
 
 (def kind->emoji
   {:food-factory "🍲🏭" :clothes-factory "👚🏭" :peep "🧑"})
+
+(defn show-peep [{:keys [health last-sold kind] :as peep}]
+  (cond
+    (= kind :peep)
+    (str
+      (cond
+        (and (number? health) (zero? health)) "💀"
+        (and (number? health) (> 5 health)) "🤕"
+        :else "😀")
+      (if (and (number? last-sold) (zero? last-sold))
+        "🦥"
+        "🐝"))
+    (= kind :food-factory)
+    (cond
+      :else "🍲🏭")
+    (= kind :clothes-factory)
+    (cond
+      :else "👚🏭")
+    :else "👽"))
 
 (def market-production-view
   (ui/dynamic ctx [{:keys [world-db cities selected-city selected-market fill-dark-gray fill-light-gray]} ctx]
@@ -233,12 +255,124 @@
                 (ui/padding 10 10
                   (ui/label "⛏️" {:font font-small :paint fill-white}))))))))))
 
-(def basic-ui-view
+(def city-ui-view
+  (ui/dynamic ctx [{:keys [fill-light-gray]} ctx
+                   {:keys [world-db] :as world} @state/*world
+                   settlements (basic/settlements-q world-db nil)]
+    (if-not (seq settlements)
+      (ui/gap 0 0)
+      (ui/column
+        (ui/fill fill-light-gray
+          (ui/padding 4
+            (ui/label "Settlement Info")))
+        (ui/vscrollbar
+          (ui/vscroll
+            (ui/column
+              (interpose (ui/gap 0 4)
+                (for [settlement settlements]
+                  (ui/fill (paint/fill 0xFFFCFEC8)
+                    (ui/padding 4
+                      (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green fill-light-gray]} ctx
+                                       {:keys [map-view]} world]
+                        (ui/column
+                          (ui/row
+                            (interpose (ui/gap 4 0)
+                              (for [k [:settlement/name :settlement/place]]
+                                (ui/label (str (get settlement k)) {:font font-small :paint fill-black}))))
+                          (ui/gap 0 4)
+                          (ui/label (str "Money " (:money (first (get settlement :_governs)))))
+                          (ui/gap 0 6)
+                          (ui/row
+                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
+                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :food/price) "np") {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
+                            [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                            [:stretch 2 nil]
+                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
+                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :clothes/price) "np") {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
+                            [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                            [:stretch 2 nil]
+                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
+                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :labour/price) "np") {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
+                            [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                            [:stretch 2 nil])
+                          (ui/gap 0 6)
+                          (interpose (ui/gap 0 4)
+                            (for [peep-row (partition-all 3 (data/lookup-avet world-db :hometown (:db/id settlement)))]
+                              (ui/row
+                                (interpose (ui/gap 2 0)
+                                  (for [peep peep-row]
+                                    (ui/tooltip {:anchor :top-right :shackle :top-left}
+                                      (ui/fill fill-light-gray (ui/padding 5 (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])))))
+                                      (ui/fill fill-green (ui/padding 5 (ui/label (str (show-peep peep))))))))))))))))))))))))
+
+(def main-center-area-ui
+  [:stretch 1
+   (ui/row
+     [:stretch 3
+      (ui/dynamic ctx [{:keys [font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black map-font emoji-font tick]} ctx
+                       {:keys [world-db map-view]} @state/*world]
+        (let [terrain-tint (condp = map-view
+                             :temp-view (fn [tile] (colour (colour-noise (get tile :temp)) 0 0))
+                             :elev-view (fn [tile] (colour 0 (colour-noise (get tile :elev)) 0))
+                             :climate-view (fn [tile] (colour (colour-noise (get tile :temp)) (colour-noise (get tile :elev)) 0))
+                             :forage-view (fn [tile] (colour 0 (* (get tile :food 0) 40) 0))
+                             :mine-view (fn [tile] (colour 0 (* (get tile :rock 0) 40) 0))
+                             (fn [tile] (land/render-tile-colour (get tile :biome))))
+              unit-data (fn [x y]
+                          (let [;; pixel-x and pixel-y
+                                coord-x x
+                                coord-y y
+                                coord [coord-x coord-y]
+
+                                tile (basic/coord-q world-db coord)
+
+                                things (when tile (basic/units-q world-db coord))
+                                size (count things)
+                                {:keys [glyph] :as thing} (when-not (zero? size) (nth things (rem tick size)))
+
+                                {name :settlement/name :as settlement} (when tile (first (basic/settlements-q world-db coord)))]
+                            (cond
+                              thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
+                              (seq settlement) [name (colour 0 0 155) map-font font-offset-x font-offset-y]
+                              :else ["" (terrain-tint tile) map-font font-offset-x font-offset-y])))]
+          (ui/fill (paint/fill 0xFFCFE8FC)
+            (ui/dynamic ctx [{:keys [lrtb cell]} ctx
+                             {:keys [camera tick zoom]} @state/*state]
+              (ui/with-bounds ::bounds
+                (ui/dynamic ctx [{:keys [width height]} (::bounds ctx)]
+                  (ui/valign 0.5
+                    (ui/halign 0.5
+                      (let [cell-width (quot width cell) cell-height (quot height cell)
+                            half-x (quot cell-width 2) half-y (quot cell-height 2)
+                            [left right top bottom] [(- (first camera) half-x) (+ (first camera) half-x) (- (second camera) half-y) (+ (second camera) half-y)]]
+                        (ui/column
+                          (for [y-idx (range top bottom)]
+                            (ui/row
+                              (for [x-idx (range left right)]
+                                (ui/hoverable
+                                  (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                                    (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
+                                      (ui/fill
+                                        (if hovered?
+                                          (paint/fill 0xFFE1EFFA)
+                                          (paint/fill tile-colour))
+                                        (ui/width cell
+                                          (ui/halign 0.5
+                                            (ui/height cell
+                                              (ui/valign 0.5
+                                                (ui/label glyph {:font font :paint fill-white}))))))))))))))))))))))]
+     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
+                   (ui/dynamic _ [{:keys [world-db]} @state/*world
+                                  settlements (basic/settlements-q world-db nil)]
+                     (if (seq settlements)
+                       city-ui-view
+                       ui.parts/chart-view)))])])
+
+(def top-ui-view
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
-                           font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow
-                           green-colour yellow-colour dark-gray-colour]} ctx
+                           font-small fill-white fill-black fill-dark-gray fill-light-gray fill-green fill-yellow]} ctx
                    {:keys [camera tick zoom]} @state/*state
-                   world @state/*world]
+                   {:keys [world-db map-view] :as world} @state/*world]
     (let [map-font (Font. ^Typeface face-default (float (* scale 6 zoom)))
           emoji-font (Font. ^Typeface emoji-face (float (* scale 8 zoom)))
 
@@ -257,46 +391,54 @@
         (ui/on-key-down on-key-pressed-impl
           (ui/column
             ui.parts/top-bar-ui
-            (ui/padding 20
-              ui-view)
-            (ui/dynamic ctx [{:keys [dbs world-db selected-city selected-market]} ctx]
-              (let [db world-db
-                    cities (data/lookup-avet db :kind :city)]
-                (if-not (seq cities)
-                  (ui/gap 0 0)
-                  (ui/column
-                    (ui/row
-                      (interpose (ui/fill fill-dark-gray
-                                   (ui/gap 0 0))
-                        (for [city cities
-                              :let [eid (:db/id city)]]
-                          (ui/with-context
-                            {:hui/active? (= selected-city eid)}
-                            (ui/button
-                              #(swap! state/*world assoc :selected-city eid)
-                              {:bg-active green-colour
-                               :bg-hovered yellow-colour
-                               :bg dark-gray-colour
-                               :p 10 :border-radius 0}
-                              (ui/label (:settlement/name city) {:font font-small :paint fill-white}))))))
-                    (ui/row
-                      (interpose (ui/fill fill-dark-gray
-                                   (ui/gap 0 0))
-                        (for [market [:food :clothes :labour]]
-                          (ui/column
-                            (ui/with-context
-                              {:hui/active? (= selected-market market)}
-                              (ui/button
-                                #(swap! state/*world assoc :selected-market market)
-                                {:bg-active green-colour
-                                 :bg-hovered yellow-colour
-                                 :bg dark-gray-colour
-                                 :p 10 :border-radius 0}
-                                (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))))
-                    (when (and selected-city selected-market)
-                      (ui/with-context
-                        {:cities cities}
-                        market-production-view))))))))))))
+            main-center-area-ui
+            (ui/column
+              [:stretch 1
+               (ui/padding 0 10 0 0
+                 (ui/fill fill-light-gray
+                   (ui/row
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :default-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "🗺️" {:font font-small :paint fill-white}))))))
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :temp-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "🌡" {:font font-small :paint fill-white}))))))
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :elev-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "📏" {:font font-small :paint fill-white}))))))
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :climate-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "🌍" {:font font-small :paint fill-white}))))))
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :forage-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "🚜" {:font font-small :paint fill-white}))))))
+                     (ui/clickable
+                       #(swap! state/*world assoc :map-view :mine-view)
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
+                             (ui/padding 10 10
+                               (ui/label "⛏️" {:font font-small :paint fill-white})))))))))])))))))
 
 (def messages-ui-view
   (ui/on-key-down on-key-pressed-impl
@@ -314,6 +456,6 @@
 (def ui-views
   ;; exploiting the fact that as long as array-map doesn't grow, it keeps insertion order
   (array-map
-    "World" basic-ui-view
+    "World" top-ui-view
     #_#_
     "Log" messages-ui-view))
