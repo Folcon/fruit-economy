@@ -78,6 +78,21 @@
       (< buy-price sell-price)
       (calculate-current-price order-book)
 
+      ;; TODO: With self trade issues - maybe offer different defaults to cancel ie: :self-trade-expire [:buy|:sell|:old|:new], if key is set, then follow, with priority to follow :sell if both set.
+      ;; check that a self-trade isn't occurring, if so, kill the buy side
+      (= buyer-id seller-id)
+      (let [order-book' (-> order-book
+                          (update :buys pop))
+            sell-order' (second (peek (:sell order-book')))
+            buy-order' (second (peek (:buys order-book')))]
+        (if buy-order'
+          (recur
+            sell-order'
+            buy-order'
+            order-book'
+            (inc limit))
+          (calculate-current-price order-book')))
+
       (= sell-size buy-size)
       (let [order-book' (-> order-book
                           (update :matched conj {:price sell-price :size buy-size :seller seller-id :buyer buyer-id :buy-order buy-order :sell-order sell-order})

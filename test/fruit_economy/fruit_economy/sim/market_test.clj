@@ -98,6 +98,14 @@
       (is (= []
              (:matched order-book'))))))
 
+(deftest cannot-self-trade-test
+  (testing "orders cannot be matched with the same buyer and seller"
+    (let [orders [{:price 1 :size 1 :side :buys :id :self-trader} {:price 1 :size 1 :side :sell :id :self-trader}]
+          order-book (load-orders (empty-order-book) orders)
+          order-book' (match-orders order-book)]
+      (is (= []
+            (:matched order-book'))))))
+
 ;;  (prop/for-all [market (gen/hash-map
 ;;                          :buy-orders
 ;;                          (gen/vector
