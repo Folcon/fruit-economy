@@ -545,9 +545,9 @@
 
                      labour-like (like-to-buy money labour-price' 0.8)
                      labour-want (min labour-like labour-plan)
+                     _ (log :debug :hire :labour-like labour-like :money money :labour-want labour-want)]
                  (when (> labour-want 0)
                    [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price' :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]])))]
-                     _ (log :debug :hire :labour-like labour-like :money money :labour-want labour-want)]
     ;; This models ad-hoc labour, finding work, which could be dice roll based etc, is separate to this, peeps keep doing ad-hoc work while "looking" for a job until they find one, then they stop, unless they switch again.
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
