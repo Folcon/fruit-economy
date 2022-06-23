@@ -614,6 +614,94 @@
             {:border-radius 0}
             (ui/label "-5%")))))))
 
+(def building-controls-ui
+  (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid player]} ctx]
+    (let [toggle-food-buy-db-fn (fn [db]
+                                  (let [{:keys [food-stockpile-buy?]} (data/entity db player-eid)]
+                                    [[:db/add player-eid :food-stockpile-buy? (not food-stockpile-buy?)]]))
+          toggle-food-sell-db-fn (fn [db]
+                                   (let [{:keys [food-stockpile-sell?]} (data/entity db player-eid)]
+                                     [[:db/add player-eid :food-stockpile-sell? (not food-stockpile-sell?)]]))
+          min-price 1
+          max-price 99999
+          inc-price-by (fn [price n] (min ((fnil + 0) price n) max-price))
+          dec-price-by (fn [price n] (max ((fnil - 0) price n) min-price))
+          inc-price-db-fn (fn [db price-key inc-by]
+                            (let [player (data/entity db player-eid)]
+                              [[:db/add player-eid price-key (inc-price-by (price-key player) inc-by)]]))
+          dec-price-db-fn (fn [db price-key dec-by]
+                            (let [player (data/entity db player-eid)]
+                              [[:db/add player-eid price-key (dec-price-by (price-key player) dec-by)]]))]
+      (ui/column
+        (ui/row
+          (ui/padding 10 (ui/label "Food Stockpiled"))
+          (ui/dynamic _ [{:keys [world-conn]} @state/*world
+                         world-db @world-conn]
+            (let [{:keys [food-stockpile] :or {food-stockpile 0}} (data/entity world-db player-eid)]
+              (ui/padding 10 (ui/label food-stockpile))))
+          (ui/clickable
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call toggle-food-buy-db-fn]])
+            (ui/dynamic _ [{:keys [world-conn]} @state/*world
+                           world-db @world-conn]
+              (let [{:keys [food-stockpile-buy?] :or {food-stockpile-buy? false}} (data/entity world-db player-eid)]
+                (ui/fill (paint/fill (if food-stockpile-buy? green-colour dark-gray-colour))
+                  (ui/padding 20 12 20 12
+                    (ui/halign 0.5
+                      (ui/label "Buy Food")))))))
+          (ui/clickable
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call toggle-food-sell-db-fn]])
+            (ui/dynamic _ [{:keys [world-conn]} @state/*world
+                           world-db @world-conn]
+              (let [{:keys [food-stockpile-sell?] :or {food-stockpile-sell? false}} (data/entity world-db player-eid)]
+                (ui/fill (paint/fill (if food-stockpile-sell? green-colour dark-gray-colour))
+                  (ui/padding 20 12 20 12
+                    (ui/halign 0.5
+                      (ui/label "Sell Food"))))))))
+        (ui/row
+          (ui/padding 10 (ui/label "Food Buy @ Price"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call inc-price-db-fn :food-stockpile-buy-price 5]])
+            {:border-radius 0}
+            (ui/label "+5np"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call inc-price-db-fn :food-stockpile-buy-price 1]])
+            {:border-radius 0}
+            (ui/label "+1np"))
+          (ui/dynamic _ [{:keys [world-conn]} @state/*world
+                         world-db @world-conn]
+            (let [{:keys [food-stockpile-buy-price] :or {food-stockpile-buy-price 1}} (data/entity world-db player-eid)]
+              (ui/padding 10 (ui/label (str food-stockpile-buy-price "np")))))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call dec-price-db-fn :food-stockpile-buy-price 1]])
+            {:border-radius 0}
+            (ui/label "-1np"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call dec-price-db-fn :food-stockpile-buy-price 5]])
+            {:border-radius 0}
+            (ui/label "-5np")))
+        (ui/row
+          (ui/padding 10 (ui/label "Food Sell @ Price"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call inc-price-db-fn :food-stockpile-sell-price 5]])
+            {:border-radius 0}
+            (ui/label "+5np"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call inc-price-db-fn :food-stockpile-sell-price 1]])
+            {:border-radius 0}
+            (ui/label "+1np"))
+          (ui/dynamic _ [{:keys [world-conn]} @state/*world
+                         world-db @world-conn]
+            (let [{:keys [food-stockpile-sell-price] :or {food-stockpile-sell-price 1}} (data/entity world-db player-eid)]
+              (ui/padding 10 (ui/label (str food-stockpile-sell-price "np")))))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call dec-price-db-fn :food-stockpile-sell-price 1]])
+            {:border-radius 0}
+            (ui/label "-1np"))
+          (ui/button
+            #(swap! state/*world basic/transact-with-conn [[:db.fn/call dec-price-db-fn :food-stockpile-sell-price 5]])
+            {:border-radius 0}
+            (ui/label "-5np")))))))
+
 (def control-center-area-ui
   [:stretch 1
    (ui/row
