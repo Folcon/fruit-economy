@@ -626,8 +626,10 @@
               {:player player}
               (ui/column
                 tax-controls-ui
+                (ui/gap 0 4)
                 building-controls-ui)))
-          (ui/gap 0 0)))]
+          (ui/padding 10
+            (ui/label "Please Select a City to play as!"))))]
      [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
                    city-ui-view)])])
 
