@@ -388,9 +388,9 @@
                 food-like (like-to-buy money food-price' 0.4)
                 clothes-like (like-to-buy money clothes-price' 0.2)
                 food-want (min food-like food-plan) clothes-want (min clothes-like clothes-plan)]
-            (log :info peep-eid :shop food-want clothes-want (d/touch peep))
-            (log :info :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
-            (log :info (mapv d/touch (lookup-avet db :good nil)))
+            (log :debug peep-eid :shop food-want clothes-want (d/touch peep))
+            (log :debug :food-like food-like :food-plan food-plan :clothes-like clothes-like :clothes-plan clothes-plan :food/demand (:food/demand home) :clothes/demand (:clothes/demand home))
+            (log :trace (mapv d/touch (lookup-avet db :good nil)))
             (cond-> []
               (> food-want 0)
               (conj [:db/add home-eid :food/market (load-order food-market {:price food-price' :size food-want :side :buys :id peep-eid :good-kw :food})])
@@ -545,9 +545,9 @@
 
                      labour-like (like-to-buy money labour-price' 0.8)
                      labour-want (min labour-like labour-plan)
-                     _ (log :info :hire :labour-like labour-like :money money :labour-want labour-want)]
                  (when (> labour-want 0)
                    [[:db/add home-eid :labour/market (load-order labour-market {:price labour-price' :size labour-want :side :buys :id factory-eid :good-kw :labour-bought})]])))]
+                     _ (log :debug :hire :labour-like labour-like :money money :labour-want labour-want)]
     ;; This models ad-hoc labour, finding work, which could be dice roll based etc, is separate to this, peeps keep doing ad-hoc work while "looking" for a job until they find one, then they stop, unless they switch again.
     {:when '[[?e :money ?money]
              [?e :hometown ?home]
@@ -559,7 +559,7 @@
 (def craft-rule
   (let [craft (fn [db factory-eid]
                 (let [{:keys [money last-sold min-labour labour-bought inventory decay production good] :as factory} (d/entity db factory-eid)
-                      _ (log :info :sold last-sold)
+                      _ (log :debug :sold last-sold)
                       {home-eid :db/id
                        labour-consumed :labour/consumed
                        :as home} (get factory :hometown)
@@ -584,9 +584,10 @@
                                (inc price)
 
                                :else price)]
-                  (log :info factory-eid :craft :labour-bought labour-bought (d/touch factory))
                   (cond-> [[:db/add home-eid good-produced-key (+ (good-produced-key home) produced)]
                            [:db/add factory-eid :inventory inventory']]
+                  (log :debug :sold last-sold :existing-order? existing-order?)
+                  (log :debug factory-eid :craft :labour-bought labour-bought (d/touch factory))
 
                     (> inventory' 0)
                     (conj [:db/add home-eid good-market-key (load-order market {:price price' :size inventory' :side :sell :id factory-eid :good-kw :inventory})])
@@ -632,7 +633,7 @@
 (def match-markets-rule
   (let [match-market
         (fn [db town-eid]
-          (println :match-market)
+          (log :info :match-market town-eid)
           (let [{food-market :food/market
                  clothes-market :clothes/market
                  labour-market :labour/market
@@ -651,7 +652,7 @@
                                       [:db/add town-eid supply-key supply]
                                       [:db/add town-eid market-price-key current-price]])))))]
             ;; TODO: Just have this running once? So we only have one market match, but for now maybe run it twice
-            (println :town town)
+            (log :debug :town (d/touch town))
             (into []
               cat
               [(when (seq food-market)
@@ -812,7 +813,7 @@
                                                               (conj [:db/add ent-id :owed-tax owed-tax'])
                                                               tax-day?
                                                               (conj [:db/add ent-id :owed-tax 0]))]
-                                            (log :info :money-tax! :eid ent-id :money money :tax tax :ent (touch ent))
+                                            (log :debug :money-tax! :eid ent-id :money money :tax tax :ent (touch ent))
                                             (-> state
                                               (update :pay-tx into peep-tax-tx)
                                               (cond->
@@ -826,14 +827,14 @@
   (let [tax (fn [db day]
               (let [governments (lookup-avet db :governs nil)
                     tax-day? (zero? (mod day 30))]
-                (log :info :state-tax)
+                (log :debug :state-tax)
                 (reduce
                   (fn [v {gov-ent :db/id
                           gov-money :money
                           :keys [governs tax-rate] :as gov}]
                     (let [tax-rate (/ tax-rate 100)
                           tax-tx (gen-tax-tx gov-ent gov-money tax-rate tax-day? (:_hometown governs))]
-                      (log :info (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
+                      (log :trace (mapv (juxt :db/id :money) (:_hometown governs)) (:governs gov) tax-tx)
                       (into v tax-tx)))
                   []
                   governments)))]
