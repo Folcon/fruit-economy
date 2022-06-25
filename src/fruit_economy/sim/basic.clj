@@ -619,7 +619,9 @@
                                    :or {food-stockpile 0 food-stockpile-buy-price 1 food-stockpile-sell-price 1
                                         clothes-stockpile 0 clothes-stockpile-buy-price 1 clothes-stockpile-sell-price 1} :as gov} (d/entity db gov-eid)
                                   {food-market :food/market clothes-market :clothes/market governs-eid :db/id} governs
-                                  enough-money? (>= money (* food-stockpile-buy-price 100))]
+                                  enough-money? (>= money (* food-stockpile-buy-price 100))
+                                  enough-food? (> food-stockpile 0)
+                                  enough-clothes? (> clothes-stockpile 0)]
                               (log :info :process-stockpile :gov gov :governs governs)
                               (let [food-market' (cond-> food-market
                                                    (and food-stockpile-buy? enough-money?)
@@ -628,10 +630,10 @@
                                                    (not food-stockpile-buy?)
                                                    (remove-order :buys gov-eid)
 
-                                                   food-stockpile-sell?
-                                                   (load-order {:price food-stockpile-sell-price :size 100 :side :sell :id gov-eid :good-kw :food-stockpile})
+                                                   (and food-stockpile-sell? enough-food?)
+                                                   (load-order {:price food-stockpile-sell-price :size (min 100 food-stockpile) :side :sell :id gov-eid :good-kw :food-stockpile})
 
-                                                   (not food-stockpile-sell?)
+                                                   (not (and food-stockpile-sell? enough-food?))
                                                    (remove-order :sell gov-eid))
                                     clothes-market' (cond-> clothes-market
                                                       (and clothes-stockpile-buy? enough-money?)
@@ -640,10 +642,10 @@
                                                       (not clothes-stockpile-buy?)
                                                       (remove-order :buys gov-eid)
 
-                                                      clothes-stockpile-sell?
-                                                      (load-order {:price clothes-stockpile-sell-price :size 100 :side :sell :id gov-eid :good-kw :clothes-stockpile})
+                                                      (and clothes-stockpile-sell? enough-clothes?)
+                                                      (load-order {:price clothes-stockpile-sell-price :size (min 100 clothes-stockpile) :side :sell :id gov-eid :good-kw :clothes-stockpile})
 
-                                                      (not clothes-stockpile-sell?)
+                                                      (not (and clothes-stockpile-sell? enough-clothes?))
                                                       (remove-order :sell gov-eid))]
                                 (log :debug :governs-eid governs-eid :update-food-market (not= food-market food-market')  :update-clothes-market (not= clothes-market clothes-market'))
                                 (log :trace :food-market food-market' :clothes-market' clothes-market')
