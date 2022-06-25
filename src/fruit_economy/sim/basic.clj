@@ -304,6 +304,10 @@
              [:db/add -1 :labour/last-consumed 0]
              [:db/add -2 :tax-rate 10]
              [:db/add -2 :money 10000]
+             [:db/add -2 :sold 0]
+             [:db/add -2 :earned 0]
+             [:db/add -2 :food-stockpile 0]
+             [:db/add -2 :clothes-stockpile 0]
              [:db/add -2 :governs -1]]
            (comp cat cat)
            [;; peeps
@@ -607,6 +611,57 @@
      :then '[[:db.fn/call craft ?e]]
      :call {'craft craft}}))
 
+(def manage-stockpile-rule
+  (let [process-stockpile (fn [db gov-eid]
+                            (let [{:keys [governs money
+                                          food-stockpile-buy? food-stockpile-sell? food-stockpile food-stockpile-buy-price food-stockpile-sell-price
+                                          clothes-stockpile-buy? clothes-stockpile-sell? clothes-stockpile clothes-stockpile-buy-price clothes-stockpile-sell-price]
+                                   :or {food-stockpile 0 food-stockpile-buy-price 1 food-stockpile-sell-price 1
+                                        clothes-stockpile 0 clothes-stockpile-buy-price 1 clothes-stockpile-sell-price 1} :as gov} (d/entity db gov-eid)
+                                  {food-market :food/market clothes-market :clothes/market governs-eid :db/id} governs
+                                  enough-money? (>= money (* food-stockpile-buy-price 100))]
+                              (log :info :process-stockpile :gov gov :governs governs)
+                              (let [food-market' (cond-> food-market
+                                                   (and food-stockpile-buy? enough-money?)
+                                                   (load-order {:price food-stockpile-buy-price :size 100 :side :buys :id gov-eid :good-kw :food-stockpile})
+
+                                                   (not food-stockpile-buy?)
+                                                   (remove-order :buys gov-eid)
+
+                                                   food-stockpile-sell?
+                                                   (load-order {:price food-stockpile-sell-price :size 100 :side :sell :id gov-eid :good-kw :food-stockpile})
+
+                                                   (not food-stockpile-sell?)
+                                                   (remove-order :sell gov-eid))
+                                    clothes-market' (cond-> clothes-market
+                                                      (and clothes-stockpile-buy? enough-money?)
+                                                      (load-order {:price clothes-stockpile-buy-price :size 100 :side :buys :id gov-eid :good-kw :clothes-stockpile})
+
+                                                      (not clothes-stockpile-buy?)
+                                                      (remove-order :buys gov-eid)
+
+                                                      clothes-stockpile-sell?
+                                                      (load-order {:price clothes-stockpile-sell-price :size 100 :side :sell :id gov-eid :good-kw :clothes-stockpile})
+
+                                                      (not clothes-stockpile-sell?)
+                                                      (remove-order :sell gov-eid))]
+                                (log :debug :governs-eid governs-eid :update-food-market (not= food-market food-market')  :update-clothes-market (not= clothes-market clothes-market'))
+                                (log :trace :food-market food-market' :clothes-market' clothes-market')
+                                (cond-> []
+                                  (not= food-market food-market')
+                                  (conj [:db/add governs-eid :food/market food-market'])
+
+                                  (not= clothes-market clothes-market')
+                                  (conj [:db/add governs-eid :clothes/market clothes-market'])))))]
+    {:when '[[?e :money]
+             [(get-else $ ?e :food-stockpile-buy? false) ?food-buy?]
+             [(get-else $ ?e :food-stockpile-sell? false) ?food-sell?]
+             [(get-else $ ?e :clothes-stockpile-buy? false) ?clothes-buy?]
+             [(get-else $ ?e :clothes-stockpile-sell? false) ?clothes-sell?]
+             [(or ?food-buy? ?food-sell? ?clothes-buy? ?clothes-sell?)]]
+     :then '[[:db.fn/call process-stockpile ?e]]
+     :call {'process-stockpile process-stockpile}}))
+
 (defn update-attrs [db eid attr-fn-vals]
   (let [ent (d/entity db eid)]
     (into []
@@ -854,6 +909,7 @@
    adjust-factories-planning-rule
    hire-rule
    craft-rule
+   manage-stockpile-rule
    match-markets-rule
    update-prices-rule
    reset-entity-rule
