@@ -705,9 +705,9 @@
 (def stockpile-controls-ui
   (ui/dynamic ctx [{:keys [fill-white fill-black yellow-colour green-colour fill-light-gray fill-dark-gray dark-gray-colour font-small map-font emoji-font tick player-eid player]} ctx]
     (ui/column
-      (stockpile-controls-ui-block {:stockpile-name "Food" :will-buy-key :food-stockpile-buy? :will-sell-key :food-stockpile-sell? :stockpile-buy-price-key :food-stockpile-buy-price :stockpile-sell-price-key :food-stockpile-sell-price})
+      (stockpile-controls-ui-block {:stockpile-name "Food" :stockpile-key :food-stockpile :will-buy-key :food-stockpile-buy? :will-sell-key :food-stockpile-sell? :stockpile-buy-price-key :food-stockpile-buy-price :stockpile-sell-price-key :food-stockpile-sell-price})
       (ui/gap 0 4)
-      (stockpile-controls-ui-block {:stockpile-name "Clothes" :will-buy-key :clothes-stockpile-buy? :will-sell-key :clothes-stockpile-sell? :stockpile-buy-price-key :clothes-stockpile-buy-price :stockpile-sell-price-key :clothes-stockpile-sell-price}))))
+      (stockpile-controls-ui-block {:stockpile-name "Clothes" :stockpile-key :clothes-stockpile :will-buy-key :clothes-stockpile-buy? :will-sell-key :clothes-stockpile-sell? :stockpile-buy-price-key :clothes-stockpile-buy-price :stockpile-sell-price-key :clothes-stockpile-sell-price}))))
 
 (def control-center-area-ui
   [:stretch 1
