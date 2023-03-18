@@ -1,10 +1,13 @@
 (ns fruit-economy.db.core
-  (:require [datascript.core :as d]))
+  (:require [fruit-economy.db.protocol :as p]
+            [fruit-economy.db.datascript-impl]
+            [fruit-economy.db.datalevin-impl]))
 
 
 
-(def ^{:arglists '([query & inputs])
-       :doc "Executes a datalog query. See [docs.datomic.com/on-prem/query.html](https://docs.datomic.com/on-prem/query.html).
+(defn
+  ^{:arglists '([query & inputs])
+    :doc "Executes a datalog query. See [docs.datomic.com/on-prem/query.html](https://docs.datomic.com/on-prem/query.html).
 
           Usage:
 
@@ -15,7 +18,8 @@
           ; => #{[\"fries\"] [\"candy\"] [\"pie\"] [\"pizza\"]}
           ```"}
   q
-  d/q)
+  ([query db] (p/query db query))
+  ([query db & inputs] (p/query db query inputs)))
 
 (def ^{:arglists '([db index] [db index c1] [db index c1 c2] [db index c1 c2 c3] [db index c1 c2 c3 c4])
        :doc "Index lookup. Returns a sequence of datoms (lazy iterator over actual DB index) which components (e, a, v) match passed arguments.
