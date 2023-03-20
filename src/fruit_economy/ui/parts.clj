@@ -27,7 +27,7 @@
         (ui/clickable
           {:on-click
            ;; Prevent circular dependency by only requiring later
-           #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))}
+           (fn [_] (swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen)))}
           (ui/padding 10 10
             (ui/label {:font font-small :paint fill-black} "Select Player")))))))
 
@@ -46,28 +46,28 @@
         (ui/row
           (ui/clickable
             ;; TODO: Fix time https://github.com/frankiesardo/minikusari/blob/ed1c1919db815c6eca4f72846ecb06b680d75264/devcards/src/minikusari/tutorial3.cljs#L422
-            {:on-click basic/do-tick-world}
+            {:on-click (fn [_] basic/do-tick-world)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+1 Day"))))))
           (ui/clickable
-            {:on-click basic/tick-world-10x}
+            {:on-click (fn [_] basic/tick-world-10x)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+10 Days"))))))
           (ui/clickable
-            {:on-click basic/tick-world-100x}
+            {:on-click (fn [_] basic/tick-world-100x)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+100 Days"))))))
           (ui/clickable
-            {:on-click basic/tick-world-1000x}
+            {:on-click (fn [_] basic/tick-world-1000x)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
