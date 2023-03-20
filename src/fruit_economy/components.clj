@@ -6,7 +6,7 @@
 
 (defn atom-checkbox [*checked text]
   (ui/clickable
-    #(swap! *checked not)
+    {:on-click #(swap! *checked not)}
     (ui/dynamic ctx [checked @*checked
                      {:keys [font-ui fill-text leading scale]} ctx]
       (let [border (paint/stroke (unchecked-int 0xFF000000) (* 1 scale))]

@@ -25,8 +25,9 @@
             (ui/label {:font font-small :paint fill-black} (str "Money $" (:money player))))))
       (ui/rect fill-white
         (ui/clickable
-          ;; Prevent circular dependency by only requiring later
-          #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))
+          {:on-click
+           ;; Prevent circular dependency by only requiring later
+           #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))}
           (ui/padding 10 10
             (ui/label {:font font-small :paint fill-black} "Select Player")))))))
 
@@ -35,7 +36,7 @@
                    {:keys [paused? speed-ms]} @state/*menu]
     (ui/row
       (ui/clickable
-        #(swap! state/*menu update :paused? not)
+        {:on-click #(swap! state/*menu update :paused? not)}
         (ui/hoverable
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
             (ui/rect (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
@@ -44,28 +45,29 @@
       (if paused?
         (ui/row
           (ui/clickable
-            basic/do-tick-world
+            ;; TODO: Fix time https://github.com/frankiesardo/minikusari/blob/ed1c1919db815c6eca4f72846ecb06b680d75264/devcards/src/minikusari/tutorial3.cljs#L422
+            {:on-click basic/do-tick-world}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+1 Day"))))))
           (ui/clickable
-            basic/tick-world-10x
+            {:on-click basic/tick-world-10x}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+10 Days"))))))
           (ui/clickable
-            basic/tick-world-100x
+            {:on-click basic/tick-world-100x}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-white} "+100 Days"))))))
           (ui/clickable
-            basic/tick-world-1000x
+            {:on-click basic/tick-world-1000x}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
@@ -73,21 +75,21 @@
                     (ui/label {:font font-small :paint fill-white} "+1000 Days")))))))
         (ui/row
           (ui/clickable
-            #(swap! state/*menu assoc :speed-ms 5000)
+            {:on-click #(swap! state/*menu assoc :speed-ms 5000)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-black} "+"))))))
           (ui/clickable
-            #(swap! state/*menu assoc :speed-ms 3000)
+            {:on-click #(swap! state/*menu assoc :speed-ms 3000)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-black} "++"))))))
           (ui/clickable
-            #(swap! state/*menu assoc :speed-ms 2000)
+            {:on-click #(swap! state/*menu assoc :speed-ms 2000)}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
@@ -108,7 +110,7 @@
              time-controls
              (ui/rect fill-white
                (ui/clickable
-                 #(reset! state/*world (basic/reset-world))
+                 {:on-click #(reset! state/*world (basic/reset-world))}
                  (ui/padding 10 10
                    (ui/label {:font font-small :paint fill-black} "↻ Restart")))))))])))
 
