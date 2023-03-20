@@ -20,15 +20,15 @@
       (let [player (data/entity world-db player-eid)]
         (ui/row
           (ui/padding 10 10
-            (ui/label (str "Nation " (get-in player [:governs :settlement/name])) {:font font-small :paint fill-black}))
+            (ui/label {:font font-small :paint fill-black} (str "Nation " (get-in player [:governs :settlement/name]))))
           (ui/padding 10 10
-            (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))))
+            (ui/label {:font font-small :paint fill-black} (str "Money $" (:money player))))))
       (ui/rect fill-white
         (ui/clickable
           ;; Prevent circular dependency by only requiring later
           #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))
           (ui/padding 10 10
-            (ui/label "Select Player" {:font font-small :paint fill-black})))))))
+            (ui/label {:font font-small :paint fill-black} "Select Player")))))))
 
 (def time-controls
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow fill-green fill-dark-gray]} ctx
@@ -40,7 +40,7 @@
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
             (ui/rect (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
               (ui/padding 10 10
-                (ui/label (if paused? "▶️" "⏸️") {:font font-small :paint fill-black}))))))
+                (ui/label {:font font-small :paint fill-black} (if paused? "▶️" "⏸️")))))))
       (if paused?
         (ui/row
           (ui/clickable
@@ -49,28 +49,28 @@
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+1 Day" {:font font-small :paint fill-white}))))))
+                    (ui/label {:font font-small :paint fill-white} "+1 Day"))))))
           (ui/clickable
             basic/tick-world-10x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+10 Days" {:font font-small :paint fill-white}))))))
+                    (ui/label {:font font-small :paint fill-white} "+10 Days"))))))
           (ui/clickable
             basic/tick-world-100x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+100 Days" {:font font-small :paint fill-white}))))))
+                    (ui/label {:font font-small :paint fill-white} "+100 Days"))))))
           (ui/clickable
             basic/tick-world-1000x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
-                    (ui/label "+1000 Days" {:font font-small :paint fill-white})))))))
+                    (ui/label {:font font-small :paint fill-white} "+1000 Days")))))))
         (ui/row
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 5000)
@@ -78,21 +78,21 @@
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
                   (ui/padding 10 10
-                    (ui/label "+" {:font font-small :paint fill-black}))))))
+                    (ui/label {:font font-small :paint fill-black} "+"))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 3000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
                   (ui/padding 10 10
-                    (ui/label "++" {:font font-small :paint fill-black}))))))
+                    (ui/label {:font font-small :paint fill-black} "++"))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 2000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
                   (ui/padding 10 10
-                    (ui/label "+++" {:font font-small :paint fill-black})))))))))))
+                    (ui/label {:font font-small :paint fill-black} "+++")))))))))))
 
 (def top-bar-ui
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-yellow day]} ctx]
@@ -102,7 +102,7 @@
          (ui/rect fill-yellow
            (ui/row
              (ui/padding 10 10
-               (ui/label (str "Day " day) {:font font-small :paint fill-black}))
+               (ui/label {:font font-small :paint fill-black} (str "Day " day)))
              player-stats-ui
              [:stretch 1 nil]
              time-controls
@@ -110,7 +110,7 @@
                (ui/clickable
                  #(reset! state/*world (basic/reset-world))
                  (ui/padding 10 10
-                   (ui/label "↻ Restart" {:font font-small :paint fill-black})))))))])))
+                   (ui/label {:font font-small :paint fill-black} "↻ Restart")))))))])))
 
 (defn message-log-ui
   ([] (message-log-ui nil))
@@ -122,7 +122,7 @@
        (ui/column
          (ui/gap 0 padding)
          (ui/halign 0.5
-           (ui/label "[ Message Log ]" {:font font-small :paint fill-black}))
+           (ui/label {:font font-small :paint fill-black} "[ Message Log ]"))
          (ui/gap 0 (* padding 2))
          (ui/halign 0.5
            (ui/halign 0.5
@@ -136,7 +136,7 @@
                           (ui/halign 0.5
                             (ui/rect border
                               (ui/padding 5 5
-                                (ui/label (str message) {:font font-small :paint fill-black}))))))
+                                (ui/label {:font font-small :paint fill-black} (str message)))))))
                       message-log')))]))))))))
 
 (def map-ui-view
@@ -186,7 +186,7 @@
                            (ui/halign 0.5
                              (ui/height cell
                                (ui/valign 0.5
-                                 (ui/label glyph {:font font :paint fill-white}))))))))))))))))))
+                                 (ui/label {:font font :paint fill-white} glyph))))))))))))))))))
 
 (def chart-view
   (ui/dynamic ctx [{:keys [font-small fill-white fill-black fill-green fill-yellow fill-light-gray fill-dark-gray]} ctx
@@ -221,11 +221,11 @@
             (ui/gap 0 0)
             (ui/column
               (ui/row
-                (ui/label (str "# " (reduce + (mapv second wealth-freqs))) {:font font-small :paint fill-black})
+                (ui/label {:font font-small :paint fill-black} (str "# " (reduce + (mapv second wealth-freqs))))
                 (ui/gap padding 2)
-                (ui/label (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))) {:font font-small :paint fill-black})
+                (ui/label {:font font-small :paint fill-black} (str "μ 👁: " (freq-avg-fn (frequencies (map :vision units)))))
                 (ui/gap padding 2)
-                (ui/label (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))) {:font font-small :paint fill-black})
+                (ui/label {:font font-small :paint fill-black} (str "μ 🍖: " (freq-avg-fn (frequencies (map :hunger units)))))
                 (ui/gap 2 padding))
               (ui/padding 5
                 (ui/column
@@ -243,5 +243,5 @@
                                 (ui/gap 0 0)))
                             (for [val entry]
                               (ui/width 20
-                                (ui/label (str val) {:font font-small :paint fill-black})))))))))))))))))
+                                (ui/label {:font font-small :paint fill-black} (str val))))))))))))))))))
 

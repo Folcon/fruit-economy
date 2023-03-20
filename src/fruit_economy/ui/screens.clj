@@ -26,7 +26,7 @@
         (ui/row
           (ui/column
             (ui/padding 2 leading
-              (ui/label game-glyph {:font emoji-font :paint fill-text}))
+              (ui/label {:font emoji-font :paint fill-text} game-glyph))
             [:stretch 1
              (ui/vscrollbar
                (ui/vscroll
@@ -37,7 +37,7 @@
                        (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
                                         hovered? (:hui/hovered? ctx)]
                          (let [label (ui/padding 20 leading
-                                       (ui/label name {:font font-ui :paint fill-text}))]
+                                       (ui/label {:font font-ui :paint fill-text} name))]
                            (cond
                              selected? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
                              hovered? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)

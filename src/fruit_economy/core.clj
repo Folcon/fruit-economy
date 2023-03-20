@@ -119,18 +119,18 @@
           fill-button-active  (doto (Paint.) (.setColor (unchecked-int 0xFF48cae4)))]
       (ui/column
         (ui/row
-          (ui/label "Top Bar" {:font font-default :paint fill-text}))
+          (ui/label {:font font-default :paint fill-text} "Top Bar"))
         (ui/row
           (ui/valign 0.1
             (ui/column
-              (ui/label "Left Sidebar" {:font font-default :paint fill-text})))
+              (ui/label {:font font-default :paint fill-text} "Left Sidebar")))
           (ui/valign 0.5
             (ui/halign 0.4
               (ui/column
-                (ui/label "Hello from Humble UI! 👋" {:font font-default :paint fill-text})
+                (ui/label {:font font-default :paint fill-text} "Hello from Humble UI! 👋")
                 (ui/gap 0 leading)
                 (ui/dynamic _ [clicks @*clicks]
-                  (ui/label (str "Clicked: " clicks) {:font font-default :paint fill-text}))
+                  (ui/label {:font font-default :paint fill-text} (str "Clicked: " clicks)))
                 (ui/gap 0 leading)
                 (ui/clickable
                   #(swap! *clicks inc)
@@ -143,14 +143,14 @@
                                            :else    ["Unpressed" fill-button-normal])]
                         (ui/rect (paint/fill fill)
                           (ui/padding (* scale 20) leading
-                            (ui/label label {:font font-default :paint fill-text}))))))))))
+                            (ui/label {:font font-default :paint fill-text} label))))))))))
           (ui/valign 0.1
             (ui/halign 1.2
               (ui/column
-                (ui/label "Right Sidebar" {:font font-default :paint fill-text}))))
+                (ui/label {:font font-default :paint fill-text} "Right Sidebar"))))
           ;; Not currently visible, should work out what the layout system is
           (ui/row
-            (ui/label "Bottom Bar" {:font font-default :paint fill-text})))))))
+            (ui/label {:font font-default :paint fill-text} "Bottom Bar")))))))
 
 (defn on-tick [state now]
   (let [{:keys [tick world-db]} state
@@ -458,8 +458,8 @@
               (if (zero? history-size)
                 (ui/gap 0 0)
                 (ui/padding 10
-                  (ui/label (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))) {:font font-default :paint fill-text})))
               (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF)))
+                  (ui/label {:font font-default :paint fill-text} (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))))))
                 (ui/padding 3
                   (if (and (graph? economy) economy?)
                     (ui/valign 0.5
@@ -470,11 +470,13 @@
                       {:on-paint #'draw-impl
                        :on-event #'on-key-pressed-impl}))))
               (ui/padding 10
-                (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling (str " controlling " controlling))) {:font font-default :paint fill-text}))
+                (ui/label {:font font-default :paint fill-text} (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index)))))
               (ui/padding 10
-                (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") {:font font-small :paint fill-text}))
+                (ui/label {:font font-default :paint fill-text} (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick (when controlling (str " controlling " controlling)))))
               (ui/padding 10
-                (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-text})))))))))
+                (ui/label {:font font-small :paint fill-text} (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree")))
+              (ui/padding 10
+                (ui/label {:font font-small :paint fill-text} (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In"))))))))))
 
 (def economy-ui-view
   (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
@@ -566,7 +568,7 @@
                             (ui/halign 0.5
                               (ui/height cell
                                 (ui/valign 0.5
-                                  (ui/label glyph {:font font :paint fill-white}))))))))))))))))))
+                                  (ui/label {:font font :paint fill-white} glyph))))))))))))))))))
 
 (def map-ui-view
   (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
@@ -579,11 +581,11 @@
           [:stretch 1 nil]
           world-map
           (ui/padding 5
-            (ui/label (str "👋🌲🌳Camera: " (pr-str camera) " Year: " tick #_(when controlling (str " controlling " controlling))) {:font font-small :paint fill-black}))
+            (ui/label {:font font-small :paint fill-black} (str "👋🌲🌳Camera Center: " (pr-str camera) " Year: " tick #_(when controlling (str " controlling " controlling)))))
           (ui/padding 5
-            (ui/label (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree") {:font font-small :paint fill-black}))
+            (ui/label {:font font-small :paint fill-black} (str "[r]: Reset World, [t]: Swap between Map and Economy / Tech Tree, [y]: Evolve Economy / Tech Tree")))
           (ui/padding 5
-            (ui/label (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In") {:font font-small :paint fill-black})))))))
+            (ui/label {:font font-small :paint fill-black} (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In"))))))))
 
 
 (reset! state/*selected-ui-view (ffirst ui.views/ui-views))

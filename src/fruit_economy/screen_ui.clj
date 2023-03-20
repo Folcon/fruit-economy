@@ -77,11 +77,11 @@
                 (ui/button
                   #(swap! *chart update :index (fn [x] (max (- x 7) 0)))
                   {:border-radius 0}
-                  (ui/label "< 7x"))
+                  (ui/label "-7 Days"))
                 (ui/button
                   #(swap! *chart update :index (fn [x] (max (dec x) 0)))
                   {:border-radius 0}
-                  (ui/label "<="))
+                  (ui/label "-1 Day"))
                 #_#_
                 (ui/button
                   #(println "SS")
@@ -94,17 +94,17 @@
                 (ui/button
                   #(swap! *chart update :index (fn [x] (min (inc x) max-entries)))
                   {:border-radius 0}
-                  (ui/label "=>"))
+                  (ui/label "+1 Day"))
                 (ui/button
                   #(swap! *chart update :index (fn [x] (min (+ x 7) max-entries)))
                   {:border-radius 0}
-                  (ui/label "7x >"))))))))))
+                  (ui/label "+7 Days"))))))))))
 
 (def price-chart-ui
   (ui/dynamic ctx [{:keys [price price-history fill-green]} ctx]
     (ui/padding 20
       (ui/column
-        (ui/label (str "Current Price:            " price " g"))
+        (ui/label (str "Current Price:            " price " np"))
         (ui/gap 0 5)
         (if-not (seq price-history)
           (ui/gap 0 0)

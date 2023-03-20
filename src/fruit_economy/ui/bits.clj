@@ -12,7 +12,7 @@
     (vector? v) ((if lead-col? ui/column ui/row)
                  (interpose (ui/gap 2 padding) (mapv #(show-val-ui % font fill lead-col?) v)))
     (map? v) (show-map-ui v font fill (not lead-col?))
-    :else (ui/label (pr-str v) {:font font :paint fill})))
+    :else (ui/label {:font font :paint fill} (pr-str v))))
 
 (defn show-map-ui
   ([m font fill] (show-map-ui m font fill true))
@@ -21,7 +21,7 @@
     (for [[k v] m]
       (ui/padding 5
         ((if lead-col? ui/row ui/column)
-         (ui/label (str k) {:font font :paint fill})
+         (ui/label {:font font :paint fill} (str k))
          (ui/gap 10 5)
          (show-val-ui v font fill lead-col?)))))))
 
