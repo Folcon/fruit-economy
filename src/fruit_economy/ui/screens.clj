@@ -39,8 +39,8 @@
                          (let [label (ui/padding 20 leading
                                        (ui/label name {:font font-ui :paint fill-text}))]
                            (cond
-                             selected? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
-                             hovered? (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
+                             selected? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
+                             hovered? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
                              :else label))))))))]
             (ui/padding 10 10
               (cui/atom-checkbox state/*floating "On top")))
@@ -110,7 +110,7 @@
                                                      (swap! state/*world assoc :player-eid gov-eid))
                                                   (ui/clip-rrect 4
                                                     (ui/dynamic ctx [{:keys [hui/active? hui/hovered?]} ctx]
-                                                      (ui/fill
+                                                      (ui/rect
                                                         (cond
                                                           (or active? (= player gov-eid)) (paint/fill 0xFFA2C7EE)
                                                           hovered? (paint/fill 0xFFCFE8FC)

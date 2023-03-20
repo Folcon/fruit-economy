@@ -62,14 +62,14 @@
                        doc-1 doc-1
                        doc-2 doc-2]
         (ui/column
-          (ui/fill fill-dark-gray
+          (ui/rect fill-dark-gray
             (ui/row
-              (ui/fill fill-light-gray
+              (ui/rect fill-light-gray
                 (ui/height height
                   (ui/width width
                     (custom-ui/svg doc-1))))
               (ui/gap 2 0)
-              (ui/fill fill-light-gray
+              (ui/rect fill-light-gray
                 (ui/height height
                   (ui/width width
                     (custom-ui/svg doc-2))))

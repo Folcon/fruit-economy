@@ -141,7 +141,7 @@
                                            active?  ["Active"    fill-button-active]
                                            hovered? ["Hovered"   fill-button-hovered]
                                            :else    ["Unpressed" fill-button-normal])]
-                        (ui/fill fill
+                        (ui/rect (paint/fill fill)
                           (ui/padding (* scale 20) leading
                             (ui/label label {:font font-default :paint fill-text}))))))))))
           (ui/valign 0.1
@@ -559,8 +559,8 @@
                       (let [_ (when hovered?
                                 (swap! state/*state assoc :hover-loc [x-idx y-idx]))
                             [glyph tile-colour font] (unit-data x-idx y-idx)]
-                        (ui/fill (if hovered?
-                                   (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
+                        (ui/rect (if hovered?
+                                   (paint/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))))
                                    (paint/fill tile-colour))
                           (ui/width cell
                             (ui/halign 0.5

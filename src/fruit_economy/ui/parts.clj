@@ -23,7 +23,7 @@
             (ui/label (str "Nation " (get-in player [:governs :settlement/name])) {:font font-small :paint fill-black}))
           (ui/padding 10 10
             (ui/label (str "Money $" (:money player)) {:font font-small :paint fill-black}))))
-      (ui/fill fill-white
+      (ui/rect fill-white
         (ui/clickable
           ;; Prevent circular dependency by only requiring later
           #(swap! state/*menu assoc :screen @(requiring-resolve 'fruit-economy.ui.screens/start-screen))
@@ -38,7 +38,7 @@
         #(swap! state/*menu update :paused? not)
         (ui/hoverable
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-            (ui/fill (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
+            (ui/rect (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
               (ui/padding 10 10
                 (ui/label (if paused? "▶️" "⏸️") {:font font-small :paint fill-black}))))))
       (if paused?
@@ -47,28 +47,28 @@
             basic/do-tick-world
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label "+1 Day" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-10x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label "+10 Days" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-100x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label "+100 Days" {:font font-small :paint fill-white}))))))
           (ui/clickable
             basic/tick-world-1000x
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (if hovered? fill-yellow fill-dark-gray)
+                (ui/rect (if hovered? fill-yellow fill-dark-gray)
                   (ui/padding 10 10
                     (ui/label "+1000 Days" {:font font-small :paint fill-white})))))))
         (ui/row
@@ -76,21 +76,21 @@
             #(swap! state/*menu assoc :speed-ms 5000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
+                (ui/rect (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "+" {:font font-small :paint fill-black}))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 3000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
+                (ui/rect (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "++" {:font font-small :paint fill-black}))))))
           (ui/clickable
             #(swap! state/*menu assoc :speed-ms 2000)
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                (ui/fill (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
+                (ui/rect (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label "+++" {:font font-small :paint fill-black})))))))))))
 
@@ -99,14 +99,14 @@
     (ui/column
       [:stretch 1
        (ui/padding 0 0 0 10
-         (ui/fill fill-yellow
+         (ui/rect fill-yellow
            (ui/row
              (ui/padding 10 10
                (ui/label (str "Day " day) {:font font-small :paint fill-black}))
              player-stats-ui
              [:stretch 1 nil]
              time-controls
-             (ui/fill fill-white
+             (ui/rect fill-white
                (ui/clickable
                  #(reset! state/*world (basic/reset-world))
                  (ui/padding 10 10
@@ -179,7 +179,7 @@
                  (ui/hoverable
                    (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                      (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
-                       (ui/fill (if hovered?
+                       (ui/rect (if hovered?
                                   (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
                                   (paint/fill tile-colour))
                          (ui/width cell
@@ -208,12 +208,12 @@
                           (float (/ total size))))
           padding 4]
       (ui/column
-        (ui/fill fill-light-gray
+        (ui/rect fill-light-gray
           (ui/padding 4
             (ui/label "Meganeura Info")))
         (ui/gap 0 2)
         (ui/tooltip
-          (ui/fill fill-light-gray
+          (ui/rect fill-light-gray
             (ui/padding 10
               (ui/column
                 (ui/label "These are the titanic creatures beneath who's trails new settlements can form" {:font font-small}))))
@@ -237,7 +237,7 @@
                           (into
                             (if (number? quantity)
                               (custom-ui/<>
-                                (ui/fill (paint/fill (colour 150 150 150))
+                                (ui/rect (paint/fill (colour 150 150 150))
                                   (ui/gap (* quantity 2) 2)))
                               (custom-ui/<>
                                 (ui/gap 0 0)))

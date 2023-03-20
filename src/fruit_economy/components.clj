@@ -1,5 +1,6 @@
 (ns fruit-economy.components
-  (:require [io.github.humbleui.ui :as ui])
+  (:require [io.github.humbleui.paint :as paint]
+            [io.github.humbleui.ui :as ui])
   (:import [io.github.humbleui.skija Canvas Paint PaintMode]))
 
 
@@ -13,7 +14,7 @@
           (ui/rect border
             (if checked
               (ui/padding 1 1
-                (ui/fill fill-text
+                (ui/rect (paint/fill fill-text)
                   (ui/gap (- leading 2) (- leading 2))))
               (ui/gap leading leading)))
           (ui/gap 5 0)

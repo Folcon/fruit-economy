@@ -100,11 +100,11 @@
                   (ui/vscrollbar
                     (ui/vscroll
                       (ui/column
-                        (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                        (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                           (for [producer producers]
                             (ui/tooltip {:anchor :top-right :shackle :top-right}
                               (ui/label (pr-str producer))
-                              (ui/fill fill-light-gray
+                              (ui/rect fill-light-gray
                                 (ui/padding 150 20 150 20
                                   (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
               (ui/padding 20
@@ -118,11 +118,11 @@
                   (ui/vscrollbar
                     (ui/vscroll
                       (ui/column
-                        (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                        (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                           (for [demander demanders]
                             (ui/tooltip {:anchor :top-right :shackle :top-right}
                               (ui/label (pr-str demander))
-                              (ui/fill fill-light-gray
+                              (ui/rect fill-light-gray
                                 (ui/padding 150 20 150 20
                                   (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
               (ui/padding 20
@@ -136,7 +136,7 @@
              (ui/vscrollbar
                (ui/vscroll
                  (ui/column
-                   (interpose (ui/fill fill-dark-gray
+                   (interpose (ui/rect fill-dark-gray
                                 (ui/gap 0 4))
                      (for [{:keys [settlement/name] :as market} cities]
                        (ui/column
@@ -202,7 +202,7 @@
                 (if-not (seq settlements)
                   ui.parts/chart-view
                   (ui/column
-                    (ui/fill fill-light-gray
+                    (ui/rect fill-light-gray
                       (ui/padding 4
                         (ui/label "Settlement Info")))
                     (ui/vscrollbar
@@ -219,42 +219,42 @@
           #(swap! state/*world assoc :map-view :default-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🗺️" {:font font-small :paint fill-white}))))))
         (ui/clickable
           #(swap! state/*world assoc :map-view :temp-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌡" {:font font-small :paint fill-white}))))))
         (ui/clickable
           #(swap! state/*world assoc :map-view :elev-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "📏" {:font font-small :paint fill-white}))))))
         (ui/clickable
           #(swap! state/*world assoc :map-view :climate-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌍" {:font font-small :paint fill-white}))))))
         (ui/clickable
           #(swap! state/*world assoc :map-view :forage-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🚜" {:font font-small :paint fill-white}))))))
         (ui/clickable
           #(swap! state/*world assoc :map-view :mine-view)
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-              (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
+              (ui/rect (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "⛏️" {:font font-small :paint fill-white}))))))))))
 
@@ -265,7 +265,7 @@
     (if-not (seq settlements)
       (ui/gap 0 0)
       (ui/column
-        (ui/fill fill-light-gray
+        (ui/rect fill-light-gray
           (ui/padding 4
             (ui/label "Settlement Info")))
         (ui/vscrollbar
@@ -273,7 +273,7 @@
             (ui/column
               (interpose (ui/gap 0 4)
                 (for [settlement settlements]
-                  (ui/fill (paint/fill 0xFFFCFEC8)
+                  (ui/rect (paint/fill 0xFFFCFEC8)
                     (ui/padding 4
                       (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green fill-light-gray]} ctx
                                        {:keys [map-view]} world]
@@ -338,7 +338,7 @@
                               thing [glyph (colour (min 255 (* (get thing :wealth 0) 25)) 0 0) emoji-font emoji-offset-x emoji-offset-y]
                               (seq settlement) [name (colour 0 0 155) map-font font-offset-x font-offset-y]
                               :else ["" (terrain-tint tile) map-font font-offset-x font-offset-y])))]
-          (ui/fill (paint/fill 0xFFCFE8FC)
+          (ui/rect (paint/fill 0xFFCFE8FC)
             (ui/dynamic ctx [{:keys [lrtb cell]} ctx
                              {:keys [camera tick zoom]} @state/*state]
               (ui/with-bounds ::bounds
@@ -355,7 +355,7 @@
                                 (ui/hoverable
                                   (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                                     (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
-                                      (ui/fill
+                                      (ui/rect
                                         (if hovered?
                                           (paint/fill 0xFFE1EFFA)
                                           (paint/fill tile-colour))
@@ -364,12 +364,12 @@
                                             (ui/height cell
                                               (ui/valign 0.5
                                                 (ui/label glyph {:font font :paint fill-white}))))))))))))))))))))))]
-     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
                    (ui/dynamic _ [{:keys [world-db]} @state/*world
                                   settlements (basic/settlements-q world-db nil)]
                      (if (seq settlements)
                        city-ui-view
                        ui.parts/chart-view)))])])
+     [:stretch 1 (ui/rect (paint/fill 0xFFFCCFE8)
 
 (def top-ui-view
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale
@@ -398,48 +398,48 @@
             (ui/column
               [:stretch 1
                (ui/padding 0 10 0 0
-                 (ui/fill fill-light-gray
+                 (ui/rect fill-light-gray
                    (ui/row
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :default-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "🗺️" {:font font-small :paint fill-white}))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :temp-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "🌡" {:font font-small :paint fill-white}))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :elev-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "📏" {:font font-small :paint fill-white}))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :climate-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "🌍" {:font font-small :paint fill-white}))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :forage-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "🚜" {:font font-small :paint fill-white}))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :mine-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
-                           (ui/fill (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
+                           (ui/rect (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
                                (ui/label "⛏️" {:font font-small :paint fill-white})))))))))])))))))
 
@@ -452,7 +452,7 @@
         (let [cities (data/lookup-avet world-db :kind :city)]
           (if-not (seq cities)
             (ui/gap 0 0)
-            (ui/fill fill-light-gray
+            (ui/rect fill-light-gray
               (ui/column
                 (ui/row
                   (for [city cities
@@ -480,7 +480,7 @@
                 [:stretch 1
                  (ui/row
                    [:stretch 1
-                    (ui/fill fill-white
+                    (ui/rect fill-white
                       (when (and selected-city selected-market)
                         (let [city (db/entity world-db selected-city)
                               producers (into [] (filter #(contains? (set (market-keys-fn selected-market :producers)) (:kind %))) (:_hometown city))
@@ -517,9 +517,9 @@
                                       (ui/vscrollbar
                                         (ui/vscroll
                                           (ui/column
-                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                                            (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                                               (for [producer producers]
-                                                (ui/fill fill-light-gray
+                                                (ui/rect fill-light-gray
                                                   (ui/halign 0.5
                                                     (ui/padding 150 20 150 20
                                                       (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced #_:food/last-consumed #_:clothes/last-consumed #_:labour/last-consumed price-belief]))))))))))))])
@@ -535,15 +535,15 @@
                                       (ui/vscrollbar
                                         (ui/vscroll
                                           (ui/column
-                                            (interpose (ui/fill fill-dark-gray (ui/gap 0 4))
+                                            (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                                               (for [demander demanders]
-                                                (ui/fill fill-light-gray
+                                                (ui/rect fill-light-gray
                                                   (ui/halign 0.5
                                                     (ui/padding 150 20 150 20
                                                       (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory #_:last-sold #_:food/last-produced #_:clothes/last-produced #_:labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed price-belief]))))))))))))])
                                    (ui/padding 20
                                      (ui/label (str "Total Used: " consumed)))))])))))])])))))]
-     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
+     [:stretch 1 (ui/rect (paint/fill 0xFFFCCFE8)
                    city-ui-view)])])
 
 
@@ -574,7 +574,7 @@
             (ui/column
               [:stretch 1
                (ui/padding 0 10 0 0
-                 (ui/fill fill-light-gray
+                 (ui/rect fill-light-gray
                    (ui/row
                      (ui/gap 30 30))))])))))))
 
@@ -644,7 +644,7 @@
             (ui/dynamic _ [{:keys [world-conn]} @state/*world
                            world-db @world-conn]
               (let [will-buy? (get (data/entity world-db player-eid) will-buy-key)]
-                (ui/fill (paint/fill (if will-buy? green-colour dark-gray-colour))
+                (ui/rect (paint/fill (if will-buy? green-colour dark-gray-colour))
                   (ui/padding 20 12 20 12
                     (ui/halign 0.5
                       (ui/label (str "Buy " stockpile-name))))))))
@@ -653,7 +653,7 @@
             (ui/dynamic _ [{:keys [world-conn]} @state/*world
                            world-db @world-conn]
               (let [will-sell? (get (data/entity world-db player-eid) will-sell-key)]
-                (ui/fill (paint/fill (if will-sell? green-colour dark-gray-colour))
+                (ui/rect (paint/fill (if will-sell? green-colour dark-gray-colour))
                   (ui/padding 20 12 20 12
                     (ui/halign 0.5
                       (ui/label (str "Sell " stockpile-name)))))))))
@@ -725,7 +725,7 @@
                 stockpile-controls-ui)))
           (ui/padding 10
             (ui/label "Please Select a City to play as!"))))]
-     [:stretch 1 (ui/fill (paint/fill 0xFFFCCFE8)
+     [:stretch 1 (ui/rect (paint/fill 0xFFFCCFE8)
                    city-ui-view)])])
 
 (def control-ui-view
@@ -755,7 +755,7 @@
             (ui/column
               [:stretch 1
                (ui/padding 0 10 0 0
-                 (ui/fill fill-light-gray
+                 (ui/rect fill-light-gray
                    (ui/row
                      (ui/gap 30 30))))])))))))
 
