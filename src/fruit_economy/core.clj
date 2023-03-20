@@ -133,7 +133,7 @@
                   (ui/label {:font font-default :paint fill-text} (str "Clicked: " clicks)))
                 (ui/gap 0 leading)
                 (ui/clickable
-                  {:on-click #(swap! *clicks inc)}
+                  {:on-click (fn [_] (swap! *clicks inc))}
                   (ui/clip-rrect (* scale 4)
                     (ui/dynamic ctx [active?  (:hui/active? ctx)
                                      hovered? (:hui/hovered? ctx)]

@@ -33,7 +33,7 @@
                  (ui/column
                    (for [[name _ui] ui.views/ui-views]
                      (ui/clickable
-                       {:on-click #(reset! state/*selected-ui-view name)}
+                       {:on-click (fn [_] (reset! state/*selected-ui-view name))}
                        (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
                                         hovered? (:hui/hovered? ctx)]
                          (let [label (ui/padding 20 leading
@@ -105,9 +105,10 @@
                                                     coord (get-in city [:settlement/place :coord])
                                                     gov-eid (:db/id government)]
                                                 (ui/clickable
-                                                  {:on-click #(do
-                                                                (swap! state/*state assoc :camera coord)
-                                                                (swap! state/*world assoc :player-eid gov-eid))}
+                                                  {:on-click (fn [_]
+                                                               (do
+                                                                 (swap! state/*state assoc :camera coord)
+                                                                 (swap! state/*world assoc :player-eid gov-eid)))}
                                                   (ui/clip-rrect 4
                                                     (ui/dynamic ctx [{:keys [hui/active? hui/hovered?]} ctx]
                                                       (ui/rect

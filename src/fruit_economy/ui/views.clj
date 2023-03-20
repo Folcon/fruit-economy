@@ -216,42 +216,42 @@
                     ui.parts/chart-view)))))))
       (ui/row
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :default-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :default-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label {:font font-small :paint fill-white} "🗺️"))))))
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :temp-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :temp-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label {:font font-small :paint fill-white} "🌡"))))))
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :elev-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :elev-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "📏" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :climate-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :climate-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🌍" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :forage-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :forage-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
                   (ui/label "🚜" {:font font-small :paint fill-white}))))))
         (ui/clickable
-          {:on-click #(swap! state/*world assoc :map-view :mine-view)}
+          {:on-click (fn [_] (swap! state/*world assoc :map-view :mine-view))}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
@@ -401,7 +401,7 @@
                  (ui/rect fill-light-gray
                    (ui/row
                      (ui/clickable
-                       {:on-click #(swap! state/*world assoc :map-view :default-view)}
+                       {:on-click (fn [_] (swap! state/*world assoc :map-view :default-view))}
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)

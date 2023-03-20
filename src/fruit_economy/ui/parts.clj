@@ -36,7 +36,7 @@
                    {:keys [paused? speed-ms]} @state/*menu]
     (ui/row
       (ui/clickable
-        {:on-click #(swap! state/*menu update :paused? not)}
+        {:on-click (fn [_] (swap! state/*menu update :paused? not))}
         (ui/hoverable
           (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
             (ui/rect (cond hovered? fill-yellow paused? fill-dark-gray :else fill-white)
@@ -75,21 +75,21 @@
                     (ui/label {:font font-small :paint fill-white} "+1000 Days")))))))
         (ui/row
           (ui/clickable
-            {:on-click #(swap! state/*menu assoc :speed-ms 5000)}
+            {:on-click (fn [_] (swap! state/*menu assoc :speed-ms 5000))}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 5000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-black} "+"))))))
           (ui/clickable
-            {:on-click #(swap! state/*menu assoc :speed-ms 3000)}
+            {:on-click (fn [_] (swap! state/*menu assoc :speed-ms 3000))}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 3000) fill-green :else fill-white)
                   (ui/padding 10 10
                     (ui/label {:font font-small :paint fill-black} "++"))))))
           (ui/clickable
-            {:on-click #(swap! state/*menu assoc :speed-ms 2000)}
+            {:on-click (fn [_] (swap! state/*menu assoc :speed-ms 2000))}
             (ui/hoverable
               (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                 (ui/rect (cond hovered? fill-yellow (= speed-ms 2000) fill-green :else fill-white)
@@ -110,7 +110,7 @@
              time-controls
              (ui/rect fill-white
                (ui/clickable
-                 {:on-click #(reset! state/*world (basic/reset-world))}
+                 {:on-click (fn [_] (reset! state/*world (basic/reset-world)))}
                  (ui/padding 10 10
                    (ui/label {:font font-small :paint fill-black} "↻ Restart")))))))])))
 
