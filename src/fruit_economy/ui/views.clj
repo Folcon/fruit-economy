@@ -391,7 +391,7 @@
            :cell cell
            :tick tick}
           world)
-        (ui/on-key-down on-key-pressed-impl
+        (ui/key-listener {:on-key-down on-key-pressed-impl}
           (ui/column
             ui.parts/top-bar-ui
             main-center-area-ui
@@ -567,7 +567,7 @@
            :cell cell
            :tick tick}
           world)
-        (ui/on-key-down on-key-pressed-impl
+        (ui/key-listener {:on-key-down on-key-pressed-impl}
           (ui/column
             ui.parts/top-bar-ui
             economy-center-area-ui
@@ -748,7 +748,7 @@
            :cell cell
            :tick tick}
           world)
-        (ui/on-key-down on-key-pressed-impl
+        (ui/key-listener {:on-key-down on-key-pressed-impl}
           (ui/column
             ui.parts/top-bar-ui
             control-center-area-ui

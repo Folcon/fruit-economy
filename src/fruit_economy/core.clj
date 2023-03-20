@@ -479,7 +479,7 @@
                 (ui/label {:font font-small :paint fill-text} (str "[WASD] or arrow keys: Pan the camera, [-]: Zoom Out, [+]: Zoom In"))))))))))
 
 (def economy-ui-view
-  (ui/on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)
+  (ui/key-listener {:on-key-down (juxt on-key-pressed-svg-impl on-key-pressed-mini-panel-impl)}
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [world-db svg-xyz]} @state/*state]
         (let [{::land/keys [economy]} (data/land-data world-db)
@@ -571,7 +571,7 @@
                                   (ui/label {:font font :paint fill-white} glyph))))))))))))))))))
 
 (def map-ui-view
-  (ui/on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)
+  (ui/key-listener {:on-key-down (juxt on-key-pressed-impl on-key-pressed-mini-panel-impl)}
     (ui/padding padding padding
       (ui/dynamic ctx [{:keys [scale font-small fill-white fill-black fill-green fill-dark-gray fill-light-gray]} ctx
                        {:keys [camera tick]} @state/*state]
