@@ -8,12 +8,9 @@
     #(swap! *checked not)
     (ui/dynamic ctx [checked @*checked
                      {:keys [font-ui fill-text leading scale]} ctx]
-      (let [border (doto (Paint.)
-                     (.setColor (unchecked-int 0xFF000000))
-                     (.setMode PaintMode/STROKE)
-                     (.setStrokeWidth (* 1 scale)))]
+      (let [border (paint/stroke (unchecked-int 0xFF000000) (* 1 scale))]
         (ui/row
-          (ui/fill border
+          (ui/rect border
             (if checked
               (ui/padding 1 1
                 (ui/fill fill-text

@@ -132,12 +132,9 @@
                   (interpose (ui/gap 2 padding)
                     (map
                       (fn [message]
-                        (let [border (doto (Paint.)
-                                       (.setColor (unchecked-int 0xFF000000))
-                                       (.setMode PaintMode/STROKE)
-                                       (.setStrokeWidth (* 1 scale)))]
+                        (let [border (paint/stroke (unchecked-int 0xFF000000) (* 1 scale))]
                           (ui/halign 0.5
-                            (ui/fill border
+                            (ui/rect border
                               (ui/padding 5 5
                                 (ui/label (str message) {:font font-small :paint fill-black}))))))
                       message-log')))]))))))))
