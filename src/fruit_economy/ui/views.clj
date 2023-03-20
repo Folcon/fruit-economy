@@ -221,14 +221,14 @@
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "🗺️" {:font font-small :paint fill-white}))))))
+                  (ui/label {:font font-small :paint fill-white} "🗺️"))))))
         (ui/clickable
           {:on-click #(swap! state/*world assoc :map-view :temp-view)}
           (ui/hoverable
             (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
               (ui/rect (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                 (ui/padding 10 10
-                  (ui/label "🌡" {:font font-small :paint fill-white}))))))
+                  (ui/label {:font font-small :paint fill-white} "🌡"))))))
         (ui/clickable
           {:on-click #(swap! state/*world assoc :map-view :elev-view)}
           (ui/hoverable
@@ -286,15 +286,15 @@
                           (ui/label (str "Money " (:money (first (get settlement :_governs)))))
                           (ui/gap 0 6)
                           (ui/row
-                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
+                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
                             [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :food/price) "np") {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
                             [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                             [:stretch 2 nil]
-                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
+                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
                             [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :clothes/price) "np") {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
                             [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                             [:stretch 2 nil]
-                            [:stretch 2 (ui/tooltip (ui/fill fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
+                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
                             [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :labour/price) "np") {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
                             [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                             [:stretch 2 nil])
@@ -305,8 +305,8 @@
                                 (interpose (ui/gap 2 0)
                                   (for [peep peep-row]
                                     (ui/tooltip {:anchor :top-right :shackle :top-left}
-                                      (ui/fill fill-light-gray (ui/padding 5 (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])))))
-                                      (ui/fill fill-green (ui/padding 5 (ui/label (str (show-peep peep))))))))))))))))))))))))
+                                      (ui/rect fill-light-gray (ui/padding 5 (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])))))
+                                      (ui/rect fill-green (ui/padding 5 (ui/label (str (show-peep peep)))))))))))))))))
 
 (def main-center-area-ui
   [:stretch 1
@@ -357,7 +357,7 @@
                                     (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
                                       (ui/rect
                                         (if hovered?
-                                          (paint/fill 0xFFE1EFFA)
+                                          (paint/fill (unchecked-int 0xFFE1EFFA))
                                           (paint/fill tile-colour))
                                         (ui/width cell
                                           (ui/halign 0.5

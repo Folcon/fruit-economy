@@ -458,8 +458,8 @@
               (if (zero? history-size)
                 (ui/gap 0 0)
                 (ui/padding 10
-              (ui/fill (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF)))
                   (ui/label {:font font-default :paint fill-text} (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))))))
+              (ui/rect (paint/fill (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF))))
                 (ui/padding 3
                   (if (and (graph? economy) economy?)
                     (ui/valign 0.5
