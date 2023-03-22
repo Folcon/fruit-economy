@@ -111,12 +111,12 @@
 #_
 (def app
   (ui/dynamic ctx [scale (:scale ctx)]
-    (let [font-default        (Font. face-default (float (* 13 scale)))
-          leading             (.getCapHeight (.getMetrics font-default))
-          fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
-          fill-button-normal  (doto (Paint.) (.setColor (unchecked-int 0xFFade8f4)))
-          fill-button-hovered (doto (Paint.) (.setColor (unchecked-int 0xFFcaf0f8)))
-          fill-button-active  (doto (Paint.) (.setColor (unchecked-int 0xFF48cae4)))]
+    (let [font-default (Font. face-default (float (* 13 scale)))
+          leading (.getCapHeight (.getMetrics font-default))
+          fill-text (paint/fill 0xFF000000)
+          fill-button-normal (paint/fill 0xFFade8f4)
+          fill-button-hovered (paint/fill 0xFFcaf0f8)
+          fill-button-active (paint/fill 0xFF48cae4)]
       (ui/column
         (ui/row
           (ui/label {:font font-default :paint fill-text} "Top Bar"))
@@ -186,7 +186,7 @@
   (let [{:keys [camera peep world world-db zoom cell hovering viewport-width viewport-height half-vw half-vh tick paused? tick-ms last-tick render-ms last-render] :as state} @state/*state
 
         font-default (Font. face-default (float (* 24 zoom)))
-        fill-default (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+        fill-default (paint/fill 0xFF000000)
 
         ;; Rendering text
         font-bounds (.measureText font-default "X")
@@ -263,7 +263,6 @@
       (with-open [fill (doto (Paint.) (.setColor (colour 0x66FFD700)))]
         (.drawRect canvas (Rect/makeXYWH ((comp #(* (quot % cell) cell) first :screen) hovering) ((comp #(* (quot % cell) cell) second :screen) hovering) cell cell) fill)))
 
-    (with-open [fill (doto (Paint.) (.setColor (unchecked-int 0xFF33CC33)))]
       (.drawRect canvas (Rect/makeXYWH (first peep) (second peep) 10 10) fill))))
 
 (defn draw-mini-panel-impl
@@ -272,7 +271,7 @@
   [^Canvas canvas window-width window-height]
   (let [{:keys [tick tick-ms last-tick paused?] :as _state} @state/*state
         now (System/currentTimeMillis)
-        fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+        fill-text (paint/fill 0xFF000000)
 
         cell-x (/ window-width 2)
         cell-y (/ window-height 2)
@@ -439,9 +438,9 @@
   (ui/dynamic ctx [{:keys [scale bounds x-scale y-scale xy-scale]} ctx
                    {:keys [camera tick history-index civ-index economy? svg-xyz]} @*state
                    history (data/history-log-entries (get @*state :world-db))]
-    (let [font-default        (Font. face-default (float (* 18 scale)))
-          font-small          (Font. face-default (float (* 12 scale)))
-          fill-text           (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))
+    (let [font-default (Font. face-default (float (* 18 scale)))
+          font-small (Font. face-default (float (* 12 scale)))
+          fill-text (paint/fill 0xFF000000)
           history-size (count history)
           {::land/keys [civ-name->civ economy]} (data/land-data (get @*state :world-db))
           controlling (nth (keys civ-name->civ) civ-index)
@@ -459,13 +458,13 @@
                 (ui/gap 0 0)
                 (ui/padding 10
                   (ui/label {:font font-default :paint fill-text} (str (inc history-index) " of " history-size ": " (nth history (- (dec history-size) history-index))))))
-              (ui/rect (paint/fill (doto (Paint.) (.setColor (unchecked-int 0xFFFFFFFF))))
+              (ui/rect (paint/fill 0xFFFFFFFF)
                 (ui/padding 3
                   (if (and (graph? economy) economy?)
                     (ui/valign 0.5
                       (ui/halign 0.5
-                        (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
                           (custom-ui/svg-canvas (economy/->svg economy)))))
+                        (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (paint/fill 0xFFEEEE00)}
                     (custom-ui/ui-canvas canvas-width canvas-height
                       {:on-paint #'draw-impl
                        :on-event #'on-key-pressed-impl}))))
@@ -493,8 +492,8 @@
                 (ui/valign 0.5
                   (ui/halign 0.5
                     ;; TODO: Current scroll / zoom broken on svg
-                    (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (doto (Paint.) (.setColor (unchecked-int 0xFFEEEE00)))}
                       (custom-ui/svg-canvas (economy/->svg economy)))))])]))))))
+                    (ui/with-context {:svg-x svg-x :svg-y svg-y :svg-z svg-z :paint (paint/fill 0xFFEEEE00)}
 
 (def world-map
   (ui/dynamic ctx [{:keys [scale x-scale y-scale font-default emoji-font font-offset-x font-offset-y emoji-offset-x emoji-offset-y fill-white fill-black]} ctx
@@ -562,7 +561,7 @@
                                 (swap! state/*state assoc :hover-loc [x-idx y-idx]))
                             [glyph tile-colour font] (unit-data x-idx y-idx)]
                         (ui/rect (if hovered?
-                                   (paint/fill (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))))
+                                   (paint/fill 0xFFE1EFFA)
                                    (paint/fill tile-colour))
                           (ui/width cell
                             (ui/halign 0.5

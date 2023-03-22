@@ -9,7 +9,7 @@
     {:on-click (fn [_] (swap! *checked not))}
     (ui/dynamic ctx [checked @*checked
                      {:keys [font-ui fill-text leading scale]} ctx]
-      (let [border (paint/stroke (unchecked-int 0xFF000000) (* 1 scale))]
+      (let [border (paint/stroke 0xFF000000 (* 1 scale))]
         (ui/row
           (ui/rect border
             (if checked

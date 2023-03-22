@@ -134,7 +134,7 @@
                   (interpose (ui/gap 2 padding)
                     (map
                       (fn [message]
-                        (let [border (paint/stroke (unchecked-int 0xFF000000) (* 1 scale))]
+                        (let [border (paint/stroke 0xFF000000 (* 1 scale))]
                           (ui/halign 0.5
                             (ui/rect border
                               (ui/padding 5 5
@@ -182,7 +182,7 @@
                    (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                      (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
                        (ui/rect (if hovered?
-                                  (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA)))
+                                  (paint/fill 0xFFE1EFFA)
                                   (paint/fill tile-colour))
                          (ui/width cell
                            (ui/halign 0.5

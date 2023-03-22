@@ -415,7 +415,7 @@
                                     (let [[glyph tile-colour font] (unit-data x-idx y-idx)]
                                       (ui/rect
                                         (if hovered?
-                                          (paint/fill (unchecked-int 0xFFE1EFFA))
+                                          (paint/fill 0xFFE1EFFA)
                                           (paint/fill tile-colour))
                                         (ui/width cell
                                           (ui/halign 0.5

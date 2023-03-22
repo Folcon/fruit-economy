@@ -18,7 +18,7 @@
     (let [font-ui (Font. ^Typeface face-default (float (* 13 scale)))
           leading (-> font-ui .getMetrics .getCapHeight Math/ceil (/ scale))
           emoji-font (Font. ^Typeface emoji-face (float 72))
-          fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF000000)))]
+          fill-text (paint/fill 0xFF000000)]
       (ui/with-context {:face-ui face-default
                         :font-ui font-ui
                         :leading leading
@@ -38,8 +38,8 @@
                        (let [label (ui/padding 20 leading
                                      (ui/label {:font font-ui :paint fill-text} name))]
                          (cond
-                           selected? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
-                           hovered? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
+                           selected? (ui/rect (paint/fill 0xFFB2D7FE) label)
+                           hovered? (ui/rect (paint/fill 0xFFE1EFFA) label)
                            :else label)))))))]
             (ui/padding 10 10
               (cui/atom-checkbox state/*floating "On top")))
@@ -96,7 +96,7 @@
                     (let [history? (basic/history-started? world-db)
                           viable? (basic/viable-world? world-db)
                           font-ui (Font. ^Typeface face-default (float (* 13 scale)))
-                          fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF00FF00)))
+                          fill-text (paint/fill 0xFF00FF00)
                           select-city-btn (fn [city]
                                             (ui/dynamic ctx [{:keys [leading]} ctx
                                                              {:keys [player]} @state/*world]
