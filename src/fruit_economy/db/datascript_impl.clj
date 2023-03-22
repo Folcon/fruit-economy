@@ -1,7 +1,8 @@
 (ns fruit-economy.db.datascript-impl
   (:require [datascript.core :as d]
             [fruit-economy.db.protocol :as p])
-  (:import [datascript.db DB]))
+  (:import [datascript.db DB]
+           [datascript.impl.entity Entity]))
 
 
 
@@ -22,6 +23,11 @@
   (--entity [db eid] (d/entity db eid))
   (--touch [e] (d/touch e))
   (--db-with [db tx-data] (d/db-with db tx-data)))
+
+(extend-type
+  Entity
+  p/DBOps
+  (--touch [e] (d/touch e)))
 
 (defn --empty-db
   ([] (d/empty-db))

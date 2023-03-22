@@ -1,7 +1,8 @@
 (ns fruit-economy.db.datalevin-impl
   (:require [datalevin.core :as d]
             [fruit-economy.db.protocol :as p])
-  (:import [datalevin.db DB]))
+  (:import [datalevin.db DB]
+           [datalevin.entity Entity]))
 
 
 
@@ -22,6 +23,11 @@
   (--entity [db eid] (d/entity db eid))
   (--touch [e] (d/touch e))
   (--db-with [db tx-data] (d/db-with db tx-data)))
+
+(extend-type
+  Entity
+  p/DBOps
+  (--touch [e] (d/touch e)))
 
 (defn --empty-db
   ([] (d/empty-db))
