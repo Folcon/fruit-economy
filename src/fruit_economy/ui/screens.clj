@@ -29,19 +29,18 @@
               (ui/label {:font emoji-font :paint fill-text} game-glyph))
             [:stretch 1
              (ui/vscrollbar
-               (ui/vscroll
-                 (ui/column
-                   (for [[name _ui] ui.views/ui-views]
-                     (ui/clickable
-                       {:on-click (fn [_] (reset! state/*selected-ui-view name))}
-                       (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
-                                        hovered? (:hui/hovered? ctx)]
-                         (let [label (ui/padding 20 leading
-                                       (ui/label {:font font-ui :paint fill-text} name))]
-                           (cond
-                             selected? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
-                             hovered? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
-                             :else label))))))))]
+               (ui/column
+                 (for [[name _ui] ui.views/ui-views]
+                   (ui/clickable
+                     {:on-click (fn [_] (reset! state/*selected-ui-view name))}
+                     (ui/dynamic ctx [selected? (= name @state/*selected-ui-view)
+                                      hovered? (:hui/hovered? ctx)]
+                       (let [label (ui/padding 20 leading
+                                     (ui/label {:font font-ui :paint fill-text} name))]
+                         (cond
+                           selected? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFB2D7FE))) label)
+                           hovered? (ui/rect (doto (Paint.) (.setColor (unchecked-int 0xFFE1EFFA))) label)
+                           :else label)))))))]
             (ui/padding 10 10
               (cui/atom-checkbox state/*floating "On top")))
           [:stretch 1
@@ -129,11 +128,10 @@
                           (ui/gap 0 10)
                           (ui/height 100
                             (ui/vscrollbar
-                              (ui/vscroll
-                                (ui/column
-                                  (for [city (data/lookup-avet world-db :kind :city)]
-                                    (ui/padding 0 2 0 2
-                                      (select-city-btn city)))))))
+                              (ui/column
+                                (for [city (data/lookup-avet world-db :kind :city)]
+                                  (ui/padding 0 2 0 2
+                                    (select-city-btn city))))))
                           (ui/gap 0 10)
                           (ui/button
                             #(swap! state/*menu assoc :screen game-screen)
