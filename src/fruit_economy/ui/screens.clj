@@ -95,6 +95,8 @@
                   (ui/halign 0.5
                     (let [history? (basic/history-started? world-db)
                           viable? (basic/viable-world? world-db)
+                          font-ui (Font. ^Typeface face-default (float (* 13 scale)))
+                          fill-text (doto (Paint.) (.setColor (unchecked-int 0xFF00FF00)))
                           select-city-btn (fn [city]
                                             (ui/dynamic ctx [{:keys [leading]} ctx
                                                              {:keys [player]} @state/*world]
