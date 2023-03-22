@@ -98,15 +98,14 @@
               (ui/height 100
                 (ui/row
                   (ui/vscrollbar
-                    (ui/vscroll
-                      (ui/column
-                        (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
-                          (for [producer producers]
-                            (ui/tooltip {:anchor :top-right :shackle :top-right}
-                              (ui/label (pr-str producer))
-                              (ui/rect fill-light-gray
-                                (ui/padding 150 20 150 20
-                                  (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
+                    (ui/column
+                      (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
+                        (for [producer producers]
+                          (ui/tooltip {:anchor :top-right :shackle :top-right}
+                            (ui/label (pr-str producer))
+                            (ui/rect fill-light-gray
+                              (ui/padding 150 20 150 20
+                                (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed])))))))))))))
               (ui/padding 20
                 (ui/label (str "Total Produced: " produced)))))
           (ui/padding 20
@@ -116,15 +115,14 @@
               (ui/height 100
                 (ui/row
                   (ui/vscrollbar
-                    (ui/vscroll
-                      (ui/column
-                        (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
-                          (for [demander demanders]
-                            (ui/tooltip {:anchor :top-right :shackle :top-right}
-                              (ui/label (pr-str demander))
-                              (ui/rect fill-light-gray
-                                (ui/padding 150 20 150 20
-                                  (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed]))))))))))))))
+                    (ui/column
+                      (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
+                        (for [demander demanders]
+                          (ui/tooltip {:anchor :top-right :shackle :top-right}
+                            (ui/label (pr-str demander))
+                            (ui/rect fill-light-gray
+                              (ui/padding 150 20 150 20
+                                (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed])))))))))))))
               (ui/padding 20
                 (ui/label (str "Total Used: " consumed)))))
 
@@ -134,17 +132,16 @@
          (ui/height 100
            (ui/row
              (ui/vscrollbar
-               (ui/vscroll
-                 (ui/column
-                   (interpose (ui/rect fill-dark-gray
-                                (ui/gap 0 4))
-                     (for [{:keys [settlement/name] :as market} cities]
-                       (ui/column
-                         (ui/label name)
-                         (ui/gap 0 2)
-                         ;;(ui/label (pr-str (db/touch market)))
-                         ;;(ui/gap 0 2)
-                         (show-map-ui market font-small fill-black))))))))))))))
+               (ui/column
+                 (interpose (ui/rect fill-dark-gray
+                              (ui/gap 0 4))
+                   (for [{:keys [settlement/name] :as market} cities]
+                     (ui/column
+                       (ui/label name)
+                       (ui/gap 0 2)
+                       ;;(ui/label (pr-str (db/touch market)))
+                       ;;(ui/gap 0 2)
+                       (show-map-ui market font-small fill-black)))))))))))))
 
 (defn city-view [settlement]
   (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green]} ctx
@@ -206,12 +203,11 @@
                       (ui/padding 4
                         (ui/label "Settlement Info")))
                     (ui/vscrollbar
-                      (ui/vscroll
-                        (ui/column
-                          (interpose (ui/gap 4 0)
-                            (for [settlement settlements]
-                              (ui/padding 4
-                                (city-view settlement)))))))
+                      (ui/column
+                        (interpose (ui/gap 4 0)
+                          (for [settlement settlements]
+                            (ui/padding 4
+                              (city-view settlement))))))
                     (ui/gap 0 10)
                     ui.parts/chart-view)))))))
       (ui/row
@@ -269,44 +265,106 @@
           (ui/padding 4
             (ui/label "Settlement Info")))
         (ui/vscrollbar
-          (ui/vscroll
-            (ui/column
-              (interpose (ui/gap 0 4)
-                (for [settlement settlements]
-                  (ui/rect (paint/fill 0xFFFCFEC8)
-                    (ui/padding 4
-                      (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green fill-light-gray]} ctx
-                                       {:keys [map-view]} world]
-                        (ui/column
-                          (ui/row
-                            (interpose (ui/gap 4 0)
-                              (for [k [:settlement/name :settlement/place]]
-                                (ui/label (str (get settlement k)) {:font font-small :paint fill-black}))))
-                          (ui/gap 0 4)
-                          (ui/label (str "Money " (:money (first (get settlement :_governs)))))
-                          (ui/gap 0 6)
-                          (ui/row
-                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
-                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :food/price) "np") {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
-                            [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-                            [:stretch 2 nil]
-                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
-                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :clothes/price) "np") {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
-                            [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-                            [:stretch 2 nil]
-                            [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
-                            [:stretch 6 (ui/halign 1 1 (ui/label (str (get settlement :labour/price) "np") {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})}))]
-                            [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
-                            [:stretch 2 nil])
-                          (ui/gap 0 6)
-                          (interpose (ui/gap 0 4)
-                            (for [peep-row (partition-all 3 (data/lookup-avet world-db :hometown (:db/id settlement)))]
-                              (ui/row
-                                (interpose (ui/gap 2 0)
-                                  (for [peep peep-row]
-                                    (ui/tooltip {:anchor :top-right :shackle :top-left}
-                                      (ui/rect fill-light-gray (ui/padding 5 (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])))))
-                                      (ui/rect fill-green (ui/padding 5 (ui/label (str (show-peep peep)))))))))))))))))
+          (ui/column
+            (interpose (ui/gap 0 4)
+              (for [settlement settlements]
+                (ui/rect (paint/fill 0xFFFCFEC8)
+                  (ui/padding 4
+                    (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green fill-light-gray]} ctx
+                                     {:keys [map-view]} world]
+                      (ui/column
+                        (ui/row
+                          (interpose (ui/gap 4 0)
+                            (for [k [:settlement/name :settlement/place]]
+                              (ui/label {:font font-small :paint fill-black} (str (get settlement k))))))
+                        ;;(ui/label (str settlement #_(d/touch settlement)))
+                        ;;#_#_#_#_#_#_
+                        (ui/gap 0 4)
+                        (ui/label (str "Money " (:money (first (get settlement :_governs)))))
+                        (ui/gap 0 6)
+                        (ui/row
+                          [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
+                          [:stretch 6 (ui/halign 1 1 (ui/label {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :food/price) "np")))]
+                          [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                          [:stretch 2 nil]
+                          [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
+                          [:stretch 6 (ui/halign 1 1 (ui/label {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :clothes/price) "np")))]
+                          [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                          [:stretch 2 nil]
+                          [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
+                          [:stretch 6 (ui/halign 1 1 (ui/label {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :labour/price) "np")))]
+                          [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                          [:stretch 2 nil])
+                        (ui/gap 0 6)
+                        (interpose (ui/gap 0 4)
+                          (for [peep-row (partition-all 3 (data/lookup-avet world-db :hometown (:db/id settlement)))]
+                            (ui/row
+                              (interpose (ui/gap 2 0)
+                                (for [peep peep-row]
+                                  (ui/tooltip {:anchor :top-right :shackle :top-left}
+                                    (ui/rect fill-light-gray (ui/padding 5 (ui/label (str (select-keys peep [:money :health :food :clothes :inventory :last-sold :planning :kind])))))
+                                    (ui/rect fill-green (ui/padding 5 (ui/label (str (show-peep peep)))))))))))))))))
+            #_(interpose (ui/gap 4 0)
+                (for [settlement (repeat 50 (first settlements))]
+                  (ui/padding 4
+                    (ui/dynamic ctx [{:keys [font-small fill-black fill-red fill-green fill-light-gray]} ctx
+                                     {:keys [world-db map-view]} @state/*world]
+                      (ui/column
+                        (ui/row
+                          (interpose (ui/gap 4 0)
+                            (for [k [:settlement/name :settlement/place]]
+                              (ui/label {:font font-small :paint fill-black} (str (get settlement k))))))
+                        (ui/gap 0 4)
+                        (ui/row
+                          (ui/column
+                            (ui/label (str "Money " (:money (first (get settlement :_governs)))))
+                            (ui/gap 0 2)
+                            (ui/row
+                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍔"))]
+                              [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :food/price) "np"))]
+                              [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                              [:stretch 1 nil]
+                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
+                              [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :clothes/price) "np"))]
+                              [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                              [:stretch 1 nil]
+                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
+                              [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :labour/price) "np"))]
+                              [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                              [:stretch 1 nil])))))
+                    #_(city-view settlement))))))))))
+
+(defn bounded-view [& children]
+  (ui/dynamic _ [size (count children)]
+    (ui/with-bounds ::bounds
+      (ui/dynamic ctx [height (:height (::bounds ctx))]
+        (ui/column
+          (for [child children]
+            (ui/height (/ height size)
+              child)))))))
+
+(def bounded-center-view
+  (ui/dynamic ctx [{:keys [font-ui leading fill-text]} ctx]
+    (ui/with-bounds ::bounds
+      (ui/dynamic ctx [{:keys [face-ui font-ui scale]} ctx
+                       height (:height (::bounds ctx))]
+        (ui/column
+          (ui/height (/ height 2)
+            (ui/rect (paint/fill 0xFFCFE8FC)
+              (ui/vscrollbar
+                (apply ui/column
+                  (mapv
+                    #(let [label (ui/padding 20 leading
+                                   (ui/label %))]
+                       (ui/hoverable
+                         (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
+                           (if hovered?
+                             (ui/rect (paint/fill 0xFFCFE8FC) label)
+                             label))))
+                    (range 0 100))))))
+          (ui/height (/ height 2)
+            (ui/rect (paint/fill 0xFFFCCFE8) (ui/label "TEST"))))))))
+
 
 (def main-center-area-ui
   [:stretch 1
@@ -515,14 +573,13 @@
                                    (ui/row
                                      [:stretch 1
                                       (ui/vscrollbar
-                                        (ui/vscroll
-                                          (ui/column
-                                            (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
-                                              (for [producer producers]
-                                                (ui/rect fill-light-gray
-                                                  (ui/halign 0.5
-                                                    (ui/padding 150 20 150 20
-                                                      (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced #_:food/last-consumed #_:clothes/last-consumed #_:labour/last-consumed price-belief]))))))))))))])
+                                        (ui/column
+                                          (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
+                                            (for [producer producers]
+                                              (ui/rect fill-light-gray
+                                                (ui/halign 0.5
+                                                  (ui/padding 150 20 150 20
+                                                    (ui/label (str ((:kind producer) kind->emoji) " " (pr-str (select-keys producer [:kind :inventory :last-sold :food/last-produced :clothes/last-produced :labour/last-produced #_:food/last-consumed #_:clothes/last-consumed #_:labour/last-consumed price-belief])))))))))))])
                                    (ui/padding 20
                                      (ui/label (str "Total Produced: " produced)))))]
                               [:stretch 1
@@ -533,14 +590,13 @@
                                    (ui/row
                                      [:stretch 1
                                       (ui/vscrollbar
-                                        (ui/vscroll
-                                          (ui/column
-                                            (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
-                                              (for [demander demanders]
-                                                (ui/rect fill-light-gray
-                                                  (ui/halign 0.5
-                                                    (ui/padding 150 20 150 20
-                                                      (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory #_:last-sold #_:food/last-produced #_:clothes/last-produced #_:labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed price-belief]))))))))))))])
+                                        (ui/column
+                                          (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
+                                            (for [demander demanders]
+                                              (ui/rect fill-light-gray
+                                                (ui/halign 0.5
+                                                  (ui/padding 150 20 150 20
+                                                    (ui/label (str ((:kind demander) kind->emoji) " " (pr-str (select-keys demander [:kind :inventory #_:last-sold #_:food/last-produced #_:clothes/last-produced #_:labour/last-produced :food/last-consumed :clothes/last-consumed :labour/last-consumed price-belief])))))))))))])
                                    (ui/padding 20
                                      (ui/label (str "Total Used: " consumed)))))])))))])])))))]
      [:stretch 1 (ui/rect (paint/fill 0xFFFCCFE8)
