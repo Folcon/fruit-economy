@@ -693,7 +693,7 @@
           (ui/padding 10 (ui/label (str stockpile-name " Stockpiled")))
           (ui/dynamic _ [{:keys [world-conn]} @state/*world
                          world-db @world-conn]
-            (let [food-stockpile (get stockpile-key (data/entity world-db player-eid) 0)]
+            (let [food-stockpile (get (data/entity world-db player-eid) stockpile-key 0)]
               (ui/padding 10 (ui/label food-stockpile))))
           (ui/clickable
             {:on-click #(swap! state/*world basic/transact-with-conn [[:db.fn/call toggle-buy-db-fn]])}
