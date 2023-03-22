@@ -421,12 +421,12 @@
                                           (ui/halign 0.5
                                             (ui/height cell
                                               (ui/valign 0.5
-                                                (ui/label glyph {:font font :paint fill-white}))))))))))))))))))))))]
                    (ui/dynamic _ [{:keys [world-db]} @state/*world
                                   settlements (basic/settlements-q world-db nil)]
                      (if (seq settlements)
                        city-ui-view
                        ui.parts/chart-view)))])])
+                                                (ui/label {:font font :paint fill-white} glyph))))))))))))))))))))))]
      [:stretch 1 (ui/rect (paint/fill 0xFFFCCFE8)
 
 (def top-ui-view
@@ -464,42 +464,42 @@
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :default-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "🗺️" {:font font-small :paint fill-white}))))))
+                               (ui/label {:font font-small :paint fill-white} "🗺️"))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :temp-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :temp-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "🌡" {:font font-small :paint fill-white}))))))
+                               (ui/label {:font font-small :paint fill-white} "🌡"))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :elev-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :elev-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "📏" {:font font-small :paint fill-white}))))))
+                               (ui/label {:font font-small :paint fill-white} "📏"))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :climate-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :climate-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "🌍" {:font font-small :paint fill-white}))))))
+                               (ui/label {:font font-small :paint fill-white} "🌍"))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :forage-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :forage-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "🚜" {:font font-small :paint fill-white}))))))
+                               (ui/label {:font font-small :paint fill-white} "🚜"))))))
                      (ui/clickable
                        #(swap! state/*world assoc :map-view :mine-view)
                        (ui/hoverable
                          (ui/dynamic ctx [hovered? (:hui/hovered? ctx)]
                            (ui/rect (cond hovered? fill-yellow (= map-view :mine-view) fill-green :else fill-dark-gray)
                              (ui/padding 10 10
-                               (ui/label "⛏️" {:font font-small :paint fill-white})))))))
+                               (ui/label {:font font-small :paint fill-white} "⛏️")))))))
 
 (def economy-center-area-ui
   [:stretch 1
@@ -523,7 +523,7 @@
                          :bg-hovered yellow-colour
                          :bg dark-gray-colour
                          :p 10 :border-radius 0}
-                        (ui/label (:settlement/name city) {:font font-small :paint fill-white})))))
+                        (ui/label {:font font-small :paint fill-white} (:settlement/name city))))))
                 (ui/row
                   (for [market [:food :clothes :labour]]
                     (ui/with-context
@@ -534,7 +534,7 @@
                          :bg-hovered yellow-colour
                          :bg dark-gray-colour
                          :p 10 :border-radius 0}
-                        (ui/label (market-label-fn market) {:font font-small :paint fill-white})))))
+                        (ui/label {:font font-small :paint fill-white} (market-label-fn market))))))
                 [:stretch 1
                  (ui/row
                    [:stretch 1
