@@ -7,6 +7,7 @@
             [fruit-economy.ui.bits :as ui.bits :refer [padding show-map-ui]]
             [fruit-economy.ui.parts :as ui.parts]
             [fruit-economy.ui.controls :refer [on-key-pressed-impl]]
+            [fruit-economy.ui.tooltips :as tt]
             [fruit-economy.screen-ui :as screen-ui]
             [fruit-economy.sim.basic :as basic]
             [fruit-economy.colour :refer [colour colour-noise]]
@@ -101,7 +102,7 @@
                     (ui/column
                       (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                         (for [producer producers]
-                          (ui/tooltip {:anchor :top-right :shackle :top-right}
+                          (tt/tooltip {:id :info :anchor :top-right :shackle :top-right}
                             (ui/label (pr-str producer))
                             (ui/rect fill-light-gray
                               (ui/padding 150 20 150 20
@@ -118,7 +119,7 @@
                     (ui/column
                       (interpose (ui/rect fill-dark-gray (ui/gap 0 4))
                         (for [demander demanders]
-                          (ui/tooltip {:anchor :top-right :shackle :top-right}
+                          (tt/tooltip {:id :info :anchor :top-right :shackle :top-right}
                             (ui/label (pr-str demander))
                             (ui/rect fill-light-gray
                               (ui/padding 150 20 150 20
@@ -283,7 +284,7 @@
                         (ui/label (str "Money " (:money (first (get settlement :_governs)))))
                         (ui/gap 0 6)
                         (ui/row
-                          [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
+                          [:stretch 2 (tt/tooltip {:id :info} (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍲"))]
                           [:stretch 6 (ui/halign 1 1 (ui/label {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :food/price) "np")))]
                           [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                           [:stretch 2 nil]
@@ -320,15 +321,15 @@
                             (ui/label (str "Money " (:money (first (get settlement :_governs)))))
                             (ui/gap 0 2)
                             (ui/row
-                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍔"))]
+                              [:stretch 2 (tt/tooltip {:id :info} (ui/rect fill-light-gray (ui/padding 5 (ui/label "Food"))) (ui/label "🍔"))]
                               [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :food/last-demand :food/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :food/price) "np"))]
                               [:stretch 1 (ui/label (let [vel (get settlement :food/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                               [:stretch 1 nil]
-                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
+                              [:stretch 2 (tt/tooltip {:id :info} (ui/rect fill-light-gray (ui/padding 5 (ui/label "Clothes"))) (ui/label "👚"))]
                               [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :clothes/last-demand :clothes/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :clothes/price) "np"))]
-                              [:stretch 1 (ui/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
+                              [:stretch 1 (tt/label (let [vel (get settlement :clothes/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                               [:stretch 1 nil]
-                              [:stretch 2 (ui/tooltip (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
+                              [:stretch 2 (tt/tooltip {:id :info} (ui/rect fill-light-gray (ui/padding 5 (ui/label "Labour"))) (ui/label "👷"))]
                               [:stretch 6 (ui/label {:paint (ui.bits/compare->fill settlement :labour/last-demand :labour/last-supply {:<-fill fill-red :>-fill fill-green :=-fill fill-black})} (str (get settlement :labour/price) "np"))]
                               [:stretch 1 (ui/label (let [vel (get settlement :labour/price-velocity)] (cond (< vel 0) "📉" (> vel 0) "📈" (zero? vel) "―")))]
                               [:stretch 1 nil])))))
@@ -834,5 +835,6 @@
     "World" top-ui-view
     "Economy" economy-view
     "City" control-ui-view
+    "Tooltip" tooltips/ui-view
     #_#_
     "Log" messages-ui-view))

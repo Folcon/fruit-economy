@@ -1,0 +1,2053 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000000150db1a6f, pid=37817, tid=775
+#
+# JRE version: OpenJDK Runtime Environment Homebrew (19.0.1) (build 19.0.1)
+# Java VM: OpenJDK 64-Bit Server VM Homebrew (19.0.1, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-amd64)
+# Problematic frame:
+# C  [libskija.dylib+0x265a6f]  SkCanvas::drawRect(SkRect const&, SkPaint const&)+0xaf
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/Homebrew/homebrew-core/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Dfile.encoding=UTF-8 --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED -Djdk.attach.allowAttachSelf -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -Dclojure.compile.path=/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/target/classes -Dfruit-economy.version=0.1.0-SNAPSHOT -Dclojure.debug=false clojure.main -i /private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/form-init16672005990633041655.clj
+
+Host: "MacBookPro16,1" x86_64 2300 MHz, 16 cores, 64G, Darwin 19.6.0, macOS 10.15.7 (19H15)
+Time: Sun Mar 26 17:55:08 2023 BST elapsed time: 671.817175 seconds (0d 0h 11m 11s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f871b279000):  JavaThread "AppKit Thread" daemon [_thread_in_native, id=775, stack(0x00007ffee3407000,0x00007ffee7406000)]
+
+Stack: [0x00007ffee3407000,0x00007ffee7406000],  sp=0x00007ffee73f9f10,  free space=65483k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libskija.dylib+0x265a6f]  SkCanvas::drawRect(SkRect const&, SkPaint const&)+0xaf
+C  [libskija.dylib+0x849b]  Java_io_github_humbleui_skija_Canvas__1nDrawRect+0x2b
+J 8819  io.github.humbleui.skija.Canvas._nDrawRect(JFFFFJ)V (0 bytes) @ 0x000000011b972027 [0x000000011b971f20+0x0000000000000107]
+J 9010 c2 io.github.humbleui.canvas$draw_rect.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011be14da4 [0x000000011be14cc0+0x00000000000000e4]
+J 9185 c1 io.github.humbleui.ui.rect.Rect._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (59 bytes) @ 0x0000000114e36384 [0x0000000114e36100+0x0000000000000284]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9199 c1 io.github.humbleui.ui.align.VAlign._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (484 bytes) @ 0x0000000114e4f78c [0x0000000114e48420+0x000000000000736c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9198 c1 io.github.humbleui.ui.align.HAlign._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (484 bytes) @ 0x0000000114e42984 [0x0000000114e3b620+0x0000000000007364]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+j  fruit_economy.ui.tooltips.RelativeRect$fn__92206.invoke()Ljava/lang/Object;+27
+j  fruit_economy.ui.tooltips$fn__92230$fn__92231.invoke(Ljava/lang/Object;)Ljava/lang/Object;+346
+J 9434 c2 clojure.lang.AFn.applyToHelper(Lclojure/lang/IFn;Lclojure/lang/ISeq;)Ljava/lang/Object; (3238 bytes) @ 0x000000011c5d4cb8 [0x000000011c5d4220+0x0000000000000a98]
+J 3839 c2 clojure.lang.AFn.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object; (12 bytes) @ 0x000000011bcae554 [0x000000011bcae520+0x0000000000000034]
+J 7208 c2 clojure.core$apply.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (10 bytes) @ 0x000000011bec0b8c [0x000000011bec0ac0+0x00000000000000cc]
+J 9322 c1 io.github.humbleui.core$memoize_last$fn__14767$fn__14771.invoke()Ljava/lang/Object; (52 bytes) @ 0x0000000114ea1744 [0x0000000114ea1500+0x0000000000000244]
+J 9250 c2 io.github.humbleui.core$memoize_last$fn__14767.doInvoke(Ljava/lang/Object;)Ljava/lang/Object; (178 bytes) @ 0x000000011c22c938 [0x000000011c22c400+0x0000000000000538]
+J 7194 c2 clojure.lang.RestFn.invoke(Ljava/lang/Object;)Ljava/lang/Object; (73 bytes) @ 0x000000011bb481dc [0x000000011bb47f60+0x000000000000027c]
+j  fruit_economy.ui.tooltips$fn__92230$fn__92245.invoke(Ljava/lang/Object;)Ljava/lang/Object;+33
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca55c [0x000000011b9ca4c0+0x000000000000009c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9643 c1 io.github.humbleui.ui.stack.Stack._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (325 bytes) @ 0x0000000114f61b84 [0x0000000114f60040+0x0000000000001b44]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9022 c1 io.github.humbleui.ui.containers.Row$fn__15754.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (451 bytes) @ 0x0000000114b91cd4 [0x0000000114b8c9a0+0x0000000000005334]
+J 9437 c2 clojure.core.protocols$fn__8249.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (166 bytes) @ 0x000000011c5e1de8 [0x000000011c5e1cc0+0x0000000000000128]
+J 9567 c2 clojure.core.protocols$fn__8249.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011bcb5e5c [0x000000011bcb5e20+0x000000000000003c]
+J 8999 c2 clojure.core.protocols$fn__8236.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011c30a550 [0x000000011c30a2c0+0x0000000000000290]
+J 8987 c2 clojure.core$reduce.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011c41f23c [0x000000011c41ef20+0x000000000000031c]
+J 9274 c1 io.github.humbleui.ui.containers.Row._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (386 bytes) @ 0x0000000114e83a84 [0x0000000114e7fee0+0x0000000000003ba4]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9246 c2 io.github.humbleui.core$draw.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22f3f0 [0x000000011c22f320+0x00000000000000d0]
+J 9633 c1 io.github.humbleui.ui.window$window$paint_fn__17059.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (195 bytes) @ 0x0000000114f4045c [0x0000000114f3e060+0x00000000000023fc]
+J 9650 c1 io.github.humbleui.window$make$reify__15273$fn__15279.invoke()Ljava/lang/Object; (703 bytes) @ 0x0000000114f66c1c [0x0000000114f66560+0x00000000000006bc]
+J 9317 c2 io.github.humbleui.window$make$reify__15273.accept(Ljava/lang/Object;)V (686 bytes) @ 0x000000011be33cfc [0x000000011be333c0+0x000000000000093c]
+J 9316 c2 io.github.humbleui.jwm.Window.accept(Lio/github/humbleui/jwm/Event;)V (145 bytes) @ 0x000000011bee5240 [0x000000011bee5180+0x00000000000000c0]
+J 9618 c1 io.github.humbleui.jwm.skija.LayerMetalSkija.frame()V (129 bytes) @ 0x0000000114f3700c [0x0000000114f36be0+0x000000000000042c]
+J 9321 c2 io.github.humbleui.jwm.Window.accept(Ljava/lang/Object;)V (9 bytes) @ 0x000000011bee3580 [0x000000011bee3400+0x0000000000000180]
+v  ~StubRoutines::call_stub 0x000000011b16fcc6
+V  [libjvm.dylib+0x42c601]  JavaCalls::call_helper(JavaValue*, methodHandle const&, JavaCallArguments*, JavaThread*)+0x20d
+V  [libjvm.dylib+0x4799a8]  jni_invoke_nonstatic(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, JavaThread*)+0x263
+V  [libjvm.dylib+0x47d545]  jni_CallVoidMethodV+0xc8
+C  [libjwm_x64.dylib+0x13ec6]  JNIEnv_::CallVoidMethod(_jobject*, _jmethodID*, ...)+0x86
+C  [libjwm_x64.dylib+0x13ffa]  jwm::classes::Consumer::accept(JNIEnv_*, _jobject*, _jobject*)+0x1a
+C  [libjwm_x64.dylib+0x10696]  invocation function for block in displayLinkCallback(__CVDisplayLink*, CVTimeStamp const*, CVTimeStamp const*, unsigned long long, unsigned long long*, void*)+0x26
+C  [libdispatch.dylib+0x16c4]  _dispatch_call_block_and_release+0xc
+C  [libdispatch.dylib+0x2658]  _dispatch_client_callout+0x8
+C  [libdispatch.dylib+0xdcab]  _dispatch_main_queue_callback_4CF+0x3a8
+C  [CoreFoundation+0xc2e81]  __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__+0x9
+C  [CoreFoundation+0x82c87]  __CFRunLoopRun+0x7ec
+C  [CoreFoundation+0x81e3e]  CFRunLoopRunSpecific+0x1ce
+C  [HIToolbox+0x2fabd]  RunCurrentEventLoopInMode+0x124
+C  [HIToolbox+0x2f7d5]  ReceiveNextEventCommon+0x248
+C  [HIToolbox+0x2f579]  _BlockUntilNextEventMatchingListInModeWithFilter+0x40
+C  [AppKit+0x41039]  _DPSNextEvent+0x373
+C  [AppKit+0x3f880]  -[NSApplication(NSEvent) _nextEventMatchingEventMask:untilDate:inMode:dequeue:]+0x548
+C  [libosxapp.dylib+0x875c]  -[NSApplicationAWT nextEventMatchingMask:untilDate:inMode:dequeue:]+0x79
+C  [AppKit+0x3158e]  -[NSApplication run]+0x292
+C  [libjwm_x64.dylib+0x865d]  -[JWMApplicationDelegate runLoop]+0x13d
+C  [Foundation+0x9b0dd]  __NSThreadPerformPerform+0xcc
+C  [CoreFoundation+0x83d52]  __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__+0x11
+C  [CoreFoundation+0x83cf1]  __CFRunLoopDoSource0+0x67
+C  [CoreFoundation+0x83b0b]  __CFRunLoopDoSources0+0xd1
+C  [CoreFoundation+0x8283a]  __CFRunLoopRun+0x39f
+C  [CoreFoundation+0x81e3e]  CFRunLoopRunSpecific+0x1ce
+C  [HIToolbox+0x2fabd]  RunCurrentEventLoopInMode+0x124
+C  [HIToolbox+0x2f7d5]  ReceiveNextEventCommon+0x248
+C  [HIToolbox+0x2f579]  _BlockUntilNextEventMatchingListInModeWithFilter+0x40
+C  [AppKit+0x41039]  _DPSNextEvent+0x373
+C  [AppKit+0x3f880]  -[NSApplication(NSEvent) _nextEventMatchingEventMask:untilDate:inMode:dequeue:]+0x548
+C  [libosxapp.dylib+0x875c]  -[NSApplicationAWT nextEventMatchingMask:untilDate:inMode:dequeue:]+0x79
+C  [AppKit+0x3158e]  -[NSApplication run]+0x292
+C  [libosxapp.dylib+0x8541]  +[NSApplicationAWT runAWTLoopWithApp:]+0xa5
+C  [libawt_lwawt.dylib+0x6f860]  +[AWTStarter starter:headless:]+0x1f0
+C  [libosxapp.dylib+0xa06f]  +[ThreadUtilities invokeBlockCopy:]+0xf
+C  [Foundation+0x9b0dd]  __NSThreadPerformPerform+0xcc
+C  [CoreFoundation+0x83d52]  __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__+0x11
+C  [CoreFoundation+0x83cf1]  __CFRunLoopDoSource0+0x67
+C  [CoreFoundation+0x83b0b]  __CFRunLoopDoSources0+0xd1
+C  [CoreFoundation+0x8283a]  __CFRunLoopRun+0x39f
+C  [CoreFoundation+0x81e3e]  CFRunLoopRunSpecific+0x1ce
+C  [libjli.dylib+0xb6d8]  CreateExecutionEnvironment+0x17d
+C  [libjli.dylib+0x7c25]  JLI_Launch+0x511
+C  [java+0x3c21]  main+0x172
+C  [libdyld.dylib+0x1acc9]  start+0x1
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 8819  io.github.humbleui.skija.Canvas._nDrawRect(JFFFFJ)V (0 bytes) @ 0x000000011b971f6c [0x000000011b971f20+0x000000000000004c]
+J 9010 c2 io.github.humbleui.canvas$draw_rect.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011be14da4 [0x000000011be14cc0+0x00000000000000e4]
+J 9185 c1 io.github.humbleui.ui.rect.Rect._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (59 bytes) @ 0x0000000114e36384 [0x0000000114e36100+0x0000000000000284]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9199 c1 io.github.humbleui.ui.align.VAlign._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (484 bytes) @ 0x0000000114e4f78c [0x0000000114e48420+0x000000000000736c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9198 c1 io.github.humbleui.ui.align.HAlign._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (484 bytes) @ 0x0000000114e42984 [0x0000000114e3b620+0x0000000000007364]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+j  fruit_economy.ui.tooltips.RelativeRect$fn__92206.invoke()Ljava/lang/Object;+27
+j  fruit_economy.ui.tooltips$fn__92230$fn__92231.invoke(Ljava/lang/Object;)Ljava/lang/Object;+346
+J 9434 c2 clojure.lang.AFn.applyToHelper(Lclojure/lang/IFn;Lclojure/lang/ISeq;)Ljava/lang/Object; (3238 bytes) @ 0x000000011c5d4cb8 [0x000000011c5d4220+0x0000000000000a98]
+J 3839 c2 clojure.lang.AFn.applyTo(Lclojure/lang/ISeq;)Ljava/lang/Object; (12 bytes) @ 0x000000011bcae554 [0x000000011bcae520+0x0000000000000034]
+J 7208 c2 clojure.core$apply.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (10 bytes) @ 0x000000011bec0b8c [0x000000011bec0ac0+0x00000000000000cc]
+J 9322 c1 io.github.humbleui.core$memoize_last$fn__14767$fn__14771.invoke()Ljava/lang/Object; (52 bytes) @ 0x0000000114ea1744 [0x0000000114ea1500+0x0000000000000244]
+J 9250 c2 io.github.humbleui.core$memoize_last$fn__14767.doInvoke(Ljava/lang/Object;)Ljava/lang/Object; (178 bytes) @ 0x000000011c22c938 [0x000000011c22c400+0x0000000000000538]
+J 7194 c2 clojure.lang.RestFn.invoke(Ljava/lang/Object;)Ljava/lang/Object; (73 bytes) @ 0x000000011bb481dc [0x000000011bb47f60+0x000000000000027c]
+j  fruit_economy.ui.tooltips$fn__92230$fn__92245.invoke(Ljava/lang/Object;)Ljava/lang/Object;+33
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca55c [0x000000011b9ca4c0+0x000000000000009c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9643 c1 io.github.humbleui.ui.stack.Stack._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (325 bytes) @ 0x0000000114f61b84 [0x0000000114f60040+0x0000000000001b44]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9022 c1 io.github.humbleui.ui.containers.Row$fn__15754.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (451 bytes) @ 0x0000000114b91cd4 [0x0000000114b8c9a0+0x0000000000005334]
+J 9437 c2 clojure.core.protocols$fn__8249.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (166 bytes) @ 0x000000011c5e1de8 [0x000000011c5e1cc0+0x0000000000000128]
+J 9567 c2 clojure.core.protocols$fn__8249.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011bcb5e5c [0x000000011bcb5e20+0x000000000000003c]
+J 8999 c2 clojure.core.protocols$fn__8236.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011c30a550 [0x000000011c30a2c0+0x0000000000000290]
+J 8987 c2 clojure.core$reduce.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (13 bytes) @ 0x000000011c41f23c [0x000000011c41ef20+0x000000000000031c]
+J 9274 c1 io.github.humbleui.ui.containers.Row._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (386 bytes) @ 0x0000000114e83a84 [0x0000000114e7fee0+0x0000000000003ba4]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9247 c2 io.github.humbleui.core$draw_child.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22e848 [0x000000011c22e6e0+0x0000000000000168]
+J 9284 c1 io.github.humbleui.ui.with_context.WithContext._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (89 bytes) @ 0x0000000114e89a04 [0x0000000114e89140+0x00000000000008c4]
+J 9559 c2 io.github.humbleui.ui.dynamic.Contextual._draw(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (150 bytes) @ 0x000000011b9ca7ec [0x000000011b9ca4c0+0x000000000000032c]
+J 9246 c2 io.github.humbleui.core$draw.invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (18 bytes) @ 0x000000011c22f3f0 [0x000000011c22f320+0x00000000000000d0]
+J 9633 c1 io.github.humbleui.ui.window$window$paint_fn__17059.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (195 bytes) @ 0x0000000114f4045c [0x0000000114f3e060+0x00000000000023fc]
+J 9650 c1 io.github.humbleui.window$make$reify__15273$fn__15279.invoke()Ljava/lang/Object; (703 bytes) @ 0x0000000114f66c1c [0x0000000114f66560+0x00000000000006bc]
+J 9317 c2 io.github.humbleui.window$make$reify__15273.accept(Ljava/lang/Object;)V (686 bytes) @ 0x000000011be33cfc [0x000000011be333c0+0x000000000000093c]
+J 9316 c2 io.github.humbleui.jwm.Window.accept(Lio/github/humbleui/jwm/Event;)V (145 bytes) @ 0x000000011bee5240 [0x000000011bee5180+0x00000000000000c0]
+J 9618 c1 io.github.humbleui.jwm.skija.LayerMetalSkija.frame()V (129 bytes) @ 0x0000000114f3700c [0x0000000114f36be0+0x000000000000042c]
+J 9321 c2 io.github.humbleui.jwm.Window.accept(Ljava/lang/Object;)V (9 bytes) @ 0x000000011bee3580 [0x000000011bee3400+0x0000000000000180]
+v  ~StubRoutines::call_stub 0x000000011b16fcc6
+
+siginfo: si_signo: 11 (SIGSEGV), si_code: 1 (SEGV_MAPERR), si_addr: 0x00000000000000c0
+
+Registers:
+RAX=0x0000000000000000, RBX=0x0000000151efe8b0, RCX=0x00007f87bad76bd0, RDX=0x00007f87bad76bd0
+RSP=0x00007ffee73f9f10, RBP=0x00007ffee73f9f70, RSI=0x00007ffee73f9f18, RDI=0x00007f874e4d0400
+R8 =0x0000000431f8b2b8, R9 =0x000000000102aa08, R10=0x000000011b971f6c, R11=0x0000000001d5c3a0
+R12=0x00007ffee73f9f80, R13=0x000000080003da10, R14=0x00007f87bad76bd0, R15=0x00007f874e4d0400
+RIP=0x0000000150db1a6f, EFLAGS=0x0000000000010246, ERR=0x0000000000000004
+  TRAPNO=0x000000000000000e
+
+
+Register to memory mapping:
+
+RAX=0x0 is NULL
+RBX=0x0000000151efe8b0: _ZZN20SkDefaultEventTracer23getCategoryGroupEnabledEPKcE2no+0 in /private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/skija_0.109.1_x64/libskija.dylib at 0x0000000150b4c000
+RCX=0x00007f87bad76bd0 points into unknown readable memory: 0x0000000000000000 | 00 00 00 00 00 00 00 00
+RDX=0x00007f87bad76bd0 points into unknown readable memory: 0x0000000000000000 | 00 00 00 00 00 00 00 00
+RSP=0x00007ffee73f9f10 is pointing into the stack for thread: 0x00007f871b279000
+RBP=0x00007ffee73f9f70 is pointing into the stack for thread: 0x00007f871b279000
+RSI=0x00007ffee73f9f18 is pointing into the stack for thread: 0x00007f871b279000
+RDI=0x00007f874e4d0400 points into unknown readable memory: 0x0000000000000000 | 00 00 00 00 00 00 00 00
+R8 =0x0000000431f8b2b8 is an oop: io.github.humbleui.skija.Paint 
+{0x0000000431f8b2b8} - klass: 'io/github/humbleui/skija/Paint'
+ - ---- fields (total size 3 words):
+ - public '_ptr' 'J' @16  140220931992528 (bad76bd0 7f87)
+ - public '_cleanable' 'Lio/github/humbleui/skija/impl/Cleanable;' @12  a 'io/github/humbleui/skija/impl/Cleanable'{0x0000000431f8b2f0} (863f165e)
+R9 =16951816 is a compressed pointer to class: 0x000000080102aa08
+clojure.core$instance_QMARK___5469 {0x000000080102aa08}
+ - instance size:     2
+ - klass size:        147
+ - access:            public final synchronized 
+ - state:             fully_initialized
+ - name:              'clojure/core$instance_QMARK___5469'
+ - super:             'clojure/lang/AFunction'
+ - sub:               
+ - arrays:            NULL
+ - methods:           Array<T>(0x000000014b56e8f8)
+ - method ordering:   Array<T>(0x0000000800b0d088)
+ - default_methods:   Array<T>(0x000000014b56ebe0)
+ - default vtable indices:   Array<T>(0x000000014b56ec20)
+ - local interfaces:  Array<T>(0x00000008005fe7f8)
+ - trans. interfaces: Array<T>(0x000000014b47ecc8)
+ - constants:         constant pool [40] {0x000000014b56e738} for 'clojure/core$instance_QMARK___5469' cache=0x000000014b56ec40
+ - class loader data:  loader data: 0x00007f87cad0e400 for instance a 'jdk/internal/loader/ClassLoaders$AppClassLoader'{0x0000000400017020}
+ - source file:       'core.clj'
+ - class annotations:       Array<T>(0x0000000000000000)
+ - class type annotations:  Array<T>(0x0000000000000000)
+ - field annotations:       Array<T>(0x0000000000000000)
+ - field type annotations:  Array<T>(0x0000000000000000)
+ - inner classes:     Array<T>(0x00000008005fe780)
+ - nest members:     Array<T>(0x00000008005fe780)
+ - permitted subclasses:     Array<T>(0x00000008005fe780)
+ - java mirror:       a 'java/lang/Class'{0x000000040059a988} = 'clojure/core$instance_QMARK___5469'
+ - vtable length      41  (start addr: 0x000000080102abc0)
+ - itable length      50 (start addr: 0x000000080102ad08)
+ - ---- static fields (0 words):
+ - ---- non-static fields (1 words):
+ - public volatile '__methodImplCache' 'Lclojure/lang/MethodImplCache;' @12 
+ - non-static oop maps: 12-12 
+R10=0x000000011b971f6c is at entry_point+76 in (nmethod*)0x000000011b971d90
+Compiled method (n/a)  671844 8819     n 0       io.github.humbleui.skija.Canvas::_nDrawRect (native)
+ total in heap  [0x000000011b971d90,0x000000011b972138] = 936
+ relocation     [0x000000011b971ef0,0x000000011b971f20] = 48
+ main code      [0x000000011b971f20,0x000000011b972129] = 521
+ stub code      [0x000000011b972129,0x000000011b972130] = 7
+ oops           [0x000000011b972130,0x000000011b972138] = 8
+R11=30786464 is a compressed pointer to class: 0x0000000801d5c3a0
+io.github.humbleui.skija.Paint {0x0000000801d5c3a0}
+ - instance size:     3
+ - klass size:        112
+ - access:            public synchronized 
+ - state:             fully_initialized
+ - name:              'io/github/humbleui/skija/Paint'
+ - super:             'io/github/humbleui/skija/impl/Managed'
+ - sub:               
+ - arrays:            NULL
+ - methods:           Array<T>(0x000000014d6332a8)
+ - method ordering:   Array<T>(0x0000000800b0d088)
+ - default_methods:   Array<T>(0x0000000000000000)
+ - local interfaces:  Array<T>(0x00000008005fe7f8)
+ - trans. interfaces: Array<T>(0x000000014d62bb70)
+ - constants:         constant pool [415] {0x000000014d632480} for 'io/github/humbleui/skija/Paint' cache=0x000000014d7ead00
+ - class loader data:  loader data: 0x00007f87cad0e400 for instance a 'jdk/internal/loader/ClassLoaders$AppClassLoader'{0x0000000400017020}
+ - source file:       'Paint.java'
+ - class annotations:       Array<T>(0x0000000000000000)
+ - class type annotations:  Array<T>(0x0000000000000000)
+ - field annotations:       Array<T>(0x0000000000000000)
+ - field type annotations:  Array<T>(0x0000000000000000)
+ - inner classes:     Array<T>(0x000000014d6372a0)
+ - nest members:     Array<T>(0x00000008005fe780)
+ - permitted subclasses:     Array<T>(0x00000008005fe780)
+ - java mirror:       a 'java/lang/Class'{0x00000004016128f0} = 'io/github/humbleui/skija/Paint'
+ - vtable length      51  (start addr: 0x0000000801d5c558)
+ - itable length      5 (start addr: 0x0000000801d5c6f0)
+ - ---- static fields (1 words):
+ - static final synthetic '$assertionsDisabled' 'Z' @112 
+ - ---- non-static fields (3 words):
+ - public '_ptr' 'J' @16 
+ - public '_cleanable' 'Lio/github/humbleui/skija/impl/Cleanable;' @12 
+ - non-static oop maps: 12-12 
+R12=0x00007ffee73f9f80 is pointing into the stack for thread: 0x00007f871b279000
+R13=0x000000080003da10 is a pointer to class: 
+java.lang.Integer {0x000000080003da10}
+ - instance size:     2
+ - klass size:        77
+ - access:            public final synchronized 
+ - state:             fully_initialized
+ - name:              'java/lang/Integer'
+ - super:             'java/lang/Number'
+ - sub:               
+ - arrays:            'java/lang/Integer'[]
+ - methods:           Array<T>(0x000000080065afe0)
+ - method ordering:   Array<T>(0x000000080065dde8)
+ - default_methods:   Array<T>(0x0000000000000000)
+ - local interfaces:  Array<T>(0x000000080065ddc8)
+ - trans. interfaces: Array<T>(0x0000000800659d28)
+ - constants:         constant pool [461] {0x0000000800659dc8} for 'java/lang/Integer' cache=0x000000080003dea8
+ - class loader data:  loader data: 0x00007f87bad31a50 of 'bootstrap'
+ - source file:       'Integer.java'
+ - class annotations:       Array<T>(0x000000080065af78)
+ - class type annotations:  Array<T>(0x0000000000000000)
+ - field annotations:       Array<T>(0x0000000000000000)
+ - field type annotations:  Array<T>(0x0000000000000000)
+ - generic signature: 'Ljava/lang/Number;Ljava/lang/Comparable<Ljava/lang/Integer;>;Ljava/lang/constant/Constable;Ljava/lang/constant/ConstantDesc;'
+ - inner classes:     Array<T>(0x000000080065afc0)
+ - nest members:     Array<T>(0x000000080065def0)
+ - permitted subclasses:     Array<T>(0x00000008005fe780)
+ - java mirror:       a 'java/lang/Class'{0x00000007ff701fd8} = 'java/lang/Integer'
+ - vtable length      11  (start addr: 0x000000080003dbc8)
+ - itable length      11 (start addr: 0x000000080003dc20)
+ - ---- static fields (6 words):
+ - public static final 'MIN_VALUE' 'I' @144 
+ - public static final 'MAX_VALUE' 'I' @148 
+ - public static final 'TYPE' 'Ljava/lang/Class;' @112 
+ - static final 'digits' '[C' @116 
+ - static final 'DigitTens' '[B' @120 
+ - static final 'DigitOnes' '[B' @124 
+ - static final 'sizeTable' '[I' @128 
+ - public static final 'SIZE' 'I' @152 
+ - public static final 'BYTES' 'I' @156 
+ - private static final 'serialVersionUID' 'J' @136 
+ - ---- non-static fields (1 words):
+ - private final 'value' 'I' @12 
+ - non-static oop maps: 
+R14=0x00007f87bad76bd0 points into unknown readable memory: 0x0000000000000000 | 00 00 00 00 00 00 00 00
+R15=0x00007f874e4d0400 points into unknown readable memory: 0x0000000000000000 | 00 00 00 00 00 00 00 00
+
+
+Top of Stack: (sp=0x00007ffee73f9f10)
+0x00007ffee73f9f10:   00000004143f2408 44298000444f4000
+0x00007ffee73f9f20:   4489200044a8e000 0000000000000000
+0x00007ffee73f9f30:   00000000851fb89a 000000011c5cf774
+0x00007ffee73f9f40:   0000000401612500 0000000431f8b2b8
+0x00007ffee73f9f50:   0000000000000000 000000080003da10
+0x00007ffee73f9f60:   00007ffee73f9fd0 00007f871b279000
+0x00007ffee73f9f70:   00007ffee73f9f90 0000000150b5449b
+0x00007ffee73f9f80:   44298000444f4000 4489200044a8e000
+0x00007ffee73f9f90:   00007ffee73f9fe0 000000011b972027
+0x00007ffee73f9fa0:   0000000431f8b488 0000020000000001
+0x00007ffee73f9fb0:   0000000428fdc4b8 0000000428e9af60
+0x00007ffee73f9fc0:   0000000428e9b650 000000011b9b1554
+0x00007ffee73f9fd0:   00000004016c3148 000000040002a850
+0x00007ffee73f9fe0:   0000000431f8b2b8 000000011be14da4
+0x00007ffee73f9ff0:   00000000000001a3 0000000428e7f5f8
+0x00007ffee73fa000:   00000000000000c8 00000000000000c8
+0x00007ffee73fa010:   0000000428fdc710 0000000801dbe000
+0x00007ffee73fa020:   00000004021c6850 0000000114e36384
+0x00007ffee73fa030:   0000000431f8b698 00000000000000c8
+0x00007ffee73fa040:   000000000000007a ffffffffffffff38
+0x00007ffee73fa050:   00007ffee73fa0a0 000000011b92055a
+0x00007ffee73fa060:   00000004021101d0 000000011451816c
+0x00007ffee73fa070:   0000000401609618 0000000431f8b698
+0x00007ffee73fa080:   0000000428e9af60 0000000428e7f5f8
+0x00007ffee73fa090:   00000004016c3148 000000040002a850
+0x00007ffee73fa0a0:   00000004021c6850 000000011c22e848
+0x00007ffee73fa0b0:   000005470000033d 0000000428e9af60
+0x00007ffee73fa0c0:   0000000428fdc710 0000000431f8b698
+0x00007ffee73fa0d0:   0000000428e7f5f8 0000000100000001
+0x00007ffee73fa0e0:   0000000400000000 000000011bf2585c
+0x00007ffee73fa0f0:   00000004021101d0 0000000114e4f78c
+0x00007ffee73fa100:   000000080100ae18 000000080100ae18 
+
+Instructions: (pc=0x0000000150db1a6f)
+0x0000000150db196f:   48 8b 18 48 89 c7 ff 53 28 48 83 c4 20 5b 41 5c
+0x0000000150db197f:   41 5e 41 5f 5d c3 e8 06 6a 18 00 48 8b 08 48 8d
+0x0000000150db198f:   35 24 5d 0c 01 48 89 c7 ff 51 10 48 89 c3 48 89
+0x0000000150db199f:   05 e4 f9 14 01 48 c7 45 c0 00 00 00 00 f6 03 05
+0x0000000150db19af:   0f 85 3d ff ff ff eb 88 66 0f 1f 84 00 00 00 00
+0x0000000150db19bf:   00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83
+0x0000000150db19cf:   ec 38 49 89 d6 49 89 f4 49 89 ff 48 8b 1d af f9
+0x0000000150db19df:   14 01 48 85 db 0f 84 c4 00 00 00 48 c7 45 b8 00
+0x0000000150db19ef:   00 00 00 f6 03 05 74 4d e8 94 69 18 00 4c 8b 10
+0x0000000150db19ff:   4c 8d 2d d8 5d 0c 01 48 89 c7 be 58 00 00 00 48
+0x0000000150db1a0f:   89 da 4c 89 e9 41 b8 00 00 00 00 41 b9 00 00 00
+0x0000000150db1a1f:   00 6a 00 6a 00 6a 00 6a 00 41 ff 52 20 48 83 c4
+0x0000000150db1a2f:   20 48 8d 4d c0 48 89 5d c0 4c 89 6d c8 48 89 45
+0x0000000150db1a3f:   d0 48 89 4d b8 f2 41 0f 10 04 24 f2 41 0f 10 4c
+0x0000000150db1a4f:   24 08 0f 28 d1 0f 5d d0 0f 5f c8 0f 13 55 a8 0f
+0x0000000150db1a5f:   13 4d b0 49 8b 07 48 8d 75 a8 4c 89 ff 4c 89 f2
+0x0000000150db1a6f:   ff 90 c0 00 00 00 48 83 7d b8 00 74 23 48 8b 45
+0x0000000150db1a7f:   c0 80 38 00 74 1a e8 06 69 18 00 48 8b 75 c0 48
+0x0000000150db1a8f:   8b 55 c8 48 8b 4d d0 48 8b 18 48 89 c7 ff 53 28
+0x0000000150db1a9f:   48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8
+0x0000000150db1aaf:   dd 68 18 00 48 8b 08 48 8d 35 fb 5b 0c 01 48 89
+0x0000000150db1abf:   c7 ff 51 10 48 89 c3 48 89 05 c3 f8 14 01 48 c7
+0x0000000150db1acf:   45 b8 00 00 00 00 f6 03 05 0f 85 19 ff ff ff e9
+0x0000000150db1adf:   61 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
+0x0000000150db1aef:   00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83
+0x0000000150db1aff:   ec 38 49 89 d6 49 89 f4 49 89 ff 48 8b 1d 8f f8
+0x0000000150db1b0f:   14 01 48 85 db 0f 84 8e 00 00 00 48 c7 45 b8 00
+0x0000000150db1b1f:   00 00 00 f6 03 05 74 4d e8 64 68 18 00 4c 8b 10
+0x0000000150db1b2f:   4c 8d 2d 19 5d 0c 01 48 89 c7 be 58 00 00 00 48
+0x0000000150db1b3f:   89 da 4c 89 e9 41 b8 00 00 00 00 41 b9 00 00 00
+0x0000000150db1b4f:   00 6a 00 6a 00 6a 00 6a 00 41 ff 52 20 48 83 c4
+0x0000000150db1b5f:   20 48 8d 4d c0 48 89 5d c0 4c 89 6d c8 48 89 45 
+
+
+Stack slot to memory mapping:
+stack at sp + 0 slots: 0x00000004143f2408 is an oop: clojure.lang.KeywordLookupSite$1 
+{0x00000004143f2408} - klass: 'clojure/lang/KeywordLookupSite$1'
+ - ---- fields (total size 3 words):
+ - final synthetic 'val$c' 'Ljava/lang/Class;' @12  a 'java/lang/Class'{0x0000000400258578} = 'clojure/lang/PersistentHashMap' (8004b0af)
+ - final synthetic 'this$0' 'Lclojure/lang/KeywordLookupSite;' @16  a 'clojure/lang/KeywordLookupSite'{0x0000000405922938} (80b24527)
+stack at sp + 1 slots: 0x44298000444f4000 is an unknown value
+stack at sp + 2 slots: 0x4489200044a8e000 is an unknown value
+stack at sp + 3 slots: 0x0 is NULL
+stack at sp + 4 slots: 2233448602 is a compressed pointer to object: [Ljava.lang.Object; 
+{0x0000000428fdc4d0} - klass: 'java/lang/Object'[]
+ - length: 2
+stack at sp + 5 slots: 0x000000011c5cf774 is at entry_point+1140 in (nmethod*)0x000000011c5cef90
+Compiled method (c2)  671852 9433       4       io.github.humbleui.ui.label$label$fn__16322::invoke (233 bytes)
+ total in heap  [0x000000011c5cef90,0x000000011c5d35e0] = 18000
+ relocation     [0x000000011c5cf0f0,0x000000011c5cf2e8] = 504
+ main code      [0x000000011c5cf300,0x000000011c5d0e40] = 6976
+ stub code      [0x000000011c5d0e40,0x000000011c5d0f18] = 216
+ oops           [0x000000011c5d0f18,0x000000011c5d0f48] = 48
+ metadata       [0x000000011c5d0f48,0x000000011c5d0fd0] = 136
+ scopes data    [0x000000011c5d0fd0,0x000000011c5d1640] = 1648
+ scopes pcs     [0x000000011c5d1640,0x000000011c5d3330] = 7408
+ dependencies   [0x000000011c5d3330,0x000000011c5d3338] = 8
+ handler table  [0x000000011c5d3338,0x000000011c5d3560] = 552
+ nul chk table  [0x000000011c5d3560,0x000000011c5d35e0] = 128
+stack at sp + 6 slots: 0x0000000401612500 is an oop: java.lang.Class 
+{0x0000000401612500} - klass: 'java/lang/Class'
+ - ---- fields (total size 14 words):
+ - private volatile transient 'classRedefinedCount' 'I' @12  0
+ - abstract internal 'klass' 'J' @16  34390516760 (1d5a418 8)
+ - abstract internal 'array_klass' 'J' @24  0 (0 0)
+ - abstract internal 'oop_size' 'I' @32  14 (e)
+ - abstract internal 'static_oop_field_count' 'I' @36  0
+ - private volatile transient 'cachedConstructor' 'Ljava/lang/reflect/Constructor;' @40  NULL (0)
+ - private transient 'name' 'Ljava/lang/String;' @44  "io.github.humbleui.skija.TextLine"{0x0000000401612570} (802c24ae)
+ - private transient 'module' 'Ljava/lang/Module;' @48  a 'java/lang/Module'{0x0000000400021c30} (80004386)
+ - private final 'classLoader' 'Ljava/lang/ClassLoader;' @52  a 'jdk/internal/loader/ClassLoaders$AppClassLoader'{0x0000000400017020} (80002e04)
+ - private transient 'classData' 'Ljava/lang/Object;' @56  NULL (0)
+ - private transient 'packageName' 'Ljava/lang/String;' @60  "io.github.humbleui.skija"{0x0000000401507fd0} (802a0ffa)
+ - private final 'componentType' 'Ljava/lang/Class;' @64  NULL (0)
+ - private volatile transient 'reflectionData' 'Ljava/lang/ref/SoftReference;' @68  a 'java/lang/ref/SoftReference'{0x00000004016125d0} (802c24ba)
+ - private volatile transient 'genericInfo' 'Lsun/reflect/generics/repository/ClassRepository;' @72  NULL (0)
+ - private volatile transient 'enumConstants' '[Ljava/lang/Object;' @76  NULL (0)
+ - private volatile transient 'enumConstantDirectory' 'Ljava/util/Map;' @80  NULL (0)
+ - private volatile transient 'annotationData' 'Ljava/lang/Class$AnnotationData;' @84  NULL (0)
+ - private volatile transient 'annotationType' 'Lsun/reflect/annotation/AnnotationType;' @88  NULL (0)
+ - transient 'classValueMap' 'Ljava/lang/ClassValue$ClassValueMap;' @92  NULL (0)
+ - abstract internal 'protection_domain' 'Ljava/lang/Object;' @96  a 'java/security/ProtectionDomain'{0x0000000401508010} (802a1002)
+ - abstract internal 'signers_name' 'Ljava/lang/Object;' @100  NULL (0)
+ - abstract internal 'source_file' 'Ljava/lang/Object;' @104  NULL (0)
+ - signature: Lio/github/humbleui/skija/TextLine;
+ - ---- static fields (0):
+stack at sp + 7 slots: 0x0000000431f8b2b8 is an oop: io.github.humbleui.skija.Paint 
+{0x0000000431f8b2b8} - klass: 'io/github/humbleui/skija/Paint'
+ - ---- fields (total size 3 words):
+ - public '_ptr' 'J' @16  140220931992528 (bad76bd0 7f87)
+ - public '_cleanable' 'Lio/github/humbleui/skija/impl/Cleanable;' @12  a 'io/github/humbleui/skija/impl/Cleanable'{0x0000000431f8b2f0} (863f165e)
+
+
+Compiled method (n/a)  671860 8819     n 0       io.github.humbleui.skija.Canvas::_nDrawRect (native)
+ total in heap  [0x000000011b971d90,0x000000011b972138] = 936
+ relocation     [0x000000011b971ef0,0x000000011b971f20] = 48
+ main code      [0x000000011b971f20,0x000000011b972129] = 521
+ stub code      [0x000000011b972129,0x000000011b972130] = 7
+ oops           [0x000000011b972130,0x000000011b972138] = 8
+
+[Constant Pool (empty)]
+
+[MachCode]
+[Entry Point]
+  # {method} {0x000000014d629ba8} '_nDrawRect' '(JFFFFJ)V' in 'io/github/humbleui/skija/Canvas'
+  # parm0:    rsi:rsi   = long
+  # parm1:    xmm0      = float
+  # parm2:    xmm1      = float
+  # parm3:    xmm2      = float
+  # parm4:    xmm3      = float
+  # parm5:    rdx:rdx   = long
+  #           [sp+0x50]  (sp of caller)
+  0x000000011b971f20: 448b 5608 | 49bb 0000 | 0000 0800 | 0000 4d03 | d349 3bc2 | 0f84 0600 
+
+  0x000000011b971f38: ;   {runtime_call ic_miss_stub}
+  0x000000011b971f38: 0000 e941 | dd85 ff90 
+[Verified Entry Point]
+  0x000000011b971f40: 8984 2400 | c0fe ff55 | 488b ec48 | 83ec 4048 | 8bca 488b 
+
+  0x000000011b971f54: ;   {oop(a 'java/lang/Class'{0x00000004016c3148} = 'io/github/humbleui/skija/Canvas')}
+  0x000000011b971f54: d649 be48 | 316c 0104 | 0000 004c | 8974 2430 | 4c8d 7424 | 3049 8bf6 
+
+  0x000000011b971f6c: ;   {internal_word}
+  0x000000011b971f6c: c5f8 7749 | ba6c 1f97 | 1b01 0000 | 004d 8997 | c802 0000 | 4989 a7c0 
+
+  0x000000011b971f84: ;   {external_word}
+  0x000000011b971f84: 0200 0080 | 3dd4 8b9f | ed00 0f84 | 7c00 0000 | 5652 4883 | ec10 c5fb | 1104 2448 | 83ec 10c5 
+  0x000000011b971fa4: fb11 0c24 | 4883 ec10 | c5fb 1114 | 2448 83ec | 10c5 fb11 
+
+  0x000000011b971fb8: ;   {metadata({method} {0x000000014d629ba8} '_nDrawRect' '(JFFFFJ)V' in 'io/github/humbleui/skija/Canvas')}
+  0x000000011b971fb8: 1c24 5148 | bea8 9b62 | 4d01 0000 | 0049 8bff | 40f6 c40f | 0f84 1200 | 0000 4883 
+
+  0x000000011b971fd4: ;   {runtime_call SharedRuntime::dtrace_method_entry(JavaThread*, Method*)}
+  0x000000011b971fd4: ec08 e8fd | 7064 ed48 | 83c4 08e9 | 0500 0000 
+
+  0x000000011b971fe4: ;   {runtime_call SharedRuntime::dtrace_method_entry(JavaThread*, Method*)}
+  0x000000011b971fe4: e8ef 7064 | ed59 c5fb | 101c 2448 | 83c4 10c5 | fb10 1424 | 4883 c410 | c5fb 100c | 2448 83c4 
+  0x000000011b972004: 10c5 fb10 | 0424 4883 | c410 5a5e | 498d bfe0 | 0200 0041 | c787 7403 | 0000 0400 
+
+  0x000000011b972020: ;   {runtime_call Java_io_github_humbleui_skija_Canvas__1nDrawRect}
+  0x000000011b972020: 0000 e849 | 241e 35c5 | f877 41c7 | 8774 0300 | 0005 0000 | 00f0 8344 | 24c0 0049 | 3baf 7803 
+  0x000000011b972040: 0000 0f87 | 1100 0000 | 4181 bf70 | 0300 0000 | 0000 000f | 841c 0000 | 00c5 f877 | 498b ff4c 
+  0x000000011b972060: 8be4 4883 | ec00 4883 
+
+  0x000000011b972068: ;   {runtime_call JavaThread::check_special_condition_for_native_trans(JavaThread*)}
+  0x000000011b972068: e4f0 e881 | ea74 ed49 | 8be4 4d33 | e441 c787 | 7403 0000 | 0800 0000 | 4181 bfe8 | 0300 0002 
+  0x000000011b972088: 0000 000f | 847a 0000 
+
+  0x000000011b972090: ;   {external_word}
+  0x000000011b972090: 0080 3dca | 8a9f ed00 | 0f84 2e00 
+
+  0x000000011b97209c: ;   {metadata({method} {0x000000014d629ba8} '_nDrawRect' '(JFFFFJ)V' in 'io/github/humbleui/skija/Canvas')}
+  0x000000011b97209c: 0000 48be | a89b 624d | 0100 0000 | 498b ff40 | f6c4 0f0f | 8412 0000 | 0048 83ec 
+
+  0x000000011b9720b8: ;   {runtime_call SharedRuntime::dtrace_method_exit(JavaThread*, Method*)}
+  0x000000011b9720b8: 08e8 9870 | 64ed 4883 | c408 e905 
+
+  0x000000011b9720c4: ;   {runtime_call SharedRuntime::dtrace_method_exit(JavaThread*, Method*)}
+  0x000000011b9720c4: 0000 00e8 | 8a70 64ed | 49c7 87c0 | 0200 0000 | 0000 0049 | c787 c802 | 0000 0000 | 0000 c5f8 
+  0x000000011b9720e4: 7749 8b8f | 5003 0000 | c781 0001 | 0000 0000 | 0000 c949 | 817f 0800 | 0000 000f | 8501 0000 
+  0x000000011b972104: ;   {runtime_call StubRoutines (1)}
+  0x000000011b972104: 00c3 e9f5 | da7f ffc5 | f877 4c8b | e448 83ec | 0048 83e4 
+
+  0x000000011b972118: ;   {runtime_call SharedRuntime::reguard_yellow_pages()}
+  0x000000011b972118: f0e8 748c | 64ed 498b | e44d 33e4 | e968 ffff | fff4 f4f4 | f4f4 f4f4 
+[/MachCode]
+
+
+Compiled method (c2)  671865 9010       4       io.github.humbleui.canvas$draw_rect::invoke (13 bytes)
+ total in heap  [0x000000011be14b10,0x000000011be15388] = 2168
+ relocation     [0x000000011be14c70,0x000000011be14cc0] = 80
+ main code      [0x000000011be14cc0,0x000000011be14f00] = 576
+ stub code      [0x000000011be14f00,0x000000011be14f28] = 40
+ oops           [0x000000011be14f28,0x000000011be14f50] = 40
+ metadata       [0x000000011be14f50,0x000000011be14fb8] = 104
+ scopes data    [0x000000011be14fb8,0x000000011be15178] = 448
+ scopes pcs     [0x000000011be15178,0x000000011be15338] = 448
+ dependencies   [0x000000011be15338,0x000000011be15348] = 16
+ handler table  [0x000000011be15348,0x000000011be15360] = 24
+ nul chk table  [0x000000011be15360,0x000000011be15388] = 40
+
+[Constant Pool (empty)]
+
+[MachCode]
+[Entry Point]
+  # {method} {0x000000014d66d868} 'invoke' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/canvas$draw_rect'
+  # this:     rsi:rsi   = 'io/github/humbleui/canvas$draw_rect'
+  # parm0:    rdx:rdx   = 'java/lang/Object'
+  # parm1:    rcx:rcx   = 'java/lang/Object'
+  # parm2:    r8:r8     = 'java/lang/Object'
+  #           [sp+0x40]  (sp of caller)
+  0x000000011be14cc0: 448b 5608 | 49bb 0000 | 0000 0800 | 0000 4d03 | d349 3bc2 
+
+  0x000000011be14cd4: ;   {runtime_call ic_miss_stub}
+  0x000000011be14cd4: 0f85 a6af | 3bff 6690 | 0f1f 4000 
+[Verified Entry Point]
+  0x000000011be14ce0: 8984 2400 | c0fe ff55 
+
+  0x000000011be14ce8: ;*synchronization entry
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@-1
+  0x000000011be14ce8: 4883 ec30 
+
+  0x000000011be14cec: ;   {oop(a 'clojure/lang/Var'{0x00000004000c57a0})}
+  0x000000011be14cec: 49ba a057 | 0c00 0400 | 0000 458b 
+
+  0x000000011be14cf8: ;*getfield root {reexecute=0 rethrow=0 return_oop=0}
+                      ; - clojure.lang.Var::getRawRoot@1 (line 260)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@3 (line 12)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14cf8: 5a1c 660f | 1f44 0000 
+
+  0x000000011be14d00: ; implicit exception: dispatches to 0x000000011be14e81
+  0x000000011be14d00: 478b 4cdc 
+
+  0x000000011be14d04: ;   {metadata('clojure/core$instance_QMARK___5469')}
+  0x000000011be14d04: 0841 81f9 | 08aa 0201 | 0f85 ee00 | 0000 4b8d 
+
+  0x000000011be14d14: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@11 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d14: 2cdc 448b 
+
+  0x000000011be14d18: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@43 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d18: 5108 660f | 1f44 0000 
+
+  0x000000011be14d20: ;   {metadata('io/github/humbleui/types/IRect')}
+  0x000000011be14d20: 4181 fab8 | e5d4 010f | 858f 0000 | 0044 8b5a 
+
+  0x000000011be14d30: ;   {metadata('io/github/humbleui/skija/Canvas')}
+  0x000000011be14d30: 0841 81fb | 28fa d401 | 0f85 de00 
+
+  0x000000011be14d3c: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@37 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d3c: 0000 4889 
+
+  0x000000011be14d40: ;   {metadata('io/github/humbleui/types/IRect')}
+  0x000000011be14d40: 5424 0841 | 81fa b8e5 | d401 0f85 
+
+  0x000000011be14d4c: ;*invokespecial <init> {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.types.IRect::toRect@24 (line 101)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@46 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d4c: e400 0000 | c5e2 2a59 
+
+  0x000000011be14d54: ;*i2f {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.types.IRect::toRect@23 (line 101)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@46 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d54: 18c5 ea2a 
+
+  0x000000011be14d58: ;*i2f {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.types.IRect::toRect@18 (line 101)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@46 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d58: 5114 c5f2 
+
+  0x000000011be14d5c: ;*i2f {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.types.IRect::toRect@13 (line 101)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@46 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d5c: 2a49 10c5 
+
+  0x000000011be14d60: ;*i2f {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.types.IRect::toRect@8 (line 101)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@46 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d60: fa2a 410c 
+
+  0x000000011be14d64: ; implicit exception: dispatches to 0x000000011be14ec4
+  0x000000011be14d64: 458b 5808 
+
+  0x000000011be14d68: ;   {metadata('io/github/humbleui/skija/Paint')}
+  0x000000011be14d68: 4181 fba0 | c3d5 010f | 85d3 0000 
+
+  0x000000011be14d74: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@55 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d74: 0049 8bc8 
+
+  0x000000011be14d78: ;   {oop(a 'java/lang/Class'{0x00000004021ca850} = 'io/github/humbleui/skija/impl/Stats')}
+  0x000000011be14d78: 49ba 50a8 | 1c02 0400 | 0000 410f | b6aa 8000 
+
+  0x000000011be14d88: ;*getstatic enabled {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.skija.impl.Stats::onNativeCall@0 (line 12)
+                      ; - io.github.humbleui.skija.Canvas::drawRect@40 (line 293)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d88: 0000 85ed 
+
+  0x000000011be14d8c: ;*ifeq {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.skija.impl.Stats::onNativeCall@3 (line 12)
+                      ; - io.github.humbleui.skija.Canvas::drawRect@40 (line 293)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d8c: 7546 488b 
+
+  0x000000011be14d90: ;*getfield _ptr {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.skija.impl.Native::getPtr@9 (line 8)
+                      ; - io.github.humbleui.skija.Canvas::drawRect@64 (line 294)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d90: 5110 4c8b | 5424 0849 
+
+  0x000000011be14d98: ;*getfield _ptr {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.skija.Canvas::drawRect@44 (line 294)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14d98: 8b72 1048 
+
+  0x000000011be14d9c: ;   {static_call}
+  0x000000011be14d9c: 8be9 90e8 
+
+  0x000000011be14da0: ; ImmutableOopMap {rbp=Oop [8]=Oop }
+                      ;*invokestatic _nDrawRect {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.skija.Canvas::drawRect@67 (line 294)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14da0: 9cd1 b5ff | 488b 4424 | 0848 83c4 
+
+  0x000000011be14dac: ;   {poll_return}
+  0x000000011be14dac: 305d 493b | a778 0300 | 000f 872d | 0100 00c3 | be45 ffff | ff48 8914 | 244c 8944 | 2410 4889 
+  0x000000011be14dcc: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14dcc: 4c24 18e8 
+
+  0x000000011be14dd0: ; ImmutableOopMap {rbp=Oop [0]=Oop [16]=Oop [24]=Oop }
+                      ;*if_acmpeq {reexecute=1 rethrow=0 return_oop=0}
+                      ; - (reexecute) io.github.humbleui.canvas$draw_rect::invokeStatic@31 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14dd0: 2c04 3cff | be45 ffff | ff48 8914 | 2448 894c | 2408 c5fa | 1144 2410 | c5fa 114c | 2414 c5fa 
+  0x000000011be14df0: 1154 2418 | c5fa 115c 
+
+  0x000000011be14df8: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14df8: 241c 90e8 
+
+  0x000000011be14dfc: ; ImmutableOopMap {[0]=Oop [8]=Oop }
+                      ;*ifeq {reexecute=1 rethrow=0 return_oop=0}
+                      ; - (reexecute) io.github.humbleui.skija.impl.Stats::onNativeCall@3 (line 12)
+                      ; - io.github.humbleui.skija.Canvas::drawRect@40 (line 293)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@58 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14dfc: 0004 3cff | bede ffff | ff48 8bea | 4c89 4424 | 0848 894c | 2418 4489 
+
+  0x000000011be14e14: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14e14: 5c24 14e8 
+
+  0x000000011be14e18: ; ImmutableOopMap {rbp=Oop [8]=Oop [20]=NarrowOop [24]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@11 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14e18: e403 3cff | bede ffff | ff48 8be9 | 4c89 0424 | 4889 5424 
+
+  0x000000011be14e2c: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14e2c: 0866 90e8 
+
+  0x000000011be14e30: ; ImmutableOopMap {rbp=Oop [0]=Oop [8]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@37 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14e30: cc03 3cff | bede ffff | ff49 8be8 | 4889 0c24 
+
+  0x000000011be14e40: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14e40: 6666 90e8 
+
+  0x000000011be14e44: ; ImmutableOopMap {rbp=Oop [0]=Oop [8]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@43 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14e44: b803 3cff | bede ffff | ff49 8be8 | 4889 1424 | c5fa 1144 | 2408 c5fa | 114c 240c | c5fa 1154 
+  0x000000011be14e64: 2410 c5fa | 115c 2414 
+
+  0x000000011be14e6c: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14e6c: 6666 90e8 
+
+  0x000000011be14e70: ; ImmutableOopMap {rbp=Oop [0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@55 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14e70: 8c03 3cff | 488b f048 | 83c4 305d 
+
+  0x000000011be14e7c: ;   {runtime_call _rethrow_Java}
+  0x000000011be14e7c: e9ff d346 | ffbe f4ff | ffff 488b | ea4c 8944 | 2408 4889 
+
+  0x000000011be14e90: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14e90: 4c24 10e8 
+
+  0x000000011be14e94: ; ImmutableOopMap {rbp=Oop [8]=Oop [16]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@11 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14e94: 6803 3cff | bef4 ffff | ff48 8914 | 244c 8944 | 2410 4889 
+
+  0x000000011be14ea8: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14ea8: 4c24 18e8 
+
+  0x000000011be14eac: ; ImmutableOopMap {rbp=Oop [0]=Oop [16]=Oop [24]=Oop }
+                      ;*invokevirtual isInstance {reexecute=0 rethrow=0 return_oop=0}
+                      ; - clojure.core$instance_QMARK___5469::invokeStatic@9 (line 146)
+                      ; - clojure.core$instance_QMARK___5469::invoke@6 (line 146)
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@19 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14eac: 5003 3cff | bef4 ffff | ff48 8be9 | 4c89 0424 
+
+  0x000000011be14ebc: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14ebc: 6666 90e8 
+
+  0x000000011be14ec0: ; ImmutableOopMap {rbp=Oop [0]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@37 (line 13)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14ec0: 3c03 3cff | bef4 ffff | ff48 8bea | c5fa 1104 | 24c5 fa11 | 4c24 04c5 | fa11 5424 | 08c5 fa11 
+  0x000000011be14ee0: ;   {runtime_call UncommonTrapBlob}
+  0x000000011be14ee0: 5c24 0ce8 
+
+  0x000000011be14ee4: ; ImmutableOopMap {rbp=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.canvas$draw_rect::invokeStatic@55 (line 14)
+                      ; - io.github.humbleui.canvas$draw_rect::invoke@9 (line 12)
+  0x000000011be14ee4: 1803 3cff 
+
+  0x000000011be14ee8: ;   {internal_word}
+  0x000000011be14ee8: 49ba ae4d | e11b 0100 | 0000 4d89 | 9790 0300 
+
+  0x000000011be14ef8: ;   {runtime_call SafepointBlob}
+  0x000000011be14ef8: 00e9 0214 | 3cff f4f4 
+[Stub Code]
+  0x000000011be14f00: ;   {no_reloc}
+  0x000000011be14f00: 48bb 0000 | 0000 0000 
+
+  0x000000011be14f08: ;   {runtime_call}
+  0x000000011be14f08: 0000 e9fb 
+
+  0x000000011be14f0c: ;   {runtime_call ExceptionBlob}
+  0x000000011be14f0c: ffff ffe9 | 6cfb 45ff 
+[Deopt Handler Code]
+  0x000000011be14f14: e800 0000 | 0048 832c 
+
+  0x000000011be14f1c: ;   {runtime_call DeoptimizationBlob}
+  0x000000011be14f1c: 2405 e97d | 063c fff4 | f4f4 f4f4 
+[/MachCode]
+
+
+Compiled method (c1)  671873 9185       3       io.github.humbleui.ui.rect.Rect::_draw (59 bytes)
+ total in heap  [0x0000000114e35f10,0x0000000114e36920] = 2576
+ relocation     [0x0000000114e36070,0x0000000114e360e8] = 120
+ main code      [0x0000000114e36100,0x0000000114e36660] = 1376
+ stub code      [0x0000000114e36660,0x0000000114e366b0] = 80
+ oops           [0x0000000114e366b0,0x0000000114e366c0] = 16
+ metadata       [0x0000000114e366c0,0x0000000114e366d0] = 16
+ scopes data    [0x0000000114e366d0,0x0000000114e36790] = 192
+ scopes pcs     [0x0000000114e36790,0x0000000114e368f0] = 352
+ dependencies   [0x0000000114e368f0,0x0000000114e368f8] = 8
+ nul chk table  [0x0000000114e368f8,0x0000000114e36920] = 40
+
+[Constant Pool (empty)]
+
+[MachCode]
+[Entry Point]
+  # {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect'
+  # this:     rsi:rsi   = 'io/github/humbleui/ui/rect/Rect'
+  # parm0:    rdx:rdx   = 'java/lang/Object'
+  # parm1:    rcx:rcx   = 'java/lang/Object'
+  # parm2:    r8:r8     = 'java/lang/Object'
+  #           [sp+0x80]  (sp of caller)
+  0x0000000114e36100: 448b 5608 | 49bb 0000 | 0000 0800 | 0000 4d03 | d34c 3bd0 
+
+  0x0000000114e36114: ;   {runtime_call ic_miss_stub}
+  0x0000000114e36114: 0f85 669b | 3906 660f | 1f44 0000 
+[Verified Entry Point]
+  0x0000000114e36120: 8984 2400 | c0fe ff55 | 4883 ec70 
+
+  0x0000000114e3612c: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e3612c: 48bf b0f6 | 8e4d 0100 | 0000 8b9f | ac00 0000 | 83c3 0289 | 9fac 0000 | 0081 e3fe | 0700 0083 
+  0x0000000114e3614c: fb00 0f84 
+
+  0x0000000114e36150: ;*aload_0 {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@0 (line 10)
+  0x0000000114e36150: 4b04 0000 | 4889 5424 | 5041 0fbe | 7f40 83ff | 000f 8559 | 0400 004c | 8bd1 49c1 | ea03 4489 
+  0x0000000114e36170: 5614 488b | fe48 33f9 | 48c1 ef17 | 4883 ff00 | 0f85 5904 
+
+  0x0000000114e36184: ;*putfield child_rect {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@2 (line 10)
+                      ;   {oop(a 'clojure/lang/Var'{0x00000004020db9d0})}
+  0x0000000114e36184: 0000 48bf | d0b9 0d02 | 0400 0000 
+
+  0x0000000114e36190: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e36190: 488b df48 | b8b0 f68e | 4d01 0000 | 0048 8380 | f000 0000 | 018b 7f1c 
+
+  0x0000000114e361a8: ;*getfield root {reexecute=0 rethrow=0 return_oop=0}
+                      ; - clojure.lang.Var::getRawRoot@1 (line 260)
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@8 (line 10)
+  0x0000000114e361a8: 48c1 e703 | 4883 ff00 
+
+  0x0000000114e361b0: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e361b0: 7517 49b9 | b0f6 8e4d | 0100 0000 | 4180 8921 | 0100 0001 | e9f3 0000 
+
+  0x0000000114e361c8: ;   {metadata('clojure/lang/IFn')}
+  0x0000000114e361c8: 0048 b8e8 | 1100 0108 | 0000 0044 | 8b4f 0849 | ba00 0000 | 0008 0000 | 004d 03ca | 493b 4120 
+  0x0000000114e361e8: 0f84 1f00 | 0000 4c3b | c80f 8416 | 0000 0041 
+
+  0x0000000114e361f8: ;   {runtime_call slow_subtype_check Runtime1 stub}
+  0x0000000114e361f8: 5150 e881 | 2144 0641 | 5941 5941 | 83f9 000f | 8493 0000 
+
+  0x0000000114e3620c: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e3620c: 0049 b9b0 | f68e 4d01 | 0000 008b | 4708 49ba | 0000 0000 | 0800 0000 | 4903 c249 | 3b81 3801 
+  0x0000000114e3622c: 0000 750d | 4983 8140 | 0100 0001 | e97f 0000 | 0049 3b81 | 4801 0000 | 750d 4983 | 8150 0100 
+  0x0000000114e3624c: 0001 e969 | 0000 0049 | 81b9 3801 | 0000 0000 | 0000 7517 | 4989 8138 | 0100 0049 | c781 4001 
+  0x0000000114e3626c: 0000 0100 | 0000 e945 | 0000 0049 | 81b9 4801 | 0000 0000 | 0000 7517 | 4989 8148 | 0100 0049 
+  0x0000000114e3628c: c781 5001 | 0000 0100 | 0000 e921 | 0000 00e9 | 1c00 0000 
+
+  0x0000000114e362a0: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e362a0: 49b9 b0f6 | 8e4d 0100 | 0000 4983 | a928 0100 | 0001 e945 | 0300 00e9 
+
+  0x0000000114e362b8: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@11 (line 10)
+  0x0000000114e362b8: 0000 0000 | 8b5e 0c48 
+
+  0x0000000114e362c0: ;*getfield paint {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@19 (line 10)
+  0x0000000114e362c0: c1e3 0348 | 3b07 488b 
+
+  0x0000000114e362c8: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e362c8: c749 b9b0 | f68e 4d01 | 0000 008b | 4008 49ba | 0000 0000 | 0800 0000 | 4903 c249 | 3b81 7001 
+  0x0000000114e362e8: 0000 750d | 4983 8178 | 0100 0001 | e966 0000 | 0049 3b81 | 8001 0000 | 750d 4983 | 8188 0100 
+  0x0000000114e36308: 0001 e950 | 0000 0049 | 81b9 7001 | 0000 0000 | 0000 7517 | 4989 8170 | 0100 0049 | c781 7801 
+  0x0000000114e36328: 0000 0100 | 0000 e92c | 0000 0049 | 81b9 8001 | 0000 0000 | 0000 7517 | 4989 8180 | 0100 0049 
+  0x0000000114e36348: c781 8801 | 0000 0100 | 0000 e908 | 0000 0049 | 8381 6001 | 0000 0149 | 8bd0 4c89 | 4424 584c 
+  0x0000000114e36368: 8bc3 4889 | 7424 4848 
+
+  0x0000000114e36370: ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@22 (line 10)
+  0x0000000114e36370: 8bf7 6666 | 9048 b800 | 00d8 0108 
+
+  0x0000000114e3637c: ;   {virtual_call}
+  0x0000000114e3637c: 0000 00e8 
+
+  0x0000000114e36380: ; ImmutableOopMap {[72]=Oop [80]=Oop [88]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@22 (line 10)
+  0x0000000114e36380: 3ce9 fd06 
+
+  0x0000000114e36384: ;   {oop(a 'clojure/lang/Var'{0x0000000401731070})}
+  0x0000000114e36384: 48ba 7010 | 7301 0400 | 0000 488b 
+
+  0x0000000114e36390: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e36390: ca49 b8b0 | f68e 4d01 | 0000 0049 | 8380 9801 | 0000 018b | 521c 48c1 
+
+  0x0000000114e363a8: ;*getfield root {reexecute=0 rethrow=0 return_oop=0}
+                      ; - clojure.lang.Var::getRawRoot@1 (line 260)
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@31 (line 10)
+  0x0000000114e363a8: e203 4883 | fa00 7517 
+
+  0x0000000114e363b0: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e363b0: 49b8 b0f6 | 8e4d 0100 | 0000 4180 | 88c9 0100 | 0001 e9f3 
+
+  0x0000000114e363c4: ;   {metadata('clojure/lang/IFn')}
+  0x0000000114e363c4: 0000 0048 | b9e8 1100 | 0108 0000 | 0044 8b42 | 0849 ba00 | 0000 0008 | 0000 004d | 03c2 493b 
+  0x0000000114e363e4: 4820 0f84 | 1f00 0000 | 4c3b c10f | 8416 0000 | 0041 5051 
+
+  0x0000000114e363f8: ;   {runtime_call slow_subtype_check Runtime1 stub}
+  0x0000000114e363f8: e883 1f44 | 0641 5841 | 5841 83f8 | 000f 8493 
+
+  0x0000000114e36408: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e36408: 0000 0049 | b8b0 f68e | 4d01 0000 | 008b 4a08 | 49ba 0000 | 0000 0800 | 0000 4903 | ca49 3b88 
+  0x0000000114e36428: e001 0000 | 750d 4983 | 80e8 0100 | 0001 e97f | 0000 0049 | 3b88 f001 | 0000 750d | 4983 80f8 
+  0x0000000114e36448: 0100 0001 | e969 0000 | 0049 81b8 | e001 0000 | 0000 0000 | 7517 4989 | 88e0 0100 | 0049 c780 
+  0x0000000114e36468: e801 0000 | 0100 0000 | e945 0000 | 0049 81b8 | f001 0000 | 0000 0000 | 7517 4989 | 88f0 0100 
+  0x0000000114e36488: 0049 c780 | f801 0000 | 0100 0000 | e921 0000 | 00e9 1c00 
+
+  0x0000000114e3649c: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e3649c: 0000 49b8 | b0f6 8e4d | 0100 0000 | 4983 a8d0 | 0100 0001 | e95a 0100 | 00e9 0000 | 0000 488b 
+  0x0000000114e364bc: ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@34 (line 10)
+  0x0000000114e364bc: f248 8b54 | 2448 8b4a | 1048 c1e1 
+
+  0x0000000114e364c8: ;*getfield child {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@38 (line 10)
+  0x0000000114e364c8: 0344 8b42 | 1449 c1e0 
+
+  0x0000000114e364d0: ;*getfield child_rect {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@45 (line 10)
+  0x0000000114e364d0: 0348 3b06 
+
+  0x0000000114e364d4: ;   {metadata(method data for {method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e364d4: 488b d649 | b9b0 f68e | 4d01 0000 | 008b 5208 | 49ba 0000 | 0000 0800 | 0000 4903 | d249 3b91 
+  0x0000000114e364f4: 1802 0000 | 750d 4983 | 8120 0200 | 0001 e966 | 0000 0049 | 3b91 2802 | 0000 750d | 4983 8130 
+  0x0000000114e36514: 0200 0001 | e950 0000 | 0049 81b9 | 1802 0000 | 0000 0000 | 7517 4989 | 9118 0200 | 0049 c781 
+  0x0000000114e36534: 2002 0000 | 0100 0000 | e92c 0000 | 0049 81b9 | 2802 0000 | 0000 0000 | 7517 4989 | 9128 0200 
+  0x0000000114e36554: 0049 c781 | 3002 0000 | 0100 0000 | e908 0000 | 0049 8381 | 0802 0000 | 0148 8bd1 | 488b 4c24 
+  0x0000000114e36574: 504c 8b4c 
+
+  0x0000000114e36578: ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@53 (line 10)
+  0x0000000114e36578: 2458 6666 | 9048 b800 | 00e1 0108 
+
+  0x0000000114e36584: ;   {virtual_call}
+  0x0000000114e36584: 0000 00e8 
+
+  0x0000000114e36588: ; ImmutableOopMap {}
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@53 (line 10)
+  0x0000000114e36588: 5481 3f07 | 4883 c470 
+
+  0x0000000114e36590: ;   {poll_return}
+  0x0000000114e36590: 5d49 3ba7 | 7803 0000 | 0f87 7f00 
+
+  0x0000000114e3659c: ;   {metadata({method} {0x000000014d8ed7f8} '_draw' '(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;' in 'io/github/humbleui/ui/rect/Rect')}
+  0x0000000114e3659c: 0000 c349 | baf8 d78e | 4d01 0000 | 004c 8954 | 2408 48c7 | 0424 ffff 
+
+  0x0000000114e365b4: ;   {runtime_call counter_overflow Runtime1 stub}
+  0x0000000114e365b4: ffff e8c5 
+
+  0x0000000114e365b8: ; ImmutableOopMap {rsi=Oop rdx=Oop rcx=Oop r8=Oop }
+                      ;*synchronization entry
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@-1 (line 10)
+  0x0000000114e365b8: 4a44 06e9 | 94fb ffff | 8b7e 1448 | c1e7 0348 | 83ff 000f | 8496 fbff | ff48 893c 
+
+  0x0000000114e365d4: ;   {runtime_call g1_pre_barrier_slow}
+  0x0000000114e365d4: 24e8 a650 | 4406 e988 | fbff ff48 | 83f9 000f | 849d fbff | ff48 8934 
+
+  0x0000000114e365ec: ;   {runtime_call g1_post_barrier_slow}
+  0x0000000114e365ec: 24e8 8e53 | 4406 e98f 
+
+  0x0000000114e365f4: ;   {runtime_call throw_null_pointer_exception Runtime1 stub}
+  0x0000000114e365f4: fbff ffe8 
+
+  0x0000000114e365f8: ; ImmutableOopMap {rsi=Oop rcx=Oop r8=Oop [80]=Oop }
+                      ;*getfield root {reexecute=1 rethrow=0 return_oop=0}
+                      ; - (reexecute) clojure.lang.Var::getRawRoot@1 (line 260)
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@8 (line 10)
+  0x0000000114e365f8: a4f0 4306 | 4889 3c24 
+
+  0x0000000114e36600: ;   {runtime_call throw_class_cast_exception Runtime1 stub}
+  0x0000000114e36600: e89b 1444 
+
+  0x0000000114e36604: ; ImmutableOopMap {rsi=Oop rcx=Oop r8=Oop [80]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@11 (line 10)
+                      ;   {runtime_call throw_null_pointer_exception Runtime1 stub}
+  0x0000000114e36604: 06e8 96f0 
+
+  0x0000000114e36608: ; ImmutableOopMap {rsi=Oop rcx=Oop r8=Oop rdi=Oop rbx=Oop [80]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@22 (line 10)
+                      ;   {runtime_call throw_null_pointer_exception Runtime1 stub}
+  0x0000000114e36608: 4306 e891 
+
+  0x0000000114e3660c: ; ImmutableOopMap {[72]=Oop [80]=Oop [88]=Oop }
+                      ;*getfield root {reexecute=1 rethrow=0 return_oop=0}
+                      ; - (reexecute) clojure.lang.Var::getRawRoot@1 (line 260)
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@31 (line 10)
+  0x0000000114e3660c: f043 0648 
+
+  0x0000000114e36610: ;   {runtime_call throw_class_cast_exception Runtime1 stub}
+  0x0000000114e36610: 8914 24e8 
+
+  0x0000000114e36614: ; ImmutableOopMap {[72]=Oop [80]=Oop [88]=Oop }
+                      ;*checkcast {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@34 (line 10)
+  0x0000000114e36614: 8814 4406 
+
+  0x0000000114e36618: ;   {runtime_call throw_null_pointer_exception Runtime1 stub}
+  0x0000000114e36618: e883 f043 
+
+  0x0000000114e3661c: ; ImmutableOopMap {rsi=Oop rcx=Oop r8=Oop [80]=Oop [88]=Oop }
+                      ;*invokeinterface invoke {reexecute=0 rethrow=0 return_oop=0}
+                      ; - io.github.humbleui.ui.rect.Rect::_draw@53 (line 10)
+                      ;   {internal_word}
+  0x0000000114e3661c: 0649 ba91 | 65e3 1401 | 0000 004d | 8997 9003 
+
+  0x0000000114e3662c: ;   {runtime_call SafepointBlob}
+  0x0000000114e3662c: 0000 e9cd | fc39 0649 | 8b87 2004 | 0000 49c7 | 8720 0400 | 0000 0000 | 0049 c787 | 2804 0000 
+  0x0000000114e3664c: 0000 0000 | 4883 c470 
+
+  0x0000000114e36654: ;   {runtime_call unwind_exception Runtime1 stub}
+  0x0000000114e36654: 5de9 26de | 4306 f4f4 | f4f4 f4f4 
+[Stub Code]
+  0x0000000114e36660: ;   {no_reloc}
+  0x0000000114e36660: 0f1f 4400 
+
+  0x0000000114e36664: ;   {static_stub}
+  0x0000000114e36664: 0048 bb00 | 0000 0000 
+
+  0x0000000114e3666c: ;   {runtime_call}
+  0x0000000114e3666c: 0000 00e9 | fbff ffff 
+
+  0x0000000114e36674: ;   {static_stub}
+  0x0000000114e36674: 9048 bb00 | 0000 0000 
+
+  0x0000000114e3667c: ;   {runtime_call}
+  0x0000000114e3667c: 0000 00e9 | fbff ffff 
+[Exception Handler]
+  0x0000000114e36684: ;   {runtime_call handle_exception_from_callee Runtime1 stub}
+  0x0000000114e36684: e8f7 0d44 
+
+  0x0000000114e36688: ;   {external_word}
+  0x0000000114e36688: 0648 bf94 | e617 0901 | 0000 0048 
+
+  0x0000000114e36694: ;   {runtime_call MacroAssembler::debug64(char*, long long, long long*)}
+  0x0000000114e36694: 83e4 f0e8 | 4609 04f4 
+
+  0x0000000114e3669c: ;   {section_word}
+  0x0000000114e3669c: f449 ba9d | 66e3 1401 | 0000 0041 
+
+  0x0000000114e366a8: ;   {runtime_call DeoptimizationBlob}
+  0x0000000114e366a8: 52e9 f2ee | 3906 f4f4 
+[/MachCode]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007f874d57ebe0, length=27, elements={
+0x00007f87bc01a800, 0x00007f879b00a400, 0x00007f879b00aa00, 0x00007f879b00b000,
+0x00007f87cb80f400, 0x00007f87cb008600, 0x00007f87bb0bae00, 0x00007f879c00a400,
+0x00007f87cb015a00, 0x00007f87cc03dc00, 0x00007f87bb8e8a00, 0x00007f87bb976800,
+0x00007f871b279000, 0x00007f87bb1c0400, 0x00007f87ccbf8a00, 0x00007f879b22b000,
+0x00007f874d8ada00, 0x00007f874d8a6200, 0x00007f8749cc6200, 0x00007f879c097200,
+0x00007f874d8a5a00, 0x00007f874e492800, 0x00007f874e49d000, 0x00007f871b1ec600,
+0x00007f87cbb0d800, 0x00007f87bc3d1600, 0x00007f874c0c9000
+}
+
+Java Threads: ( => current thread )
+  0x00007f87bc01a800 JavaThread "Reference Handler" daemon [_thread_blocked, id=22275, stack(0x000070000bb7b000,0x000070000bc7b000)]
+  0x00007f879b00a400 JavaThread "Finalizer" daemon [_thread_blocked, id=22531, stack(0x000070000bc7e000,0x000070000bd7e000)]
+  0x00007f879b00aa00 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=42243, stack(0x000070000bd81000,0x000070000be81000)]
+  0x00007f879b00b000 JavaThread "Service Thread" daemon [_thread_blocked, id=23043, stack(0x000070000be84000,0x000070000bf84000)]
+  0x00007f87cb80f400 JavaThread "Monitor Deflation Thread" daemon [_thread_blocked, id=23555, stack(0x000070000bf87000,0x000070000c087000)]
+  0x00007f87cb008600 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=41987, stack(0x000070000c08a000,0x000070000c18a000)]
+  0x00007f87bb0bae00 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=41731, stack(0x000070000c18d000,0x000070000c28d000)]
+  0x00007f879c00a400 JavaThread "Sweeper thread" daemon [_thread_blocked, id=41219, stack(0x000070000c290000,0x000070000c390000)]
+  0x00007f87cb015a00 JavaThread "Common-Cleaner" daemon [_thread_blocked, id=40707, stack(0x000070000c496000,0x000070000c596000)]
+  0x00007f87cc03dc00 JavaThread "Notification Thread" daemon [_thread_blocked, id=40195, stack(0x000070000c599000,0x000070000c699000)]
+  0x00007f87bb8e8a00 JavaThread "Cleaner-0" daemon [_thread_blocked, id=28163, stack(0x000070000dad8000,0x000070000dbd8000)]
+  0x00007f87bb976800 JavaThread "Timer-0" daemon [_thread_blocked, id=33027, stack(0x000070000dbdb000,0x000070000dcdb000)]
+=>0x00007f871b279000 JavaThread "AppKit Thread" daemon [_thread_in_native, id=775, stack(0x00007ffee3407000,0x00007ffee7406000)]
+  0x00007f87bb1c0400 JavaThread "Java2D Queue Flusher" daemon [_thread_blocked, id=60419, stack(0x000070000e385000,0x000070000e485000)]
+  0x00007f87ccbf8a00 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=64771, stack(0x000070000e488000,0x000070000e588000)]
+  0x00007f879b22b000 JavaThread "clojure-agent-send-off-pool-0" [_thread_blocked, id=75291, stack(0x000070000ba75000,0x000070000bb75000)]
+  0x00007f874d8ada00 JavaThread "clojure-agent-send-off-pool-1" [_thread_blocked, id=46599, stack(0x000070000dde1000,0x000070000dee1000)]
+  0x00007f874d8a6200 JavaThread "clojure-agent-send-off-pool-2" [_thread_in_native, id=52491, stack(0x000070000dee4000,0x000070000dfe4000)]
+  0x00007f8749cc6200 JavaThread "DestroyJavaVM" [_thread_blocked, id=10243, stack(0x000070000b360000,0x000070000b460000)]
+  0x00007f879c097200 JavaThread "Cleaner-1" daemon [_thread_blocked, id=79891, stack(0x000070000e073000,0x000070000e173000)]
+  0x00007f874d8a5a00 JavaThread "clojure-agent-send-off-pool-3" [_thread_in_native, id=128003, stack(0x000070000e797000,0x000070000e897000)]
+  0x00007f874e492800 JavaThread "clojure-agent-send-off-pool-4" [_thread_blocked, id=64023, stack(0x000070000c79f000,0x000070000c89f000)]
+  0x00007f874e49d000 JavaThread "clojure-agent-send-off-pool-5" [_thread_in_native, id=125211, stack(0x000070000c8a2000,0x000070000c9a2000)]
+  0x00007f871b1ec600 JavaThread "nREPL-session-cd0ec131-c4e4-4a7f-9924-fd1f5ab0a64f" daemon [_thread_blocked, id=123931, stack(0x000070000d9d5000,0x000070000dad5000)]
+  0x00007f87cbb0d800 JavaThread "nREPL-session-35149333-d89d-42ea-8cb4-e3d88a442e32" daemon [_thread_blocked, id=38675, stack(0x000070000e176000,0x000070000e276000)]
+  0x00007f87bc3d1600 JavaThread "clojure-agent-send-off-pool-9" [_thread_blocked, id=96335, stack(0x000070000c393000,0x000070000c493000)]
+  0x00007f874c0c9000 JavaThread "AWT-Shutdown" [_thread_blocked, id=95511, stack(0x000070000c9a5000,0x000070000caa5000)]
+
+Other Threads:
+  0x00007f87bad3c920 VMThread "VM Thread" [stack: 0x000070000b972000,0x000070000ba72000] [id=16643]
+  0x00007f87cac14d20 WatcherThread "VM Periodic Task Thread" [stack: 0x000070000c69c000,0x000070000c79c000] [id=39683]
+  0x00007f87cae18d70 WorkerThread "GC Thread#0" [stack: 0x000070000b463000,0x000070000b563000] [id=20995]
+  0x00007f878ae0dae0 WorkerThread "GC Thread#1" [stack: 0x000070000cbab000,0x000070000ccab000] [id=37379]
+  0x00007f87baf3e770 WorkerThread "GC Thread#2" [stack: 0x000070000ccae000,0x000070000cdae000] [id=25347]
+  0x00007f87bae3b830 WorkerThread "GC Thread#3" [stack: 0x000070000cdb1000,0x000070000ceb1000] [id=36867]
+  0x00007f878ae0e3b0 WorkerThread "GC Thread#4" [stack: 0x000070000ceb4000,0x000070000cfb4000] [id=25603]
+  0x00007f87caf2bde0 WorkerThread "GC Thread#5" [stack: 0x000070000cfb7000,0x000070000d0b7000] [id=36355]
+  0x00007f87caf2c9a0 WorkerThread "GC Thread#6" [stack: 0x000070000d0ba000,0x000070000d1ba000] [id=26115]
+  0x00007f87bae3c0d0 WorkerThread "GC Thread#7" [stack: 0x000070000d1bd000,0x000070000d2bd000] [id=26627]
+  0x00007f878af108c0 WorkerThread "GC Thread#8" [stack: 0x000070000d2c0000,0x000070000d3c0000] [id=35587]
+  0x00007f87cae585e0 WorkerThread "GC Thread#9" [stack: 0x000070000d3c3000,0x000070000d4c3000] [id=35075]
+  0x00007f87baf3ee50 WorkerThread "GC Thread#10" [stack: 0x000070000d4c6000,0x000070000d5c6000] [id=34563]
+  0x00007f87baf3fb70 WorkerThread "GC Thread#11" [stack: 0x000070000d5c9000,0x000070000d6c9000] [id=27139]
+  0x00007f876ac06300 WorkerThread "GC Thread#12" [stack: 0x000070000d6cc000,0x000070000d7cc000] [id=34051]
+  0x00007f87baf04690 ConcurrentGCThread "G1 Main Marker" [stack: 0x000070000b566000,0x000070000b666000] [id=13571]
+  0x00007f87baf053d0 WorkerThread "G1 Conc#0" [stack: 0x000070000b669000,0x000070000b769000] [id=14339]
+  0x00007f87baf8cc20 WorkerThread "G1 Conc#1" [stack: 0x000070000d7cf000,0x000070000d8cf000] [id=27395]
+  0x00007f87baf8d4d0 WorkerThread "G1 Conc#2" [stack: 0x000070000d8d2000,0x000070000d9d2000] [id=27651]
+  0x00007f87bad2cc20 ConcurrentGCThread "G1 Refine#0" [stack: 0x000070000b76c000,0x000070000b86c000] [id=20483]
+  0x00007f87bad2d9b0 ConcurrentGCThread "G1 Service" [stack: 0x000070000b86f000,0x000070000b96f000] [id=15107]
+
+Threads with active compile tasks:
+
+VM state: not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap address: 0x0000000400000000, size: 16384 MB, Compressed Oops mode: Zero based, Oop shift amount: 3
+
+CDS archive(s) mapped at: [0x0000000800000000-0x0000000800c42000-0x0000000800c42000), size 12853248, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 0.
+Compressed class space mapped at: 0x0000000801000000-0x0000000841000000, reserved size: 1073741824
+Narrow klass base: 0x0000000800000000, Narrow klass shift: 0, Narrow klass range: 0x100000000
+
+GC Precious Log:
+ CardTable entry size: 512
+ Card Set container configuration: InlinePtr #cards 4 size 8 Array Of Cards #cards 64 size 144 Howl #buckets 8 coarsen threshold 14745 Howl Bitmap #cards 2048 size 272 coarsen threshold 1843 Card regions per heap region 1 cards per card region 16384
+ CPUs: 16 total, 16 available
+ Memory: 65536M
+ Large Page Support: Disabled
+ NUMA Support: Disabled
+ Compressed Oops: Enabled (Zero based)
+ Heap Region Size: 8M
+ Heap Min Capacity: 8M
+ Heap Initial Capacity: 1G
+ Heap Max Capacity: 16G
+ Pre-touch: Disabled
+ Parallel Workers: 13
+ Concurrent Workers: 3
+ Concurrent Refinement Workers: 13
+ Periodic GC: Disabled
+
+Heap:
+ garbage-first heap   total 868352K, used 290972K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 25 young (204800K), 2 survivors (16384K)
+ Metaspace       used 166106K, committed 206912K, reserved 1245184K
+  class space    used 42952K, committed 56960K, reserved 1048576K
+
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, OA=open archive, CA=closed archive, TAMS=top-at-mark-start (previous, next)
+|   0|0x0000000400000000, 0x0000000400800000, 0x0000000400800000|100%| O|  |TAMS 0x0000000400800000, 0x0000000400000000| Untracked 
+|   1|0x0000000400800000, 0x0000000401000000, 0x0000000401000000|100%| O|  |TAMS 0x0000000401000000, 0x0000000400800000| Untracked 
+|   2|0x0000000401000000, 0x0000000401800000, 0x0000000401800000|100%| O|  |TAMS 0x0000000401800000, 0x0000000401000000| Untracked 
+|   3|0x0000000401800000, 0x0000000402000000, 0x0000000402000000|100%| O|  |TAMS 0x0000000402000000, 0x0000000401800000| Untracked 
+|   4|0x0000000402000000, 0x0000000402800000, 0x0000000402800000|100%| O|  |TAMS 0x0000000402800000, 0x0000000402000000| Untracked 
+|   5|0x0000000402800000, 0x0000000402800000, 0x0000000403000000|  0%| F|  |TAMS 0x0000000402800000, 0x0000000402800000| Untracked 
+|   6|0x0000000403000000, 0x0000000403800000, 0x0000000403800000|100%| O|  |TAMS 0x0000000403800000, 0x0000000403000000| Untracked 
+|   7|0x0000000403800000, 0x0000000404000000, 0x0000000404000000|100%| O|  |TAMS 0x0000000404000000, 0x0000000403800000| Untracked 
+|   8|0x0000000404000000, 0x0000000404800000, 0x0000000404800000|100%| O|  |TAMS 0x0000000404580e00, 0x0000000404000000| Untracked 
+|   9|0x0000000404800000, 0x0000000405000000, 0x0000000405000000|100%| O|  |TAMS 0x0000000404800000, 0x0000000404800000| Untracked 
+|  10|0x0000000405000000, 0x0000000405800000, 0x0000000405800000|100%| O|  |TAMS 0x0000000405000000, 0x0000000405000000| Untracked 
+|  11|0x0000000405800000, 0x0000000406000000, 0x0000000406000000|100%| O|  |TAMS 0x0000000405800000, 0x0000000405800000| Untracked 
+|  12|0x0000000406000000, 0x00000004063a6a00, 0x0000000406800000| 45%| O|  |TAMS 0x0000000406000000, 0x0000000406000000| Untracked 
+|  13|0x0000000406800000, 0x0000000406800000, 0x0000000407000000|  0%| F|  |TAMS 0x0000000406800000, 0x0000000406800000| Untracked 
+|  14|0x0000000407000000, 0x0000000407000000, 0x0000000407800000|  0%| F|  |TAMS 0x0000000407000000, 0x0000000407000000| Untracked 
+|  15|0x0000000407800000, 0x0000000407800000, 0x0000000408000000|  0%| F|  |TAMS 0x0000000407800000, 0x0000000407800000| Untracked 
+|  16|0x0000000408000000, 0x0000000408000000, 0x0000000408800000|  0%| F|  |TAMS 0x0000000408000000, 0x0000000408000000| Untracked 
+|  17|0x0000000408800000, 0x0000000408800000, 0x0000000409000000|  0%| F|  |TAMS 0x0000000408800000, 0x0000000408800000| Untracked 
+|  18|0x0000000409000000, 0x0000000409000000, 0x0000000409800000|  0%| F|  |TAMS 0x0000000409000000, 0x0000000409000000| Untracked 
+|  19|0x0000000409800000, 0x0000000409800000, 0x000000040a000000|  0%| F|  |TAMS 0x0000000409800000, 0x0000000409800000| Untracked 
+|  20|0x000000040a000000, 0x000000040a000000, 0x000000040a800000|  0%| F|  |TAMS 0x000000040a000000, 0x000000040a000000| Untracked 
+|  21|0x000000040a800000, 0x000000040a800000, 0x000000040b000000|  0%| F|  |TAMS 0x000000040a800000, 0x000000040a800000| Untracked 
+|  22|0x000000040b000000, 0x000000040b000000, 0x000000040b800000|  0%| F|  |TAMS 0x000000040b000000, 0x000000040b000000| Untracked 
+|  23|0x000000040b800000, 0x000000040b800000, 0x000000040c000000|  0%| F|  |TAMS 0x000000040b800000, 0x000000040b800000| Untracked 
+|  24|0x000000040c000000, 0x000000040c000000, 0x000000040c800000|  0%| F|  |TAMS 0x000000040c000000, 0x000000040c000000| Untracked 
+|  25|0x000000040c800000, 0x000000040c800000, 0x000000040d000000|  0%| F|  |TAMS 0x000000040c800000, 0x000000040c800000| Untracked 
+|  26|0x000000040d000000, 0x000000040d000000, 0x000000040d800000|  0%| F|  |TAMS 0x000000040d000000, 0x000000040d000000| Untracked 
+|  27|0x000000040d800000, 0x000000040d800000, 0x000000040e000000|  0%| F|  |TAMS 0x000000040d800000, 0x000000040d800000| Untracked 
+|  28|0x000000040e000000, 0x000000040e000000, 0x000000040e800000|  0%| F|  |TAMS 0x000000040e000000, 0x000000040e000000| Untracked 
+|  29|0x000000040e800000, 0x000000040e800000, 0x000000040f000000|  0%| F|  |TAMS 0x000000040e800000, 0x000000040e800000| Untracked 
+|  30|0x000000040f000000, 0x000000040f000000, 0x000000040f800000|  0%| F|  |TAMS 0x000000040f000000, 0x000000040f000000| Untracked 
+|  31|0x000000040f800000, 0x000000040f800000, 0x0000000410000000|  0%| F|  |TAMS 0x000000040f800000, 0x000000040f800000| Untracked 
+|  32|0x0000000410000000, 0x0000000410000000, 0x0000000410800000|  0%| F|  |TAMS 0x0000000410000000, 0x0000000410000000| Untracked 
+|  33|0x0000000410800000, 0x0000000410800000, 0x0000000411000000|  0%| F|  |TAMS 0x0000000410800000, 0x0000000410800000| Untracked 
+|  34|0x0000000411000000, 0x0000000411000000, 0x0000000411800000|  0%| F|  |TAMS 0x0000000411000000, 0x0000000411000000| Untracked 
+|  35|0x0000000411800000, 0x0000000411800000, 0x0000000412000000|  0%| F|  |TAMS 0x0000000411800000, 0x0000000411800000| Untracked 
+|  36|0x0000000412000000, 0x0000000412000000, 0x0000000412800000|  0%| F|  |TAMS 0x0000000412000000, 0x0000000412000000| Untracked 
+|  37|0x0000000412800000, 0x0000000412800000, 0x0000000413000000|  0%| F|  |TAMS 0x0000000412800000, 0x0000000412800000| Untracked 
+|  38|0x0000000413000000, 0x0000000413000000, 0x0000000413800000|  0%| F|  |TAMS 0x0000000413000000, 0x0000000413000000| Untracked 
+|  39|0x0000000413800000, 0x000000041388c730, 0x0000000414000000|  6%| S|CS|TAMS 0x0000000413800000, 0x0000000413800000| Complete 
+|  40|0x0000000414000000, 0x0000000414800000, 0x0000000414800000|100%| S|CS|TAMS 0x0000000414000000, 0x0000000414000000| Complete 
+|  41|0x0000000414800000, 0x0000000414800000, 0x0000000415000000|  0%| F|  |TAMS 0x0000000414800000, 0x0000000414800000| Untracked 
+|  42|0x0000000415000000, 0x0000000415000000, 0x0000000415800000|  0%| F|  |TAMS 0x0000000415000000, 0x0000000415000000| Untracked 
+|  43|0x0000000415800000, 0x0000000415800000, 0x0000000416000000|  0%| F|  |TAMS 0x0000000415800000, 0x0000000415800000| Untracked 
+|  44|0x0000000416000000, 0x0000000416000000, 0x0000000416800000|  0%| F|  |TAMS 0x0000000416000000, 0x0000000416000000| Untracked 
+|  45|0x0000000416800000, 0x0000000416800000, 0x0000000417000000|  0%| F|  |TAMS 0x0000000416800000, 0x0000000416800000| Untracked 
+|  46|0x0000000417000000, 0x0000000417000000, 0x0000000417800000|  0%| F|  |TAMS 0x0000000417000000, 0x0000000417000000| Untracked 
+|  47|0x0000000417800000, 0x0000000417800000, 0x0000000418000000|  0%| F|  |TAMS 0x0000000417800000, 0x0000000417800000| Untracked 
+|  48|0x0000000418000000, 0x0000000418000000, 0x0000000418800000|  0%| F|  |TAMS 0x0000000418000000, 0x0000000418000000| Untracked 
+|  49|0x0000000418800000, 0x0000000418800000, 0x0000000419000000|  0%| F|  |TAMS 0x0000000418800000, 0x0000000418800000| Untracked 
+|  50|0x0000000419000000, 0x0000000419000000, 0x0000000419800000|  0%| F|  |TAMS 0x0000000419000000, 0x0000000419000000| Untracked 
+|  51|0x0000000419800000, 0x0000000419800000, 0x000000041a000000|  0%| F|  |TAMS 0x0000000419800000, 0x0000000419800000| Untracked 
+|  52|0x000000041a000000, 0x000000041a000000, 0x000000041a800000|  0%| F|  |TAMS 0x000000041a000000, 0x000000041a000000| Untracked 
+|  53|0x000000041a800000, 0x000000041a800000, 0x000000041b000000|  0%| F|  |TAMS 0x000000041a800000, 0x000000041a800000| Untracked 
+|  54|0x000000041b000000, 0x000000041b000000, 0x000000041b800000|  0%| F|  |TAMS 0x000000041b000000, 0x000000041b000000| Untracked 
+|  55|0x000000041b800000, 0x000000041b800000, 0x000000041c000000|  0%| F|  |TAMS 0x000000041b800000, 0x000000041b800000| Untracked 
+|  56|0x000000041c000000, 0x000000041c000000, 0x000000041c800000|  0%| F|  |TAMS 0x000000041c000000, 0x000000041c000000| Untracked 
+|  57|0x000000041c800000, 0x000000041c800000, 0x000000041d000000|  0%| F|  |TAMS 0x000000041c800000, 0x000000041c800000| Untracked 
+|  58|0x000000041d000000, 0x000000041d000000, 0x000000041d800000|  0%| F|  |TAMS 0x000000041d000000, 0x000000041d000000| Untracked 
+|  59|0x000000041d800000, 0x000000041d800000, 0x000000041e000000|  0%| F|  |TAMS 0x000000041d800000, 0x000000041d800000| Untracked 
+|  60|0x000000041e000000, 0x000000041e000000, 0x000000041e800000|  0%| F|  |TAMS 0x000000041e000000, 0x000000041e000000| Untracked 
+|  61|0x000000041e800000, 0x000000041e800000, 0x000000041f000000|  0%| F|  |TAMS 0x000000041e800000, 0x000000041e800000| Untracked 
+|  62|0x000000041f000000, 0x000000041f000000, 0x000000041f800000|  0%| F|  |TAMS 0x000000041f000000, 0x000000041f000000| Untracked 
+|  63|0x000000041f800000, 0x000000041f800000, 0x0000000420000000|  0%| F|  |TAMS 0x000000041f800000, 0x000000041f800000| Untracked 
+|  64|0x0000000420000000, 0x0000000420000000, 0x0000000420800000|  0%| F|  |TAMS 0x0000000420000000, 0x0000000420000000| Untracked 
+|  65|0x0000000420800000, 0x0000000420800000, 0x0000000421000000|  0%| F|  |TAMS 0x0000000420800000, 0x0000000420800000| Untracked 
+|  66|0x0000000421000000, 0x0000000421000000, 0x0000000421800000|  0%| F|  |TAMS 0x0000000421000000, 0x0000000421000000| Untracked 
+|  67|0x0000000421800000, 0x0000000421800000, 0x0000000422000000|  0%| F|  |TAMS 0x0000000421800000, 0x0000000421800000| Untracked 
+|  68|0x0000000422000000, 0x0000000422000000, 0x0000000422800000|  0%| F|  |TAMS 0x0000000422000000, 0x0000000422000000| Untracked 
+|  69|0x0000000422800000, 0x0000000422800000, 0x0000000423000000|  0%| F|  |TAMS 0x0000000422800000, 0x0000000422800000| Untracked 
+|  70|0x0000000423000000, 0x0000000423000000, 0x0000000423800000|  0%| F|  |TAMS 0x0000000423000000, 0x0000000423000000| Untracked 
+|  71|0x0000000423800000, 0x0000000423800000, 0x0000000424000000|  0%| F|  |TAMS 0x0000000423800000, 0x0000000423800000| Untracked 
+|  72|0x0000000424000000, 0x0000000424000000, 0x0000000424800000|  0%| F|  |TAMS 0x0000000424000000, 0x0000000424000000| Untracked 
+|  73|0x0000000424800000, 0x0000000424800000, 0x0000000425000000|  0%| F|  |TAMS 0x0000000424800000, 0x0000000424800000| Untracked 
+|  74|0x0000000425000000, 0x0000000425000000, 0x0000000425800000|  0%| F|  |TAMS 0x0000000425000000, 0x0000000425000000| Untracked 
+|  75|0x0000000425800000, 0x0000000425800000, 0x0000000426000000|  0%| F|  |TAMS 0x0000000425800000, 0x0000000425800000| Untracked 
+|  76|0x0000000426000000, 0x0000000426000000, 0x0000000426800000|  0%| F|  |TAMS 0x0000000426000000, 0x0000000426000000| Untracked 
+|  77|0x0000000426800000, 0x0000000426800000, 0x0000000427000000|  0%| F|  |TAMS 0x0000000426800000, 0x0000000426800000| Untracked 
+|  78|0x0000000427000000, 0x0000000427000000, 0x0000000427800000|  0%| F|  |TAMS 0x0000000427000000, 0x0000000427000000| Untracked 
+|  79|0x0000000427800000, 0x0000000427800000, 0x0000000428000000|  0%| F|  |TAMS 0x0000000427800000, 0x0000000427800000| Untracked 
+|  80|0x0000000428000000, 0x0000000428000000, 0x0000000428800000|  0%| F|  |TAMS 0x0000000428000000, 0x0000000428000000| Untracked 
+|  81|0x0000000428800000, 0x0000000429000000, 0x0000000429000000|100%| E|  |TAMS 0x0000000428800000, 0x0000000428800000| Complete 
+|  82|0x0000000429000000, 0x0000000429800000, 0x0000000429800000|100%| E|CS|TAMS 0x0000000429000000, 0x0000000429000000| Complete 
+|  83|0x0000000429800000, 0x000000042a000000, 0x000000042a000000|100%| E|CS|TAMS 0x0000000429800000, 0x0000000429800000| Complete 
+|  84|0x000000042a000000, 0x000000042a800000, 0x000000042a800000|100%| E|CS|TAMS 0x000000042a000000, 0x000000042a000000| Complete 
+|  85|0x000000042a800000, 0x000000042b000000, 0x000000042b000000|100%| E|CS|TAMS 0x000000042a800000, 0x000000042a800000| Complete 
+|  86|0x000000042b000000, 0x000000042b800000, 0x000000042b800000|100%| E|CS|TAMS 0x000000042b000000, 0x000000042b000000| Complete 
+|  87|0x000000042b800000, 0x000000042c000000, 0x000000042c000000|100%| E|CS|TAMS 0x000000042b800000, 0x000000042b800000| Complete 
+|  88|0x000000042c000000, 0x000000042c800000, 0x000000042c800000|100%| E|CS|TAMS 0x000000042c000000, 0x000000042c000000| Complete 
+|  89|0x000000042c800000, 0x000000042d000000, 0x000000042d000000|100%| E|CS|TAMS 0x000000042c800000, 0x000000042c800000| Complete 
+|  90|0x000000042d000000, 0x000000042d800000, 0x000000042d800000|100%| E|CS|TAMS 0x000000042d000000, 0x000000042d000000| Complete 
+|  91|0x000000042d800000, 0x000000042e000000, 0x000000042e000000|100%| E|CS|TAMS 0x000000042d800000, 0x000000042d800000| Complete 
+|  92|0x000000042e000000, 0x000000042e800000, 0x000000042e800000|100%| E|CS|TAMS 0x000000042e000000, 0x000000042e000000| Complete 
+|  93|0x000000042e800000, 0x000000042f000000, 0x000000042f000000|100%| E|CS|TAMS 0x000000042e800000, 0x000000042e800000| Complete 
+|  94|0x000000042f000000, 0x000000042f800000, 0x000000042f800000|100%| E|CS|TAMS 0x000000042f000000, 0x000000042f000000| Complete 
+|  95|0x000000042f800000, 0x0000000430000000, 0x0000000430000000|100%| E|CS|TAMS 0x000000042f800000, 0x000000042f800000| Complete 
+|  96|0x0000000430000000, 0x0000000430800000, 0x0000000430800000|100%| E|CS|TAMS 0x0000000430000000, 0x0000000430000000| Complete 
+|  97|0x0000000430800000, 0x0000000431000000, 0x0000000431000000|100%| E|CS|TAMS 0x0000000430800000, 0x0000000430800000| Complete 
+|  98|0x0000000431000000, 0x0000000431800000, 0x0000000431800000|100%| E|CS|TAMS 0x0000000431000000, 0x0000000431000000| Complete 
+|  99|0x0000000431800000, 0x0000000432000000, 0x0000000432000000|100%| E|CS|TAMS 0x0000000431800000, 0x0000000431800000| Complete 
+| 100|0x0000000432000000, 0x0000000432800000, 0x0000000432800000|100%| E|CS|TAMS 0x0000000432000000, 0x0000000432000000| Complete 
+| 101|0x0000000432800000, 0x0000000433000000, 0x0000000433000000|100%| E|CS|TAMS 0x0000000432800000, 0x0000000432800000| Complete 
+| 102|0x0000000433000000, 0x0000000433800000, 0x0000000433800000|100%| E|CS|TAMS 0x0000000433000000, 0x0000000433000000| Complete 
+| 127|0x000000043f800000, 0x0000000440000000, 0x0000000440000000|100%| E|CS|TAMS 0x000000043f800000, 0x000000043f800000| Complete 
+|2046|0x00000007ff000000, 0x00000007ff777000, 0x00000007ff800000| 93%|OA|  |TAMS 0x00000007ff777000, 0x00000007ff000000| Untracked 
+|2047|0x00000007ff800000, 0x00000007ff87d000, 0x0000000800000000|  6%|CA|  |TAMS 0x00000007ff800000, 0x00000007ff800000| Untracked 
+
+Card table byte_map: [0x0000000124d10000,0x0000000126d10000] _byte_map_base: 0x0000000122d10000
+
+Marking Bits (Prev, Next): (CMBitMap*) 0x00007f87bc008250, (CMBitMap*) 0x00007f87bc008210
+ Prev Bits: [0x0000000138d10000, 0x0000000148d10000)
+ Next Bits: [0x0000000128d10000, 0x0000000138d10000)
+
+Polling page: 0x00000001097ef000
+
+Metaspace:
+
+Usage:
+  Non-class:    120.27 MB used.
+      Class:     41.95 MB used.
+       Both:    162.21 MB used.
+
+Virtual space:
+  Non-class space:      192.00 MB reserved,     146.44 MB ( 76%) committed,  3 nodes.
+      Class space:        1.00 GB reserved,      55.62 MB (  5%) committed,  1 nodes.
+             Both:        1.19 GB reserved,     202.06 MB ( 17%) committed. 
+
+Chunk freelists:
+   Non-Class:  1.41 MB
+       Class:  370.00 KB
+        Both:  1.78 MB
+
+MaxMetaspaceSize: unlimited
+CompressedClassSpaceSize: 1.00 GB
+Initial GC threshold: 21.00 MB
+Current GC threshold: 277.94 MB
+CDS: on
+MetaspaceReclaimPolicy: balanced
+ - commit_granule_bytes: 65536.
+ - commit_granule_words: 8192.
+ - virtual_space_node_default_size: 8388608.
+ - enlarge_chunks_in_place: 1.
+ - new_chunks_are_fully_committed: 0.
+ - uncommit_free_chunks: 1.
+ - use_allocation_guard: 0.
+
+
+Internal statistics:
+
+num_allocs_failed_limit: 27.
+num_arena_births: 25364.
+num_arena_deaths: 0.
+num_vsnodes_births: 4.
+num_vsnodes_deaths: 0.
+num_space_committed: 3231.
+num_space_uncommitted: 0.
+num_chunks_returned_to_freelist: 27.
+num_chunks_taken_from_freelist: 35691.
+num_chunk_merges: 27.
+num_chunk_splits: 23482.
+num_chunks_enlarged: 12137.
+num_inconsistent_stats: 0.
+
+CodeHeap 'non-profiled nmethods': size=119168Kb used=13547Kb max_used=14079Kb free=105620Kb
+ bounds [0x000000011b8b0000, 0x000000011c690000, 0x0000000122d10000]
+CodeHeap 'profiled nmethods': size=119164Kb used=17883Kb max_used=18811Kb free=101280Kb
+ bounds [0x0000000113d10000, 0x0000000114fa0000, 0x000000011b16f000]
+CodeHeap 'non-nmethods': size=7428Kb used=1596Kb max_used=3453Kb free=5831Kb
+ bounds [0x000000011b16f000, 0x000000011b4df000, 0x000000011b8b0000]
+ total_blobs=7487 nmethods=6577 adapters=818
+ compilation: enabled
+              stopped_count=0, restarted_count=0
+ full_count=0
+
+Compilation events (20 events):
+Event: 667.631 Thread 0x00007f87bb0bae00 9744       3       nrepl.bencode$lexicographically::invoke (10 bytes)
+Event: 667.631 Thread 0x00007f87bb0bae00 nmethod 9744 0x00000001141f6c90 code [0x00000001141f6e40, 0x00000001141f6f80]
+Event: 667.631 Thread 0x00007f87bb0bae00 9745       3       nrepl.bencode$lexicographically::invokeStatic (106 bytes)
+Event: 667.632 Thread 0x00007f87bb0bae00 nmethod 9745 0x0000000113f1ac10 code [0x0000000113f1af00, 0x0000000113f1bfc0]
+Event: 667.632 Thread 0x00007f87bb0bae00 9746       3       clojure.lang.Numbers::min (6 bytes)
+Event: 667.632 Thread 0x00007f87bb0bae00 nmethod 9746 0x0000000113ddbf90 code [0x0000000113ddc140, 0x0000000113ddc2d0]
+Event: 670.633 Thread 0x00007f87cb008600 9747       4       io.github.humbleui.core$child_close::invoke (7 bytes)
+Event: 670.634 Thread 0x00007f87cb008600 nmethod 9747 0x000000011b9c1310 code [0x000000011b9c14a0, 0x000000011b9c1578]
+Event: 671.083 Thread 0x00007f87bb0bae00 9748       3       io.github.humbleui.ui.rect$rect::invoke (10 bytes)
+Event: 671.083 Thread 0x00007f87bb0bae00 nmethod 9748 0x000000011458c610 code [0x000000011458c7e0, 0x000000011458cb60]
+Event: 671.083 Thread 0x00007f87bb0bae00 9749       3       io.github.humbleui.ui.rect$rect::invokeStatic (22 bytes)
+Event: 671.083 Thread 0x00007f87bb0bae00 nmethod 9749 0x0000000113e60890 code [0x0000000113e60a40, 0x0000000113e60d40]
+Event: 671.083 Thread 0x00007f87bb0bae00 9750       3       io.github.humbleui.ui.rect$__GT_Rect::invoke (13 bytes)
+Event: 671.083 Thread 0x00007f87bb0bae00 nmethod 9750 0x0000000114308210 code [0x00000001143083c0, 0x0000000114308500]
+Event: 671.083 Thread 0x00007f87bb0bae00 9751       3       io.github.humbleui.ui.rect$__GT_Rect::invokeStatic (18 bytes)
+Event: 671.084 Thread 0x00007f87bb0bae00 nmethod 9751 0x00000001140cff10 code [0x00000001140d00c0, 0x00000001140d03f0]
+Event: 671.084 Thread 0x00007f87bb0bae00 9752       3       io.github.humbleui.ui.rect.Rect::<init> (26 bytes)
+Event: 671.084 Thread 0x00007f87bb0bae00 nmethod 9752 0x0000000113ffd490 code [0x0000000113ffd640, 0x0000000113ffd930]
+Event: 671.084 Thread 0x00007f87cb008600 9753       4       java.nio.Buffer::limit (65 bytes)
+Event: 671.085 Thread 0x00007f87cb008600 nmethod 9753 0x000000011c1a6190 code [0x000000011c1a6320, 0x000000011c1a6418]
+
+GC Heap History (20 events):
+Event: 23.909 GC heap before
+{Heap before GC invocations=37 (full 0):
+ garbage-first heap   total 606208K, used 422229K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 44 young (360448K), 4 survivors (32768K)
+ Metaspace       used 127702K, committed 162432K, reserved 1179648K
+  class space    used 31719K, committed 43264K, reserved 1048576K
+}
+Event: 23.920 GC heap after
+{Heap after GC invocations=38 (full 0):
+ garbage-first heap   total 606208K, used 97702K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 4 young (32768K), 4 survivors (32768K)
+ Metaspace       used 127702K, committed 162432K, reserved 1179648K
+  class space    used 31719K, committed 43264K, reserved 1048576K
+}
+Event: 29.649 GC heap before
+{Heap before GC invocations=38 (full 0):
+ garbage-first heap   total 606208K, used 425382K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 44 young (360448K), 4 survivors (32768K)
+ Metaspace       used 132263K, committed 167744K, reserved 1179648K
+  class space    used 32959K, committed 44800K, reserved 1048576K
+}
+Event: 29.660 GC heap after
+{Heap after GC invocations=39 (full 0):
+ garbage-first heap   total 606208K, used 100555K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 4 young (32768K), 4 survivors (32768K)
+ Metaspace       used 132263K, committed 167744K, reserved 1179648K
+  class space    used 32959K, committed 44800K, reserved 1048576K
+}
+Event: 30.041 GC heap before
+{Heap before GC invocations=39 (full 0):
+ garbage-first heap   total 606208K, used 231627K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 21 young (172032K), 4 survivors (32768K)
+ Metaspace       used 134277K, committed 170240K, reserved 1179648K
+  class space    used 33465K, committed 45504K, reserved 1048576K
+}
+Event: 30.056 GC heap after
+{Heap after GC invocations=40 (full 0):
+ garbage-first heap   total 606208K, used 103310K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 3 young (24576K), 3 survivors (24576K)
+ Metaspace       used 134277K, committed 170240K, reserved 1179648K
+  class space    used 33465K, committed 45504K, reserved 1048576K
+}
+Event: 60.794 GC heap before
+{Heap before GC invocations=41 (full 0):
+ garbage-first heap   total 442368K, used 340878K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 32 young (262144K), 3 survivors (24576K)
+ Metaspace       used 138494K, committed 175552K, reserved 1179648K
+  class space    used 34560K, committed 46912K, reserved 1048576K
+}
+Event: 60.803 GC heap after
+{Heap after GC invocations=42 (full 0):
+ garbage-first heap   total 442368K, used 105916K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 3 young (24576K), 3 survivors (24576K)
+ Metaspace       used 138494K, committed 175552K, reserved 1179648K
+  class space    used 34560K, committed 46912K, reserved 1048576K
+}
+Event: 60.827 GC heap before
+{Heap before GC invocations=42 (full 0):
+ garbage-first heap   total 442368K, used 114108K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 4 young (32768K), 3 survivors (24576K)
+ Metaspace       used 138601K, committed 175680K, reserved 1179648K
+  class space    used 34587K, committed 46976K, reserved 1048576K
+}
+Event: 60.837 GC heap after
+{Heap after GC invocations=43 (full 0):
+ garbage-first heap   total 442368K, used 107175K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace       used 138601K, committed 175680K, reserved 1179648K
+  class space    used 34587K, committed 46976K, reserved 1048576K
+}
+Event: 64.989 GC heap before
+{Heap before GC invocations=43 (full 0):
+ garbage-first heap   total 442368K, used 352935K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 32 young (262144K), 1 survivors (8192K)
+ Metaspace       used 139792K, committed 177152K, reserved 1179648K
+  class space    used 34937K, committed 47424K, reserved 1048576K
+}
+Event: 64.993 GC heap after
+{Heap after GC invocations=44 (full 0):
+ garbage-first heap   total 868352K, used 106034K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace       used 139792K, committed 177152K, reserved 1179648K
+  class space    used 34937K, committed 47424K, reserved 1048576K
+}
+Event: 260.958 GC heap before
+{Heap before GC invocations=44 (full 0):
+ garbage-first heap   total 868352K, used 613938K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 63 young (516096K), 1 survivors (8192K)
+ Metaspace       used 145490K, committed 183616K, reserved 1245184K
+  class space    used 36655K, committed 49472K, reserved 1048576K
+}
+Event: 260.962 GC heap after
+{Heap after GC invocations=45 (full 0):
+ garbage-first heap   total 868352K, used 107594K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace       used 145490K, committed 183616K, reserved 1245184K
+  class space    used 36655K, committed 49472K, reserved 1048576K
+}
+Event: 421.241 GC heap before
+{Heap before GC invocations=45 (full 0):
+ garbage-first heap   total 868352K, used 615498K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 63 young (516096K), 1 survivors (8192K)
+ Metaspace       used 151204K, committed 190080K, reserved 1245184K
+  class space    used 38379K, committed 51520K, reserved 1048576K
+}
+Event: 421.246 GC heap after
+{Heap after GC invocations=46 (full 0):
+ garbage-first heap   total 868352K, used 108536K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace       used 151204K, committed 190080K, reserved 1245184K
+  class space    used 38379K, committed 51520K, reserved 1048576K
+}
+Event: 527.597 GC heap before
+{Heap before GC invocations=46 (full 0):
+ garbage-first heap   total 868352K, used 616440K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 63 young (516096K), 1 survivors (8192K)
+ Metaspace       used 157290K, committed 196992K, reserved 1245184K
+  class space    used 40251K, committed 53760K, reserved 1048576K
+}
+Event: 527.602 GC heap after
+{Heap after GC invocations=47 (full 0):
+ garbage-first heap   total 868352K, used 109259K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 1 young (8192K), 1 survivors (8192K)
+ Metaspace       used 157290K, committed 196992K, reserved 1245184K
+  class space    used 40251K, committed 53760K, reserved 1048576K
+}
+Event: 616.585 GC heap before
+{Heap before GC invocations=47 (full 0):
+ garbage-first heap   total 868352K, used 617163K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 63 young (516096K), 1 survivors (8192K)
+ Metaspace       used 163875K, committed 204352K, reserved 1245184K
+  class space    used 42273K, committed 56128K, reserved 1048576K
+}
+Event: 616.592 GC heap after
+{Heap after GC invocations=48 (full 0):
+ garbage-first heap   total 868352K, used 110748K [0x0000000400000000, 0x0000000800000000)
+  region size 8192K, 2 young (16384K), 2 survivors (16384K)
+ Metaspace       used 163875K, committed 204352K, reserved 1245184K
+  class space    used 42273K, committed 56128K, reserved 1048576K
+}
+
+Dll operation events (14 events):
+Event: 0.008 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libjava.dylib
+Event: 0.064 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libnio.dylib
+Event: 0.068 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libzip.dylib
+Event: 0.186 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libjimage.dylib
+Event: 4.422 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libverify.dylib
+Event: 8.569 Loaded shared library /private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/skija_0.109.1_x64/libskija.dylib
+Event: 16.820 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libawt.dylib
+Event: 16.823 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libawt_lwawt.dylib
+Event: 16.845 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libfontmanager.dylib
+Event: 17.195 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libosxui.dylib
+Event: 23.931 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libnet.dylib
+Event: 30.177 Loaded shared library /private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/jwm_2156558017841354/libjwm_x64.dylib
+Event: 30.745 Loaded shared library /Users/folcon/libj2v8_macosx_x86_64.dylib
+Event: 30.746 Loaded shared library /usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libextnet.dylib
+
+Deoptimization events (20 events):
+Event: 322.054 Thread 0x00007f871b279000 DEOPT PACKING pc=0x000000011ba7f748 sp=0x00007ffee73f9880
+Event: 322.054 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5299 sp=0x00007ffee73f98e8 mode 2
+Event: 394.371 Thread 0x00007f871b279000 Uncommon trap: trap_request=0xffffff45 fr.pc=0x000000011bdb3f68 relative=0x0000000000000e68
+Event: 394.371 Thread 0x00007f871b279000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x000000011bdb3f68 method=java.util.Formatter$FormatSpecifier.print(Ljava/util/Formatter;JLjava/util/Locale;)V @ 15 c2
+Event: 394.371 Thread 0x00007f871b279000 DEOPT PACKING pc=0x000000011bdb3f68 sp=0x00007ffee73f9440
+Event: 394.371 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5299 sp=0x00007ffee73f9408 mode 2
+Event: 489.034 Thread 0x00007f871b279000 Uncommon trap: trap_request=0xffffff45 fr.pc=0x000000011be936a0 relative=0x0000000000000180
+Event: 489.034 Thread 0x00007f871b279000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x000000011be936a0 method=io.github.humbleui.ui.stack.Stack$fn__16389.invoke(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; @ 28 c2
+Event: 489.034 Thread 0x00007f871b279000 DEOPT PACKING pc=0x000000011be936a0 sp=0x00007ffee73fc550
+Event: 489.034 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5299 sp=0x00007ffee73fc4f0 mode 2
+Event: 489.034 Thread 0x00007f871b279000 Uncommon trap: trap_request=0xffffff45 fr.pc=0x000000011c4f4674 relative=0x00000000000001b4
+Event: 489.034 Thread 0x00007f871b279000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x000000011c4f4674 method=clojure.lang.PersistentList.reduce(Lclojure/lang/IFn;Ljava/lang/Object;)Ljava/lang/Object; @ 71 c2
+Event: 489.034 Thread 0x00007f871b279000 DEOPT PACKING pc=0x000000011c4f4674 sp=0x00007ffee73fc590
+Event: 489.034 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5299 sp=0x00007ffee73fc538 mode 2
+Event: 523.449 Thread 0x00007f871b279000 Uncommon trap: trap_request=0xffffff45 fr.pc=0x000000011be2a35c relative=0x0000000000003d7c
+Event: 523.449 Thread 0x00007f871b279000 Uncommon trap: reason=unstable_if action=reinterpret pc=0x000000011be2a35c method=io.github.humbleui.event$event__GT_map.invokeStatic(Ljava/lang/Object;)Ljava/lang/Object; @ 131 c2
+Event: 523.449 Thread 0x00007f871b279000 DEOPT PACKING pc=0x000000011be2a35c sp=0x00007ffee73fc9f0
+Event: 523.449 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5299 sp=0x00007ffee73fc9b8 mode 2
+Event: 566.686 Thread 0x00007f871b279000 DEOPT PACKING pc=0x0000000114e74e72 sp=0x00007ffee73fb310
+Event: 566.686 Thread 0x00007f871b279000 DEOPT UNPACKING pc=0x000000011b1d5a2f sp=0x00007ffee73faa98 mode 0
+
+Classes loaded (20 events):
+Event: 31.396 Loading class jdk/internal/math/FormattedFloatingDecimal$1
+Event: 31.396 Loading class jdk/internal/math/FormattedFloatingDecimal$1 done
+Event: 31.396 Loading class jdk/internal/math/FormattedFloatingDecimal$2
+Event: 31.396 Loading class jdk/internal/math/FormattedFloatingDecimal$2 done
+Event: 60.717 Loading class java/net/Socket$SocketInputStream
+Event: 60.717 Loading class java/net/Socket$SocketInputStream done
+Event: 60.717 Loading class sun/nio/ch/NioSocketImpl$1
+Event: 60.717 Loading class sun/nio/ch/NioSocketImpl$1 done
+Event: 60.718 Loading class java/net/Socket$SocketOutputStream
+Event: 60.718 Loading class java/net/Socket$SocketOutputStream done
+Event: 60.718 Loading class sun/nio/ch/NioSocketImpl$2
+Event: 60.718 Loading class sun/nio/ch/NioSocketImpl$2 done
+Event: 60.728 Loading class java/lang/Thread$Constants$1
+Event: 60.728 Loading class java/lang/Thread$Constants$1 done
+Event: 60.728 Loading class java/lang/Thread$Constants$2
+Event: 60.728 Loading class java/lang/Thread$Constants$2 done
+Event: 60.728 Loading class java/lang/Thread$Constants$2$1
+Event: 60.728 Loading class java/lang/Thread$Constants$2$1 done
+Event: 247.138 Loading class java/lang/StackTraceElement$HashedModules
+Event: 247.138 Loading class java/lang/StackTraceElement$HashedModules done
+
+Classes unloaded (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (20 events):
+Event: 30.183 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x00000004168047d0}: 'void java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(java.lang.Object, long, java.lang.Object)'> (0x00000004168047d0) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.184 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x0000000416809fa8}: 'java.lang.Object java.lang.invoke.DirectMethodHandle$Holder.newInvokeSpecial(java.lang.Object, long)'> (0x0000000416809fa8) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.226 Thread 0x00007f871b279000 Implicit null exception at 0x000000011c19900b to 0x000000011c19a834
+Event: 30.240 Thread 0x00007f871b279000 Implicit null exception at 0x000000011bf88c4f to 0x000000011bf88e58
+Event: 30.250 Thread 0x00007f871b279000 Implicit null exception at 0x000000011bc8de80 to 0x000000011bc8df7c
+Event: 30.259 Thread 0x00007f871b279000 Exception <a 'java/lang/NoClassDefFoundError'{0x00000004159b4f78}: org/slf4j/impl/StaticLoggerBinder> (0x00000004159b4f78) 
+thrown [src/hotspot/share/classfile/systemDictionary.cpp, line 244]
+Event: 30.264 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x00000004159d9b90}: 'java.lang.ClassLoader java.lang.Class.getClassLoader(java.lang.Class)'> (0x00000004159d9b90) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.273 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x0000000415a37878}: 'void java.lang.invoke.DirectMethodHandle$Holder.invokeStaticInit(java.lang.Object, java.lang.Object)'> (0x0000000415a37878) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.291 Thread 0x00007f871b279000 Exception <a 'java/lang/NoClassDefFoundError'{0x0000000415e53080}: org/graalvm/polyglot/PolyglotException> (0x0000000415e53080) 
+thrown [src/hotspot/share/classfile/systemDictionary.cpp, line 244]
+Event: 30.448 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x0000000415415f50}: 'java.lang.Object java.lang.invoke.DirectMethodHandle$Holder.invokeStaticInit(java.lang.Object, long, java.lang.Object)'> (0x0000000415415f50) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.449 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x00000004134f57e8}: 'java.lang.Object java.lang.invoke.DirectMethodHandle$Holder.newInvokeSpecial(java.lang.Object, java.lang.Object, java.lang.Object, int)'> (0x00000004134f57e8) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.449 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x00000004134fa118}: 'java.lang.Object java.lang.invoke.DirectMethodHandle$Holder.invokeSpecial(java.lang.Object, java.lang.Object, java.lang.Object, java.lang.Object, int)'> (0x00000004134fa118) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.449 Thread 0x00007f871b279000 Exception <a 'java/lang/NoSuchMethodError'{0x00000004134fe040}: 'java.lang.Object java.lang.invoke.Invokers$Holder.linkToTargetMethod(java.lang.Object, java.lang.Object, int, java.lang.Object)'> (0x00000004134fe040) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+Event: 30.672 Thread 0x00007f874d8ada00 Implicit null exception at 0x000000011b9c14cf to 0x000000011b9c1551
+Event: 30.672 Thread 0x00007f874d8ada00 Implicit null exception at 0x000000011b9b542f to 0x000000011b9b54b1
+Event: 30.674 Thread 0x00007f874d8ada00 Implicit null exception at 0x000000011c3a308f to 0x000000011c3a3c80
+Event: 31.387 Thread 0x00007f871b279000 Implicit null exception at 0x000000011bf8c68e to 0x000000011bf8de4c
+Event: 60.721 Thread 0x00007f874d8a5a00 Implicit null exception at 0x000000011bad2820 to 0x000000011bad324c
+Event: 60.725 Thread 0x00007f871b29fe00 Implicit null exception at 0x000000011bd9346d to 0x000000011bd934c8
+Event: 60.734 Thread 0x00007f871b29fe00 Exception <a 'java/lang/NoSuchMethodError'{0x000000040aba0a10}: 'int java.lang.invoke.DirectMethodHandle$Holder.invokeVirtual(java.lang.Object, java.lang.Object)'> (0x000000040aba0a10) 
+thrown [src/hotspot/share/interpreter/linkResolver.cpp, line 774]
+
+VM Operations (20 events):
+Event: 567.727 Executing VM operation: Cleanup
+Event: 567.727 Executing VM operation: Cleanup done
+Event: 616.584 Executing VM operation: G1CollectForAllocation
+Event: 616.592 Executing VM operation: G1CollectForAllocation done
+Event: 618.595 Executing VM operation: Cleanup
+Event: 618.595 Executing VM operation: Cleanup done
+Event: 619.599 Executing VM operation: Cleanup
+Event: 619.599 Executing VM operation: Cleanup done
+Event: 626.619 Executing VM operation: Cleanup
+Event: 626.619 Executing VM operation: Cleanup done
+Event: 630.629 Executing VM operation: Cleanup
+Event: 630.629 Executing VM operation: Cleanup done
+Event: 664.408 Executing VM operation: HandshakeAllThreads
+Event: 664.408 Executing VM operation: HandshakeAllThreads done
+Event: 664.408 Executing VM operation: Cleanup
+Event: 664.408 Executing VM operation: Cleanup done
+Event: 665.413 Executing VM operation: Cleanup
+Event: 665.413 Executing VM operation: Cleanup done
+Event: 671.432 Executing VM operation: Cleanup
+Event: 671.432 Executing VM operation: Cleanup done
+
+Events (20 events):
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114a97510
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114b0d910
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114b2b510
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114b46a90
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114b68990
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114b6a190
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114cc0510
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114cd3d90
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114cdbd90
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114d03090
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114d61690
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114d62d10
+Event: 664.417 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114d81710
+Event: 664.418 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114dedc90
+Event: 664.418 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114e0db90
+Event: 664.418 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114e33d90
+Event: 664.418 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114ebaf90
+Event: 664.418 Thread 0x00007f879c00a400 flushing nmethod 0x0000000114ebef10
+Event: 669.209 Thread 0x00007f874c0c9000 Thread added: 0x00007f874c0c9000
+Event: 669.209 Protecting memory [0x000070000c9a5000,0x000070000c9a9000] with protection modes 0
+
+
+Dynamic libraries:
+0x00007fff6ee5a000 	/usr/lib/libz.1.dylib
+0x0000000108807000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libjli.dylib
+0x00007fff34b3f000 	/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa
+0x00007fff42336000 	/System/Library/Frameworks/Security.framework/Versions/A/Security
+0x00007fff33aa4000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices
+0x00007fff6c91e000 	/usr/lib/libSystem.B.dylib
+0x00007fff6f71b000 	/usr/lib/system/libcache.dylib
+0x00007fff6f721000 	/usr/lib/system/libcommonCrypto.dylib
+0x00007fff6f72d000 	/usr/lib/system/libcompiler_rt.dylib
+0x00007fff6f735000 	/usr/lib/system/libcopyfile.dylib
+0x00007fff6f73f000 	/usr/lib/system/libcorecrypto.dylib
+0x00007fff6f8de000 	/usr/lib/system/libdispatch.dylib
+0x00007fff6f91f000 	/usr/lib/system/libdyld.dylib
+0x00007fff6f956000 	/usr/lib/system/libkeymgr.dylib
+0x00007fff6f964000 	/usr/lib/system/liblaunch.dylib
+0x00007fff6f965000 	/usr/lib/system/libmacho.dylib
+0x00007fff6f96b000 	/usr/lib/system/libquarantine.dylib
+0x00007fff6f96e000 	/usr/lib/system/libremovefile.dylib
+0x00007fff6f970000 	/usr/lib/system/libsystem_asl.dylib
+0x00007fff6f988000 	/usr/lib/system/libsystem_blocks.dylib
+0x00007fff6f989000 	/usr/lib/system/libsystem_c.dylib
+0x00007fff6fa11000 	/usr/lib/system/libsystem_configuration.dylib
+0x00007fff6fa15000 	/usr/lib/system/libsystem_coreservices.dylib
+0x00007fff6fa19000 	/usr/lib/system/libsystem_darwin.dylib
+0x00007fff6fa22000 	/usr/lib/system/libsystem_dnssd.dylib
+0x00007fff6fa2a000 	/usr/lib/system/libsystem_featureflags.dylib
+0x00007fff6fa2c000 	/usr/lib/system/libsystem_info.dylib
+0x00007fff6faa7000 	/usr/lib/system/libsystem_m.dylib
+0x00007fff6faef000 	/usr/lib/system/libsystem_malloc.dylib
+0x00007fff6fb17000 	/usr/lib/system/libsystem_networkextension.dylib
+0x00007fff6fb25000 	/usr/lib/system/libsystem_notify.dylib
+0x00007fff6fb43000 	/usr/lib/system/libsystem_sandbox.dylib
+0x00007fff6fb48000 	/usr/lib/system/libsystem_secinit.dylib
+0x00007fff6fa7a000 	/usr/lib/system/libsystem_kernel.dylib
+0x00007fff6fb2f000 	/usr/lib/system/libsystem_platform.dylib
+0x00007fff6fb38000 	/usr/lib/system/libsystem_pthread.dylib
+0x00007fff6fb4b000 	/usr/lib/system/libsystem_symptoms.dylib
+0x00007fff6fb53000 	/usr/lib/system/libsystem_trace.dylib
+0x00007fff6fb6b000 	/usr/lib/system/libunwind.dylib
+0x00007fff6fb71000 	/usr/lib/system/libxpc.dylib
+0x00007fff6e77e000 	/usr/lib/libobjc.A.dylib
+0x00007fff6cc57000 	/usr/lib/libc++abi.dylib
+0x00007fff6cc04000 	/usr/lib/libc++.1.dylib
+0x00007fff359e1000 	/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+0x00007fff3809e000 	/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation
+0x00007fff32c94000 	/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit
+0x00007fff354c3000 	/System/Library/Frameworks/CoreData.framework/Versions/A/CoreData
+0x00007fff66933000 	/System/Library/PrivateFrameworks/UIFoundation.framework/Versions/A/UIFoundation
+0x00007fff619c7000 	/System/Library/PrivateFrameworks/RemoteViewServices.framework/Versions/A/RemoteViewServices
+0x00007fff6948e000 	/System/Library/PrivateFrameworks/XCTTargetBootstrap.framework/Versions/A/XCTTargetBootstrap
+0x00007fff358ae000 	/System/Library/Frameworks/CoreDisplay.framework/Versions/A/CoreDisplay
+0x00007fff3af59000 	/System/Library/Frameworks/Metal.framework/Versions/A/Metal
+0x00007fff4f9ca000 	/System/Library/PrivateFrameworks/DesktopServicesPriv.framework/Versions/A/DesktopServicesPriv
+0x00007fff6da59000 	/usr/lib/liblangid.dylib
+0x00007fff4ec5f000 	/System/Library/PrivateFrameworks/CoreSVG.framework/Versions/A/CoreSVG
+0x00007fff64b23000 	/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLight
+0x00007fff35e62000 	/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics
+0x00007fff31668000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate
+0x00007fff6ed4b000 	/usr/lib/libxml2.2.dylib
+0x00007fff5a952000 	/System/Library/PrivateFrameworks/IconServices.framework/Versions/A/IconServices
+0x00007fff3887d000 	/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface
+0x00007fff6c448000 	/usr/lib/libDiagnosticMessagesClient.dylib
+0x00007fff4f824000 	/System/Library/PrivateFrameworks/DFRFoundation.framework/Versions/A/DFRFoundation
+0x00007fff6d7e8000 	/usr/lib/libicucore.A.dylib
+0x00007fff33dd6000 	/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox
+0x00007fff33eb9000 	/System/Library/Frameworks/AudioUnit.framework/Versions/A/AudioUnit
+0x00007fff6cb20000 	/usr/lib/libauto.dylib
+0x00007fff4f8c6000 	/System/Library/PrivateFrameworks/DataDetectorsCore.framework/Versions/A/DataDetectorsCore
+0x00007fff34660000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/HIToolbox
+0x00007fff41532000 	/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore
+0x00007fff3499f000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SpeechRecognition.framework/Versions/A/SpeechRecognition
+0x00007fff4f338000 	/System/Library/PrivateFrameworks/CoreUI.framework/Versions/A/CoreUI
+0x00007fff34f2e000 	/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio
+0x00007fff37d5d000 	/System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration
+0x00007fff5c9a2000 	/System/Library/PrivateFrameworks/MultitouchSupport.framework/Versions/A/MultitouchSupport
+0x00007fff6d6af000 	/usr/lib/libenergytrace.dylib
+0x00007fff387d7000 	/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+0x00007fff36dc9000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices
+0x00007fff5eb5a000 	/System/Library/PrivateFrameworks/PerformanceAnalysis.framework/Versions/A/PerformanceAnalysis
+0x00007fff40565000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL
+0x00007fff34b4d000 	/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync
+0x00007fff364e5000 	/System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage
+0x00007fff3783c000 	/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText
+0x00007fff3890d000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO
+0x00007fff6cc80000 	/usr/lib/libcompression.dylib
+0x00007fff6c78c000 	/usr/lib/libMobileGestalt.dylib
+0x00007fff6669d000 	/System/Library/PrivateFrameworks/TextureIO.framework/Versions/A/TextureIO
+0x00007fff6ca83000 	/usr/lib/libate.dylib
+0x00007fff5ab5b000 	/System/Library/PrivateFrameworks/InternationalSupport.framework/Versions/A/InternationalSupport
+0x00007fff6da5b000 	/usr/lib/liblzma.5.dylib
+0x00007fff6d6d6000 	/usr/lib/libfakelink.dylib
+0x00007fff6ca10000 	/usr/lib/libarchive.2.dylib
+0x00007fff433e7000 	/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration
+0x00007fff6c37b000 	/usr/lib/libCRFSuite.dylib
+0x00007fff34250000 	/System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork
+0x00007fff6cbe6000 	/usr/lib/libbsm.0.dylib
+0x00007fff6f957000 	/usr/lib/system/libkxld.dylib
+0x00007fff491a1000 	/System/Library/PrivateFrameworks/AppleFSCompression.framework/Versions/A/AppleFSCompression
+0x00007fff6cf71000 	/usr/lib/libcoretls.dylib
+0x00007fff6cf88000 	/usr/lib/libcoretls_cfhelpers.dylib
+0x00007fff6e7c4000 	/usr/lib/libpam.2.dylib
+0x00007fff6e8f9000 	/usr/lib/libsqlite3.dylib
+0x00007fff6ed38000 	/usr/lib/libxar.1.dylib
+0x00007fff6cbf7000 	/usr/lib/libbz2.1.0.dylib
+0x00007fff6d6f7000 	/usr/lib/libiconv.2.dylib
+0x00007fff6cc6d000 	/usr/lib/libcharset.1.dylib
+0x00007fff6e261000 	/usr/lib/libnetwork.dylib
+0x00007fff6e7cb000 	/usr/lib/libpcap.A.dylib
+0x00007fff6c9c5000 	/usr/lib/libapple_nghttp2.dylib
+0x00007fff37180000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/FSEvents
+0x00007fff36e50000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/CarbonCore
+0x00007fff373c4000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Metadata
+0x00007fff3745d000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/OSServices.framework/Versions/A/OSServices
+0x00007fff3748b000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SearchKit.framework/Versions/A/SearchKit
+0x00007fff36dca000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/AE.framework/Versions/A/AE
+0x00007fff37189000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/LaunchServices
+0x00007fff37132000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/DictionaryServices.framework/Versions/A/DictionaryServices
+0x00007fff374f3000 	/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SharedFileList.framework/Versions/A/SharedFileList
+0x00007fff3c384000 	/System/Library/Frameworks/NetFS.framework/Versions/A/NetFS
+0x00007fff5ced2000 	/System/Library/PrivateFrameworks/NetAuth.framework/Versions/A/NetAuth
+0x00007fff6985b000 	/System/Library/PrivateFrameworks/login.framework/Versions/A/Frameworks/loginsupport.framework/Versions/A/loginsupport
+0x00007fff66168000 	/System/Library/PrivateFrameworks/TCC.framework/Versions/A/TCC
+0x00007fff4ddd2000 	/System/Library/PrivateFrameworks/CoreNLP.framework/Versions/A/CoreNLP
+0x00007fff5c3cf000 	/System/Library/PrivateFrameworks/MetadataUtilities.framework/Versions/A/MetadataUtilities
+0x00007fff6db33000 	/usr/lib/libmecabra.dylib
+0x00007fff6da8b000 	/usr/lib/libmecab.dylib
+0x00007fff6d6e7000 	/usr/lib/libgermantok.dylib
+0x00007fff6c9ac000 	/usr/lib/libThaiTokenizer.dylib
+0x00007fff6c3b2000 	/usr/lib/libChineseTokenizer.dylib
+0x00007fff31680000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/vImage
+0x00007fff32aea000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/vecLib
+0x00007fff32a27000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvMisc.dylib
+0x00007fff3284f000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvDSP.dylib
+0x00007fff31cd7000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+0x00007fff32413000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLAPACK.dylib
+0x00007fff327af000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLinearAlgebra.dylib
+0x00007fff3283c000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparseBLAS.dylib
+0x00007fff327c5000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libQuadrature.dylib
+0x00007fff31f3f000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBNNS.dylib
+0x00007fff327cb000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparse.dylib
+0x00007fff5af43000 	/System/Library/PrivateFrameworks/LanguageModeling.framework/Versions/A/LanguageModeling
+0x00007fff4d782000 	/System/Library/PrivateFrameworks/CoreEmoji.framework/Versions/A/CoreEmoji
+0x00007fff5b061000 	/System/Library/PrivateFrameworks/LinguisticData.framework/Versions/A/LinguisticData
+0x00007fff5b012000 	/System/Library/PrivateFrameworks/Lexicon.framework/Versions/A/Lexicon
+0x00007fff6cc6e000 	/usr/lib/libcmph.dylib
+0x00007fff3ef73000 	/System/Library/Frameworks/OpenDirectory.framework/Versions/A/Frameworks/CFOpenDirectory.framework/Versions/A/CFOpenDirectory
+0x00007fff3ef90000 	/System/Library/Frameworks/OpenDirectory.framework/Versions/A/OpenDirectory
+0x00007fff473d1000 	/System/Library/PrivateFrameworks/APFS.framework/Versions/A/APFS
+0x00007fff42680000 	/System/Library/Frameworks/SecurityFoundation.framework/Versions/A/SecurityFoundation
+0x00007fff6ed34000 	/usr/lib/libutil.dylib
+0x00007fff4ecb7000 	/System/Library/PrivateFrameworks/CoreServicesStore.framework/Versions/A/CoreServicesStore
+0x00007fff42737000 	/System/Library/Frameworks/ServiceManagement.framework/Versions/A/ServiceManagement
+0x00007fff4a971000 	/System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Versions/A/BackgroundTaskManagement
+0x00007fff6ee31000 	/usr/lib/libxslt.1.dylib
+0x00007fff49814000 	/System/Library/PrivateFrameworks/AppleSystemInfo.framework/Versions/A/AppleSystemInfo
+0x00007fff38b28000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJPEG.dylib
+0x00007fff38de7000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libTIFF.dylib
+0x00007fff38dca000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libPng.dylib
+0x00007fff38a6a000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libGIF.dylib
+0x00007fff38a6e000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJP2.dylib
+0x00007fff38de5000 	/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libRadiance.dylib
+0x00007fff6d6b0000 	/usr/lib/libexpat.1.dylib
+0x00007fff492fc000 	/System/Library/PrivateFrameworks/AppleJPEG.framework/Versions/A/AppleJPEG
+0x00007fff51fb7000 	/System/Library/PrivateFrameworks/FontServices.framework/libFontParser.dylib
+0x00007fff6885d000 	/System/Library/PrivateFrameworks/WatchdogClient.framework/Versions/A/WatchdogClient
+0x00007fff5a59e000 	/System/Library/PrivateFrameworks/IOAccelerator.framework/Versions/A/IOAccelerator
+0x00007fff3b2f4000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/MetalPerformanceShaders
+0x00007fff56d34000 	/System/Library/PrivateFrameworks/GPUWrangler.framework/Versions/A/GPUWrangler
+0x00007fff5a5b3000 	/System/Library/PrivateFrameworks/IOPresentment.framework/Versions/A/IOPresentment
+0x00007fff4f837000 	/System/Library/PrivateFrameworks/DSExternalDisplay.framework/Versions/A/DSExternalDisplay
+0x00007fff3f904000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreFSCache.dylib
+0x00007fff3b040000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSCore.framework/Versions/A/MPSCore
+0x00007fff3b07e000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSImage.framework/Versions/A/MPSImage
+0x00007fff3b145000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Versions/A/MPSNeuralNetwork
+0x00007fff3b109000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSMatrix.framework/Versions/A/MPSMatrix
+0x00007fff3b2a4000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSRayIntersector.framework/Versions/A/MPSRayIntersector
+0x00007fff3b12f000 	/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNDArray.framework/Versions/A/MPSNDArray
+0x00007fff5c41c000 	/System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/MetalTools
+0x00007fff485ab000 	/System/Library/PrivateFrameworks/AggregateDictionary.framework/Versions/A/AggregateDictionary
+0x00007fff4d1ca000 	/System/Library/PrivateFrameworks/CoreAnalytics.framework/Versions/A/CoreAnalytics
+0x00007fff49733000 	/System/Library/PrivateFrameworks/AppleSauce.framework/Versions/A/AppleSauce
+0x00007fff6c66e000 	/usr/lib/libIOReport.dylib
+0x00007fff379f4000 	/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo
+0x00007fff581ad000 	/System/Library/PrivateFrameworks/GraphVisualizer.framework/Versions/A/GraphVisualizer
+0x00007fff514fd000 	/System/Library/PrivateFrameworks/FaceCore.framework/Versions/A/FaceCore
+0x00007fff3ef1a000 	/System/Library/Frameworks/OpenCL.framework/Versions/A/OpenCL
+0x00007fff6c490000 	/usr/lib/libFosl_dynamic.dylib
+0x00007fff5d8f2000 	/System/Library/PrivateFrameworks/OTSVG.framework/Versions/A/OTSVG
+0x00007fff33ba9000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Resources/libFontRegistry.dylib
+0x00007fff52188000 	/System/Library/PrivateFrameworks/FontServices.framework/libhvf.dylib
+0x00007fff3f90f000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGFXShared.dylib
+0x00007fff3faed000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLU.dylib
+0x00007fff3f918000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+0x00007fff3f923000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLImage.dylib
+0x00007fff3f901000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCVMSPluginSupport.dylib
+0x00007fff3f90a000 	/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreVMClient.dylib
+0x00007fff6e102000 	/usr/lib/libncurses.5.4.dylib
+0x00007fff33aa5000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/ATS
+0x00007fff33c72000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ColorSyncLegacy.framework/Versions/A/ColorSyncLegacy
+0x00007fff33d10000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/HIServices.framework/Versions/A/HIServices
+0x00007fff33d68000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/LangAnalysis.framework/Versions/A/LangAnalysis
+0x00007fff33d77000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/PrintCore.framework/Versions/A/PrintCore
+0x00007fff33dbd000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/QD.framework/Versions/A/QD
+0x00007fff33dc8000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/SpeechSynthesis.framework/Versions/A/SpeechSynthesis
+0x00007fff33c42000 	/System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATSUI.framework/Versions/A/ATSUI
+0x00007fff6d546000 	/usr/lib/libcups.2.dylib
+0x00007fff3a38f000 	/System/Library/Frameworks/Kerberos.framework/Versions/A/Kerberos
+0x00007fff384d0000 	/System/Library/Frameworks/GSS.framework/Versions/A/GSS
+0x00007fff6e885000 	/usr/lib/libresolv.9.dylib
+0x00007fff5835a000 	/System/Library/PrivateFrameworks/Heimdal.framework/Versions/A/Heimdal
+0x00007fff3a3a2000 	/System/Library/Frameworks/Kerberos.framework/Versions/A/Libraries/libHeimdalProxy.dylib
+0x00007fff6d6ed000 	/usr/lib/libheimdal-asn1.dylib
+0x00007fff4c662000 	/System/Library/PrivateFrameworks/CommonAuth.framework/Versions/A/CommonAuth
+0x00007fff498b1000 	/System/Library/PrivateFrameworks/AssertionServices.framework/Versions/A/AssertionServices
+0x00007fff4a454000 	/System/Library/PrivateFrameworks/AudioToolboxCore.framework/Versions/A/AudioToolboxCore
+0x00007fff6950b000 	/System/Library/PrivateFrameworks/caulk.framework/Versions/A/caulk
+0x00007fff4aa1d000 	/System/Library/PrivateFrameworks/BaseBoard.framework/Versions/A/BaseBoard
+0x00007fff61b55000 	/System/Library/PrivateFrameworks/RunningBoardServices.framework/Versions/A/RunningBoardServices
+0x00007fff5eb66000 	/System/Library/PrivateFrameworks/PersistentConnection.framework/Versions/A/PersistentConnection
+0x00007fff6154e000 	/System/Library/PrivateFrameworks/ProtocolBuffer.framework/Versions/A/ProtocolBuffer
+0x00007fff4c686000 	/System/Library/PrivateFrameworks/CommonUtilities.framework/Versions/A/CommonUtilities
+0x00007fff4abab000 	/System/Library/PrivateFrameworks/Bom.framework/Versions/A/Bom
+0x00007fff6c341000 	/usr/lib/libAudioToolboxUtility.dylib
+0x00007fff4a97b000 	/System/Library/PrivateFrameworks/Backup.framework/Versions/A/Backup
+0x00007fff4f758000 	/System/Library/PrivateFrameworks/CrashReporterSupport.framework/Versions/A/CrashReporterSupport
+0x00007fff635e7000 	/System/Library/PrivateFrameworks/Sharing.framework/Versions/A/Sharing
+0x00007fff48ebf000 	/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Apple80211
+0x00007fff4a698000 	/System/Library/PrivateFrameworks/AuthKit.framework/Versions/A/AuthKit
+0x00007fff4f465000 	/System/Library/PrivateFrameworks/CoreUtils.framework/Versions/A/CoreUtils
+0x00007fff37a39000 	/System/Library/Frameworks/CoreWLAN.framework/Versions/A/CoreWLAN
+0x00007fff3865d000 	/System/Library/Frameworks/IOBluetooth.framework/Versions/A/IOBluetooth
+0x00007fff5c721000 	/System/Library/PrivateFrameworks/MobileKeyBag.framework/Versions/A/MobileKeyBag
+0x00007fff4e26a000 	/System/Library/PrivateFrameworks/CorePhoneNumbers.framework/Versions/A/CorePhoneNumbers
+0x00007fff492af000 	/System/Library/PrivateFrameworks/AppleIDAuthSupport.framework/Versions/A/AppleIDAuthSupport
+0x00007fff3c391000 	/System/Library/Frameworks/Network.framework/Versions/A/Network
+0x00007fff5adef000 	/System/Library/PrivateFrameworks/KeychainCircle.framework/Versions/A/KeychainCircle
+0x00007fff3548a000 	/System/Library/Frameworks/CoreBluetooth.framework/Versions/A/CoreBluetooth
+0x00007fff65666000 	/System/Library/PrivateFrameworks/SpeechRecognitionCore.framework/Versions/A/SpeechRecognitionCore
+0x000000010884a000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/server/libjvm.dylib
+0x00000001097e3000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libjimage.dylib
+0x0000000109839000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libjava.dylib
+0x0000000109a55000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libnio.dylib
+0x0000000109a6d000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libnet.dylib
+0x0000000109a81000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libzip.dylib
+0x0000000109a91000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libverify.dylib
+0x0000000150b4c000 	/private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/skija_0.109.1_x64/libskija.dylib
+0x000000014add5000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libawt.dylib
+0x000000014ae71000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libmlib_image.dylib
+0x00007fff3a382000 	/System/Library/Frameworks/JavaVM.framework/Versions/A/Frameworks/JavaRuntimeSupport.framework/Versions/A/JavaRuntimeSupport
+0x00007fff3a379000 	/System/Library/Frameworks/JavaVM.framework/Versions/A/Frameworks/JavaNativeFoundation.framework/Versions/A/JavaNativeFoundation
+0x00007fff3a38a000 	/System/Library/Frameworks/JavaVM.framework/Versions/A/JavaVM
+0x00007fff3465b000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon
+0x00007fff4f20a000 	/System/Library/PrivateFrameworks/CoreSymbolication.framework/Versions/A/CoreSymbolication
+0x00007fff5ac06000 	/System/Library/PrivateFrameworks/JavaLaunching.framework/Versions/A/JavaLaunching
+0x00007fff3465c000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/CommonPanels.framework/Versions/A/CommonPanels
+0x00007fff34955000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Help.framework/Versions/A/Help
+0x00007fff34959000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/ImageCapture.framework/Versions/A/ImageCapture
+0x00007fff34960000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/OpenScripting.framework/Versions/A/OpenScripting
+0x00007fff3495f000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Ink.framework/Versions/A/Ink
+0x00007fff3499b000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Print.framework/Versions/A/Print
+0x00007fff3499c000 	/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/SecurityHI.framework/Versions/A/SecurityHI
+0x00007fff4f98c000 	/System/Library/PrivateFrameworks/DebugSymbols.framework/Versions/A/DebugSymbols
+0x00000001521c4000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libawt_lwawt.dylib
+0x0000000109bc4000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libosxapp.dylib
+0x00007fff37f39000 	/System/Library/Frameworks/ExceptionHandling.framework/Versions/A/ExceptionHandling
+0x0000000109aa3000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libfontmanager.dylib
+0x000000014aed9000 	/usr/local/opt/harfbuzz/lib/libharfbuzz.0.dylib
+0x00000001522ec000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libfreetype.dylib
+0x0000000156400000 	/usr/local/opt/freetype/lib/libfreetype.6.dylib
+0x000000014afdd000 	/usr/local/opt/graphite2/lib/libgraphite2.3.dylib
+0x00000001564a4000 	/usr/local/opt/glib/lib/libglib-2.0.0.dylib
+0x0000000152370000 	/usr/local/opt/libpng/lib/libpng16.16.dylib
+0x00000001565b8000 	/usr/local/opt/pcre2/lib/libpcre2-8.0.dylib
+0x00000001523a4000 	/usr/local/opt/gettext/lib/libintl.8.dylib
+0x00007fff4ec83000 	/System/Library/PrivateFrameworks/CoreServicesInternal.framework/Versions/A/CoreServicesInternal
+0x00007fff37f58000 	/System/Library/Frameworks/FileProvider.framework/Versions/A/FileProvider
+0x00007fff32aeb000 	/System/Library/Frameworks/Accounts.framework/Versions/A/Accounts
+0x00007fff57059000 	/System/Library/PrivateFrameworks/GenerationalStorage.framework/Versions/A/GenerationalStorage
+0x00007fff65ea8000 	/System/Library/PrivateFrameworks/SymptomDiagnosticReporter.framework/Versions/A/SymptomDiagnosticReporter
+0x00007fff489c3000 	/System/Library/PrivateFrameworks/AppContainer.framework/Versions/A/AppContainer
+0x00007fff6e89f000 	/usr/lib/libsandbox.1.dylib
+0x00007fff67801000 	/System/Library/PrivateFrameworks/UserManagement.framework/Versions/A/UserManagement
+0x00007fff4b767000 	/System/Library/PrivateFrameworks/ChunkingLibrary.framework/Versions/A/ChunkingLibrary
+0x00007fff48a35000 	/System/Library/PrivateFrameworks/AppSandbox.framework/Versions/A/AppSandbox
+0x00007fff63471000 	/System/Library/PrivateFrameworks/SecCodeWrapper.framework/Versions/A/SecCodeWrapper
+0x00007fff6c756000 	/usr/lib/libMatch.1.dylib
+0x00007fff28ad3000 	/System/Library/CoreServices/RawCamera.bundle/Contents/MacOS/RawCamera
+0x00007fff5c54b000 	/System/Library/PrivateFrameworks/MobileAsset.framework/Versions/A/MobileAsset
+0x00007fff65d50000 	/System/Library/PrivateFrameworks/StreamingZip.framework/Versions/A/StreamingZip
+0x00007fff3a80a000 	/System/Library/Frameworks/MediaToolbox.framework/Versions/A/MediaToolbox
+0x00007fff4d17a000 	/System/Library/PrivateFrameworks/CoreAVCHD.framework/Versions/A/CoreAVCHD
+0x00007fff3a734000 	/System/Library/Frameworks/MediaAccessibility.framework/Versions/A/MediaAccessibility
+0x00007fff5b8ff000 	/System/Library/PrivateFrameworks/Mangrove.framework/Versions/A/Mangrove
+0x00007fff36c01000 	/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia
+0x00007fff5bb6b000 	/System/Library/PrivateFrameworks/MediaExperience.framework/Versions/A/MediaExperience
+0x00007fff436e1000 	/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox
+0x00007fff4cda4000 	/System/Library/PrivateFrameworks/CoreAUC.framework/Versions/A/CoreAUC
+0x00007fff6e8f7000 	/usr/lib/libspindump.dylib
+0x00007fff49e03000 	/System/Library/PrivateFrameworks/AudioResourceArbitration.framework/Versions/A/AudioResourceArbitration
+0x00007fff49818000 	/System/Library/PrivateFrameworks/AppleVA.framework/Versions/A/AppleVA
+0x00007fff31669000 	/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/Libraries/libCGInterfaces.dylib
+0x0000000157dd1000 	/usr/lib/libobjc-trampolines.dylib
+0x00007fff520ef000 	/System/Library/PrivateFrameworks/FontServices.framework/libTrueTypeScaler.dylib
+0x00007fff29194000 	/System/Library/Extensions/AMDRadeonX6000MTLDriver.bundle/Contents/MacOS/AMDRadeonX6000MTLDriver
+0x00007fff5a594000 	/System/Library/PrivateFrameworks/IOAccelMemoryInfo.framework/Versions/A/IOAccelMemoryInfo
+0x00007fff2e3e1000 	/System/Library/Extensions/AppleIntelKBLGraphicsMTLDriver.bundle/Contents/MacOS/AppleIntelKBLGraphicsMTLDriver
+0x00007fff55679000 	/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/3902/Libraries/libmetal_timestamp.dylib
+0x00007fff685cd000 	/System/Library/PrivateFrameworks/ViewBridge.framework/Versions/A/ViewBridge
+0x00007fff6985e000 	/System/Library/PrivateFrameworks/login.framework/Versions/A/login
+0x0000000158fd7000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libosxui.dylib
+0x0000000188084000 	/private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/jwm_2156558017841354/libjwm_x64.dylib
+0x00000001896d6000 	/Users/folcon/libj2v8_macosx_x86_64.dylib
+0x00007fff6ec07000 	/usr/lib/libstdc++.6.dylib
+0x000000018a8de000 	/usr/local/Cellar/openjdk/19.0.1/libexec/openjdk.jdk/Contents/Home/lib/libextnet.dylib
+
+
+VM Arguments:
+jvm_args: -Dfile.encoding=UTF-8 --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED -Djdk.attach.allowAttachSelf -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -Dclojure.compile.path=/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/target/classes -Dfruit-economy.version=0.1.0-SNAPSHOT -Dclojure.debug=false 
+java_command: clojure.main -i /private/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/form-init16672005990633041655.clj
+java_class_path (initial): /Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/test:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/dev:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/src:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/dev-resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/target/classes:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/jcomponents/src:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/jcomponents/test:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/jcomponents/dev-resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/jcomponents/resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/jcomponents/target/classes:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/src:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/src:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/test:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/dev-resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/resources:/Users/folcon/annex/wagons-and-wizards-repo/fruit-economy/checkouts/HumbleUI/target/classes:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-util/1.8/batik-util-1.8.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-swing/18/javafx-swing-18.jar:/Users/folcon/.m2/repository/net/mikera/clojure-utils/0.6.2/clojure-utils-0.6.2.jar:/Users/folcon/.m2/repository/denistakeda/posh/0.5.9/posh-0.5.9.jar:/Users/folcon/.m2/repository/org/kordamp/ikonli/ikonli-javafx/11.5.0/ikonli-javafx-11.5.0.jar:/Users/folcon/.m2/repository/datalevin/datalevin/616898b25ee6706da6a260b29e40737a055dfecc/datalevin-616898b25ee6706da6a260b29e40737a055dfecc.jar:/Users/folcon/.m2/repository/org/clojars/quoll/naga-store/0.5.2/naga-store-0.5.2.jar:/Users/folcon/.m2/repository/org/iq80/snappy/snappy/0.4/snappy-0.4.jar:/Users/folcon/.m2/repository/org/checkerframework/checker-qual/2.0.0/checker-qual-2.0.0.jar:/Users/folcon/.m2/repository/org/nrepl/incomplete/0.1.0/incomplete-0.1.0.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-swing/18/javafx-swing-18-mac.jar:/Users/folcon/.m2/repository/org/msgpack/msgpack/0.6.12/msgpack-0.6.12.jar:/Users/folcon/.m2/repository/org/clojure/tools.reader/1.3.2/tools.reader-1.3.2.jar:/Users/folcon/.m2/repository/com/google/protobuf/protobuf-java/3.11.1/protobuf-java-3.11.1.jar:/Users/folcon/.m2/repository/org/clojure/google-closure-library-third-party/0.0-20191016-6ae1f72f/google-closure-library-third-party-0.0-20191016-6ae1f72f.jar:/Users/folcon/.m2/repository/expound/expound/0.7.2/expound-0.7.2.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-svggen/1.8/batik-svggen-1.8.jar:/Users/folcon/.m2/repository/org/clojure/data.priority-map/1.1.0/data.priority-map-1.1.0.jar:/Users/folcon/.m2/repository/rewrite-cljs/rewrite-cljs/0.4.5/rewrite-cljs-0.4.5.jar:/Users/folcon/.m2/repository/com/taoensso/tufte/2.3.0/tufte-2.3.0.jar:/Users/folcon/.m2/repository/com/github/jnr/jnr-ffi/2.2.13/jnr-ffi-2.2.13.jar:/Users/folcon/.m2/repository/nrepl/nrepl/0.9.0/nrepl-0.9.0.jar:/Users/folcon/.m2/repository/com/taoensso/truss/1.8.0/truss-1.8.0.jar:/Users/folcon/.m2/repository/org/clojure/core.rrb-vector/0.1.2/core.rrb-vector-0.1.2.jar:/Users/folcon/.m2/repository/clj-time/clj-time/0.7.0/clj-time-0.7.0.jar:/Users/folcon/.m2/repository/org/ow2/asm/asm-analysis/9.2/asm-analysis-9.2.jar:/Users/folcon/.m2/repository/org/lmdbjava/lmdbjava/0.8.3/lmdbjava-0.8.3.jar:/Users/folcon/.m2/repository/io/github/humbleui/skija-macos-arm64/0.109.1/skija-macos-arm64-0.109.1.jar:/Users/folcon/.m2/repository/org/ow2/asm/asm/9.2/asm-9.2.jar:/Users/folcon/.m2/repository/org/eclipse/collections/eclipse-collections-api/12.0.0.M1/eclipse-collections-api-12.0.0.M1.jar:/Users/folcon/.m2/repository/org/clojure/test.check/1.1.1/test.check-1.1.1.jar:/Users/folcon/.m2/repository/org/clojure/tools.macro/0.1.5/tools.macro-0.1.5.jar:/Users/folcon/.m2/repository/io/github/humbleui/skija-shared/0.109.1/skija-shared-0.109.1.jar:/Users/folcon/.m2/repository/com/cognitect/transit-java/1.0.362/transit-java-1.0.362.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-css/1.8/batik-css-1.8.jar:/Users/folcon/.m2/repository/dorothy/dorothy/0.0.6/dorothy-0.0.6.jar:/Users/folcon/.m2/repository/hashp/hashp/0.2.1/hashp-0.2.1.jar:/Users/folcon/.m2/repository/org/clojure/clojure/1.11.1/clojure-1.11.1.jar:/Users/folcon/.m2/repository/net/mikera/vectorz-clj/0.39.0/vectorz-clj-0.39.0.jar:/Users/folcon/.m2/repository/com/cognitect/transit-cljs/0.8.269/transit-cljs-0.8.269.jar:/Users/folcon/.m2/repository/persistent-sorted-set/persistent-sorted-set/0.2.3/persistent-sorted-set-0.2.3.jar:/Users/folcon/.m2/repository/com/cognitect/transit-js/0.8.874/transit-js-0.8.874.jar:/Users/folcon/.m2/repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar:/Users/folcon/.m2/repository/commons-io/commons-io/1.3.1/commons-io-1.3.1.jar:/Users/folcon/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-smile/2.10.2/jackson-dataformat-smile-2.10.2.jar:/Users/folcon/.m2/repository/com/google/code/gson/gson/2.7/gson-2.7.jar:/Users/folcon/.m2/repository/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar:/Users/folcon/.m2/repository/dvlopt/dsim/1.0.0-beta3/dsim-1.0.0-beta3.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/xmlgraphics-commons/2.0.1/xmlgraphics-commons-2.0.1.jar:/Users/folcon/.m2/repository/org/clojars/quoll/parsatron/0.0.10/parsatron-0.0.10.jar:/Users/folcon/.m2/repository/mvxcvi/puget/1.3.1/puget-1.3.1.jar:/Users/folcon/.m2/repository/org/clojure/tools.namespace/1.2.0/tools.namespace-1.2.0.jar:/Users/folcon/.m2/repository/tigris/tigris/0.1.2/tigris-0.1.2.jar:/Users/folcon/.m2/repository/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar:/Users/folcon/.m2/repository/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar:/Users/folcon/.m2/repository/org/clojure/data.codec/0.1.0/data.codec-0.1.0.jar:/Users/folcon/.m2/repository/org/kordamp/ikonli/ikonli-materialdesign-pack/11.5.0/ikonli-materialdesign-pack-11.5.0.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-controls/18/javafx-controls-18.jar:/Users/folcon/.m2/repository/pjstadig/humane-test-output/0.11.0/humane-test-output-0.11.0.jar:/Users/folcon/.m2/repository/org/slf4j/jul-to-slf4j/1.7.30/jul-to-slf4j-1.7.30.jar:/Users/folcon/.m2/repository/ubergraph/ubergraph/0.8.2/ubergraph-0.8.2.jar:/Users/folcon/.m2/repository/retrograde/retrograde/0.10/retrograde-0.10.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-codec/1.8/batik-codec-1.8.jar:/Users/folcon/.m2/repository/prismatic/schema/1.1.12/schema-1.1.12.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-parser/1.8/batik-parser-1.8.jar:/Users/folcon/.m2/repository/tailrecursion/cljs-priority-map/1.2.1/cljs-priority-map-1.2.1.jar:/Users/folcon/.m2/repository/com/google/javascript/closure-compiler-externs/v20200315/closure-compiler-externs-v20200315.jar:/Users/folcon/.m2/repository/humbleui/humbleui/774853e4ec912168ad96fff96c0296dda98531f6/humbleui-774853e4ec912168ad96fff96c0296dda98531f6.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-script/1.8/batik-script-1.8.jar:/Users/folcon/.m2/repository/dali/dali/1.0.2/dali-1.0.2.jar:/Users/folcon/.m2/repository/zprint/zprint/1.1.1/zprint-1.1.1.jar:/Users/folcon/.m2/repository/org/eclipse/collections/eclipse-collections/12.0.0.M1/eclipse-collections-12.0.0.M1.jar:/Users/folcon/.m2/repository/com/google/jsinterop/base/1.0.0/base-1.0.0.jar:/Users/folcon/.m2/repository/guru/nidi/graphviz-java/0.18.1/graphviz-java-0.18.1.jar:/Users/folcon/.m2/repository/org/tukaani/xz/1.9/xz-1.9.jar:/Users/folcon/.m2/repository/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.jar:/Users/folcon/.m2/repository/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar:/Users/folcon/.m2/repository/args4j/args4j/2.0.26/args4j-2.0.26.jar:/Users/folcon/.m2/repository/org/slf4j/jcl-over-slf4j/1.7.30/jcl-over-slf4j-1.7.30.jar:/Users/folcon/.m2/repository/xalan/xalan/2.7.0/xalan-2.7.0.jar:/Users/folcon/.m2/repository/environ/environ/1.2.0/environ-1.2.0.jar:/Users/folcon/.m2/repository/io/aviso/pretty/1.1.1/pretty-1.1.1.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-base/18/javafx-base-18.jar:/Users/folcon/.m2/repository/net/mikera/mathz/0.3.0/mathz-0.3.0.jar:/Users/folcon/.m2/repository/http-kit/http-kit/2.5.3/http-kit-2.5.3.jar:/Users/folcon/.m2/repository/org/ow2/asm/asm-tree/9.2/asm-tree-9.2.jar:/Users/folcon/.m2/repository/org/jsoup/jsoup/1.7.2/jsoup-1.7.2.jar:/Users/folcon/.m2/repository/cheshire/cheshire/5.10.0/cheshire-5.10.0.jar:/Users/folcon/.m2/repository/dvlopt/rktree/0.0.0-beta2/rktree-0.0.0-beta2.jar:/Users/folcon/.m2/repository/datascript/datascript/1.4.1/datascript-1.4.1.jar:/Users/folcon/.m2/repository/dvlopt/void/1.0.1/void-1.0.1.jar:/Users/folcon/.m2/repository/me/lemire/integercompression/JavaFastPFOR/0.1.12/JavaFastPFOR-0.1.12.jar:/Users/folcon/.m2/repository/com/google/elemental2/elemental2-core/1.0.0-RC1/elemental2-core-1.0.0-RC1.jar:/Users/folcon/.m2/repository/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar:/Users/folcon/.m2/repository/org/clojure/core.cache/1.0.217/core.cache-1.0.217.jar:/Users/folcon/.m2/repository/org/clojure/core.async/1.5.648/core.async-1.5.648.jar:/Users/folcon/.m2/repository/org/clojars/quoll/asami/2.3.0/asami-2.3.0.jar:/Users/folcon/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-dom/1.8/batik-dom-1.8.jar:/Users/folcon/.m2/repository/org/clojars/quoll/naga/0.3.15/naga-0.3.15.jar:/Users/folcon/.m2/repository/hiccup/hiccup/1.0.5/hiccup-1.0.5.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-controls/18/javafx-controls-18-mac.jar:/Users/folcon/.m2/repository/net/mikera/imagez/0.9.0/imagez-0.9.0.jar:/Users/folcon/.m2/repository/clj-tuple/clj-tuple/0.2.2/clj-tuple-0.2.2.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-awt-util/1.8/batik-awt-util-1.8.jar:/Users/folcon/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar:/Users/folcon/.m2/repository/com/github/jnr/jnr-a64asm/1.0.0/jnr-a64asm-1.0.0.jar:/Users/folcon/.m2/repository/net/mikera/mikera-gui/0.3.1/mikera-gui-0.3.1.jar:/Users/folcon/.m2/repository/org/imgscalr/imgscalr-lib/4.2/imgscalr-lib-4.2.jar:/Users/folcon/.m2/repository/org/clojure/core.specs.alpha/0.2.62/core.specs.alpha-0.2.62.jar:/Users/folcon/.m2/repository/com/github/jnr/jffi/1.3.10/jffi-1.3.10.jar:/Users/folcon/.m2/repository/com/github/jpmonettas/flow-storm-inst/2.2.99/flow-storm-inst-2.2.99.jar:/Users/folcon/.m2/repository/org/ccil/cowan/tagsoup/tagsoup/1.2.1/tagsoup-1.2.1.jar:/Users/folcon/.m2/repository/org/clojure/core.memoize/1.0.253/core.memoize-1.0.253.jar:/Users/folcon/.m2/repository/io/github/humbleui/types/0.2.0/types-0.2.0-clojure.jar:/Users/folcon/.m2/repository/org/clojure/java.classpath/1.0.0/java.classpath-1.0.0.jar:/Users/folcon/.m2/repository/org/babashka/sci.impl.types/0.0.2/sci.impl.types-0.0.2.jar:/Users/folcon/.m2/repository/net/arnx/nashorn-promise/0.1.1/nashorn-promise-0.1.1.jar:/Users/folcon/.m2/repository/org/clojure/tools.analyzer.jvm/1.2.2/tools.analyzer.jvm-1.2.2.jar:/Users/folcon/.m2/repository/borkdude/sci.impl.reflector/0.0.1/sci.impl.reflector-0.0.1.jar:/Users/folcon/.m2/repository/net/mikera/vectorz/0.55.0/vectorz-0.55.0.jar:/Users/folcon/.m2/repository/org/jfree/jfreechart/1.5.3/jfreechart-1.5.3.jar:/Users/folcon/.m2/repository/com/clojure-goes-fast/clj-async-profiler/1.0.3/clj-async-profiler-1.0.3.jar:/Users/folcon/.m2/repository/org/babashka/sci/0.7.39/sci-0.7.39.jar:/Users/folcon/.m2/repository/org/kordamp/ikonli/ikonli-core/11.5.0/ikonli-core-11.5.0.jar:/Users/folcon/.m2/repository/com/google/javascript/closure-compiler-unshaded/v20200315/closure-compiler-unshaded-v20200315.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-gvt/1.8/batik-gvt-1.8.jar:/Users/folcon/.m2/repository/io/github/humbleui/skija-macos-x64/0.109.1/skija-macos-x64-0.109.1.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-graphics/18/javafx-graphics-18.jar:/Users/folcon/.m2/repository/org/clojure/spec.alpha/0.3.218/spec.alpha-0.3.218.jar:/Users/folcon/.m2/repository/com/taoensso/encore/3.50.0/encore-3.50.0.jar:/Users/folcon/.m2/repository/borkdude/sci/0.2.1-alpha.1/sci-0.2.1-alpha.1.jar:/Users/folcon/.m2/repository/guru/nidi/com/eclipsesource/j2v8/j2v8_macosx_x86_64/4.6.0/j2v8_macosx_x86_64-4.6.0.jar:/Users/folcon/.m2/repository/clj-stacktrace/clj-stacktrace/0.2.8/clj-stacktrace-0.2.8.jar:/Users/folcon/.m2/repository/org/clojure/google-closure-library/0.0-20191016-6ae1f72f/google-closure-library-0.0-20191016-6ae1f72f.jar:/Users/folcon/.m2/repository/org/clojure/clojurescript/1.10.773/clojurescript-1.10.773.jar:/Users/folcon/.m2/repository/org/clojars/quoll/zuko/0.6.5/zuko-0.6.5.jar:/Users/folcon/.m2/repository/com/squidpony/squidlib-util/3.0.4/squidlib-util-3.0.4.jar:/Users/folcon/.m2/repository/us/bpsm/edn-java/0.4.6/edn-java-0.4.6.jar:/Users/folcon/.m2/repository/com/taoensso/timbre/5.2.1/timbre-5.2.1.jar:/Users/folcon/.m2/repository/com/github/jnr/jnr-x86asm/1.0.2/jnr-x86asm-1.0.2.jar:/Users/folcon/.m2/repository/aysylu/loom/1.0.2/loom-1.0.2.jar:/Users/folcon/.m2/repository/io/github/humbleui/jwm/0.4.13/jwm-0.4.13.jar:/Users/folcon/.m2/repository/mvxcvi/arrangement/1.2.0/arrangement-1.2.0.jar:/Users/folcon/.m2/repository/net/mikera/clisk/0.11.0/clisk-0.11.0.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-ext/1.8/batik-ext-1.8.jar:/Users/folcon/.m2/repository/joda-time/joda-time/2.3/joda-time-2.3.jar:/Users/folcon/.m2/repository/org/lz4/lz4-java/1.8.0/lz4-java-1.8.0.jar:/Users/folcon/.m2/repository/potemkin/potemkin/0.4.5/potemkin-0.4.5.jar:/Users/folcon/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.10.2/jackson-dataformat-cbor-2.10.2.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-graphics/18/javafx-graphics-18-mac.jar:/Users/folcon/.m2/repository/rewrite-clj/rewrite-clj/0.6.1/rewrite-clj-0.6.1.jar:/Users/folcon/.m2/repository/org/apache/commons/commons-exec/1.3/commons-exec-1.3.jar:/Users/folcon/.m2/repository/io/github/humbleui/skija-windows-x64/0.109.1/skija-windows-x64-0.109.1.jar:/Users/folcon/.m2/repository/dvlopt/fdat/0.0.0-beta3/fdat-0.0.0-beta3.jar:/Users/folcon/.m2/repository/xml-apis/xml-apis-ext/1.3.04/xml-apis-ext-1.3.04.jar:/Users/folcon/.m2/repository/io/github/humbleui/skija-linux-x64/0.109.1/skija-linux-x64-0.109.1.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-xml/1.8/batik-xml-1.8.jar:/Users/folcon/.m2/repository/riddley/riddley/0.1.12/riddley-0.1.12.jar:/Users/folcon/.m2/repository/org/clojure/data.json/2.4.0/data.json-2.4.0.jar:/Users/folcon/.m2/repository/org/roaringbitmap/shims/0.9.39/shims-0.9.39.jar:/Users/folcon/.m2/repository/org/clojars/quoll/asami-loom/0.3.1/asami-loom-0.3.1.jar:/Users/folcon/.m2/repository/org/clojure/tools.analyzer/1.1.0/tools.analyzer-1.1.0.jar:/Users/folcon/.m2/repository/com/github/jnr/jffi/1.3.10/jffi-1.3.10-native.jar:/Users/folcon/.m2/repository/org/webjars/npm/viz.js-graphviz-java/2.1.3/viz.js-graphviz-java-2.1.3.jar:/Users/folcon/.m2/repository/org/openjfx/javafx-base/18/javafx-base-18-mac.jar:/Users/folcon/.m2/repository/spyscope/spyscope/0.1.6/spyscope-0.1.6.jar:/Users/folcon/.m2/repository/org/clojure/core.match/0.3.0/core.match-0.3.0.jar:/Users/folcon/.m2/repository/guru/nidi/com/kitfox/svgSalamander/1.1.3/svgSalamander-1.1.3.jar:/Users/folcon/.m2/repository/xerces/xercesImpl/2.4.0/xercesImpl-2.4.0.jar:/Users/folcon/.m2/repository/com/google/guava/guava/25.1-jre/guava-25.1-jre.jar:/Users/folcon/.m2/repository/com/rpl/specter/1.1.2/specter-1.1.2.jar:/Users/folcon/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar:/Users/folcon/.m2/repository/net/cgrand/macrovich/0.2.1/macrovich-0.2.1.jar:/Users/folcon/.m2/repository/org/clojars/quoll/qtest/0.1.1/qtest-0.1.1.jar:/Users/folcon/.m2/repository/com/cognitect/transit-clj/1.0.329/transit-clj-1.0.329.jar:/Users/folcon/.m2/repository/djblue/portal/0.26.0/portal-0.26.0.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-bridge/1.8/batik-bridge-1.8.jar:/Users/folcon/.m2/repository/org/roaringbitmap/RoaringBitmap/0.9.39/RoaringBitmap-0.9.39.jar:/Users/folcon/.m2/repository/com/google/jsinterop/jsinterop-annotations/1.0.2/jsinterop-annotations-1.0.2.jar:/Users/folcon/.m2/repository/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar:/Users/folcon/.m2/repository/com/jhlabs/filters/2.0.235-1/filters-2.0.235-1.jar:/Users/folcon/.m2/repository/org/ow2/asm/asm-commons/9.2/asm-commons-9.2.jar:/Users/folcon/.m2/repository/net/mikera/randomz/0.3.0/randomz-0.3.0.jar:/Users/folcon/.m2/repository/com/github/jnr/jnr-constants/0.10.4/jnr-constants-0.10.4.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-anim/1.8/batik-anim-1.8.jar:/Users/folcon/.m2/repository/org/clojars/huahaiy/dtlvnative-macos-aarch64-shared/0.7.12/dtlvnative-macos-aarch64-shared-0.7.12.jar:/Users/folcon/.m2/repository/fipp/fipp/0.6.23/fipp-0.6.23.jar:/Users/folcon/.m2/repository/borkdude/edamame/1.1.17/edamame-1.1.17.jar:/Users/folcon/.m2/repository/com/github/tommyettinger/regexodus/0.1.12/regexodus-0.1.12.jar:/Users/folcon/.m2/repository/net/mikera/core.matrix/0.47.1/core.matrix-0.47.1.jar:/Users/folcon/.m2/repository/org/ow2/asm/asm-util/9.2/asm-util-9.2.jar:/Users/folcon/.m2/repository/net/sekao/odoyle-rules/0.11.0/odoyle-rules-0.11.0.jar:/Users/folcon/.m2/repository/enlive/enlive/1.1.6/enlive-1.1.6.jar:/Users/folcon/.m2/repository/com/github/jpmonettas/flow-storm-dbg/2.2.99/flow-storm-dbg-2.2.99.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-svg-dom/1.8/batik-svg-dom-1.8.jar:/Users/folcon/.m2/repository/com/taoensso/nippy/3.2.0/nippy-3.2.0.jar:/Users/folcon/.m2/repository/org/apache/xmlgraphics/batik-transcoder/1.8/batik-transcoder-1.8.jar:/Users/folcon/.m2/repository/org/java-websocket/Java-WebSocket/1.5.2/Java-WebSocket-1.5.2.jar:/Users/folcon/.m2/repository/com/google/re2j/re2j/1.3/re2j-1.3.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 12                                        {product} {ergonomic}
+     uint ConcGCThreads                            = 3                                         {product} {ergonomic}
+     bool DebugNonSafepoints                       = true                                   {diagnostic} {command line}
+     uint G1ConcRefinementThreads                  = 13                                        {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 8388608                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 1073741824                                {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 17179869184                               {product} {ergonomic}
+   size_t MaxNewSize                               = 10301210624                               {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 8388608                                   {product} {ergonomic}
+   size_t MinHeapSize                              = 8388608                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 7602480                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 122027880                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 122027880                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+   size_t SoftMaxHeapSize                          = 17179869184                            {manageable} {ergonomic}
+     bool UnlockDiagnosticVMOptions                = true                                   {diagnostic} {command line}
+     bool UseCompressedClassPointers               = true                           {product lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                           {product lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseNUMA                                  = false                                     {product} {ergonomic}
+     bool UseNUMAInterleaving                      = false                                     {product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags foldmultilines=false
+ #1: stderr all=off uptime,level,tags foldmultilines=false
+
+Environment Variables:
+JAVA_HOME=/usr/local/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+PATH=/usr/local/opt/openjdk/bin:/Users/folcon/Library/Python/3.8/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+SHELL=/bin/zsh
+LC_CTYPE=en_GB.UTF-8
+TERM=xterm-256color
+TMPDIR=/var/folders/tq/zydvc4pd0qsd2h4x6jf0bdzr0000gn/T/
+
+Active Locale:
+LC_ALL=C/en_GB.UTF-8/C/C/C/C
+LC_COLLATE=C
+LC_CTYPE=en_GB.UTF-8
+LC_MESSAGES=C
+LC_MONETARY=C
+LC_NUMERIC=C
+LC_TIME=C
+
+Signal Handlers:
+   SIGSEGV: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+    SIGBUS: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+    SIGFPE: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGPIPE: javaSignalHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGXFSZ: javaSignalHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+    SIGILL: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGUSR2: SR_handler in libjvm.dylib, mask=00000000000000000000000000000000, flags=SA_RESTART|SA_SIGINFO
+    SIGHUP: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+    SIGINT: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGTERM: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGQUIT: UserHandler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+   SIGTRAP: crash_handler in libjvm.dylib, mask=11100110000111110111111111111111, flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:
+uname: Darwin 19.6.0 Darwin Kernel Version 19.6.0: Thu Oct 29 22:56:45 PDT 2020; root:xnu-6153.141.2.2~1/RELEASE_X86_64 x86_64
+OS uptime: 41 days 4:52 hours
+rlimit (soft/hard): STACK 65532k/65532k , CORE 0k/infinity , NPROC 11136/16704 , NOFILE 10240/infinity , AS infinity/infinity , CPU infinity/infinity , DATA infinity/infinity , FSIZE infinity/infinity , MEMLOCK infinity/infinity , RSS infinity/infinity
+load average: 5.53 5.31 4.89
+
+CPU: total 16 (initial active 16) (8 cores per cpu, 2 threads per core) family 6 model 158 stepping 13 microcode 0xf0, cx8, cmov, fxsr, ht, mmx, 3dnowpref, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, lzcnt, tsc, tscinvbit, avx, avx2, aes, erms, clmul, bmi1, bmi2, adx, fma, vzeroupper, clflush, clflushopt, rdtscp
+
+Memory: 4k page, physical 67108864k(1524996k free), swap 40894464k(1142272k free)
+
+vm_info: OpenJDK 64-Bit Server VM (19.0.1) for bsd-amd64 JRE (19.0.1), built on 2022-09-13T14:16:20Z by "brew" with clang Apple LLVM 12.0.0 (clang-1200.0.32.29)
+
+END.

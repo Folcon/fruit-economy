@@ -4,6 +4,7 @@
             [fruit-economy.state :as state]
             [fruit-economy.data.core :as data]
             [fruit-economy.sim.basic :as basic]
+            [fruit-economy.ui.tooltips :as tooltips]
             [fruit-economy.ui.bits :as ui.bits]
             [fruit-economy.ui.parts :as ui.parts]
             [fruit-economy.ui.views :as ui.views]
@@ -45,7 +46,14 @@
               (cui/atom-checkbox state/*floating "On top")))
           [:stretch 1
            (ui/dynamic _ [name @state/*selected-ui-view]
-             (ui.views/ui-views name))])))))
+             (ui/stack
+               (ui.views/ui-views name)
+               (ui/dynamic _ [tooltips @tooltips/*tooltips]
+                 (do
+                   (doseq [[_id tooltip-fn] tooltips]
+                     (println _id tooltip-fn)
+                     (tooltip-fn))
+                   (ui/gap 0 0)))))])))))
 
 (def start-screen
   (ui/dynamic ctx [{:keys [scale face-default emoji-face x-scale y-scale]} ctx
